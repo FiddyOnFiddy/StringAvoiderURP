@@ -19,10 +19,13 @@ public class StringMovement : MonoBehaviour
     [SerializeField] List<GameObject> stringPointsGO;
     [SerializeField] List<Rigidbody2D> stringPointsRB;
     [SerializeField] List<Vector2> stringPointsData;
+    [SerializeField] List<Material> dissolveMaterials;
 
 	public List<GameObject> StringPointsGO { get => stringPointsGO; set => stringPointsGO = value; }
     public List<Rigidbody2D> StringPointsRB { get => stringPointsRB; set => stringPointsRB = value; }
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
+    public List<Material> DissolveMaterials { get => dissolveMaterials; set => dissolveMaterials = value; }
+    
 
 
     [SerializeField] Transform spawnPoint;
@@ -116,11 +119,13 @@ public class StringMovement : MonoBehaviour
             stringPointsGO.Add(Instantiate(stringPointPrefab, stringPointsData[i], Quaternion.identity, this.transform));
             stringPointsGO[i].name = i.ToString();
             stringPointsRB.Add(stringPointsGO[i].GetComponent<Rigidbody2D>());
+            dissolveMaterials.Add(stringPointsGO[i].GetComponent<SpriteRenderer>().material);
         }
 
         stringPointsGO[0].GetComponent<CircleCollider2D>().enabled = false;
         BoxCollider2D boxCollider = stringPointsGO[0].AddComponent<BoxCollider2D>();
         boxCollider.size = new Vector2(1.3f, 1.3f);
         boxCollider.edgeRadius = 0.015f;
+
     }
 }

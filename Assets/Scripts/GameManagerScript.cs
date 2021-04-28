@@ -23,11 +23,14 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private GameState currentState;
 
     [SerializeField] private List<GameObject> tempStringList;
+    [SerializeField] private List<Material> tempDissolveMaterials;
 
     [SerializeField] private bool moveRigidBodies;
 
     [SerializeField] private int stringPointIntersectedWith;
     [SerializeField] private  int count2ndHalf, count1stHalf;
+
+    [SerializeField] float dissolveAmount, dissolveSpeed;
 
 
     private StringMovement sM;
@@ -92,6 +95,8 @@ public class GameManagerScript : MonoBehaviour
 
     void Update()
     {
+        //dissolveAmount = Mathf.Clamp01(dissolveAmount - dissolveSpeed * Time.deltaTime);
+        //sM.DissolveMaterials[0].SetFloat("_DissolveAmount", dissolveAmount);
 
         switch (currentState)
         {
@@ -126,7 +131,9 @@ public class GameManagerScript : MonoBehaviour
         //Loop 1st Half of string if intersected
         if(count1stHalf < sM.StringPointsGO.Count)
         {
-            Destroy(sM.StringPointsGO[(sM.StringPointsGO.Count - 1) - count1stHalf]);
+            //Destroy(sM.StringPointsGO[(sM.StringPointsGO.Count - 1) - count1stHalf]);
+            dissolveAmount = Mathf.Clamp01(dissolveAmount - dissolveSpeed * Time.deltaTime);
+            sM.DissolveMaterials[(sM.StringPointsGO.Count - 1) - count1stHalf].SetFloat("_DissolveAmount", dissolveAmount);
             count1stHalf++;
         }
 
@@ -134,7 +141,9 @@ public class GameManagerScript : MonoBehaviour
         //Loop 2nd half of string if intersected
         if (count2ndHalf < tempStringList.Count)
         {
-            Destroy(tempStringList[count2ndHalf]);
+            //Destroy(tempStringList[count2ndHalf]);
+            dissolveAmount = Mathf.Clamp01(dissolveAmount - dissolveSpeed * Time.deltaTime);
+            tempDissolveMaterials[count2ndHalf].SetFloat("_DissolveAmount", dissolveAmount);
             count2ndHalf++;
         }
 
@@ -149,10 +158,12 @@ public class GameManagerScript : MonoBehaviour
     void InitiliaseDeath()
     {
         tempStringList = new List<GameObject>();
+        tempDissolveMaterials = new List<Material>();
 
         for (int i = stringPointIntersectedWith; i < sM.StringPointsGO.Count; i++)
         {
             tempStringList.Add(sM.StringPointsGO[i]);
+            tempDissolveMaterials.Add(sM.DissolveMaterials[i]);
         }
 
         count1stHalf = 0;
