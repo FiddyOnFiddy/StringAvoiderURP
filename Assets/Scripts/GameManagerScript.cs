@@ -133,7 +133,6 @@ public class GameManagerScript : MonoBehaviour
         }
 
     }
-
     void InitiliaseDeath()
     {
         count1stHalf = 0;

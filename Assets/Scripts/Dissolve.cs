@@ -16,9 +16,9 @@ public class Dissolve : MonoBehaviour
     {
         material = GetComponent<SpriteRenderer>().material;
         dissolveAmount = 1;
-        dissolveSpeed = 0.5f;
-        randomSeed = new Vector2(Random.Range(0f, 4f), Random.Range(0f, 3f));
+        dissolveSpeed = 0.8f;
 
+        randomSeed = new Vector2(Random.Range(0f, 4f), Random.Range(0f, 3f));
         material.SetVector("_RandomSeed", randomSeed);
     }
 
