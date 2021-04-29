@@ -27,7 +27,6 @@ public class StringMovement : MonoBehaviour
     public List<Material> DissolveMaterials { get => dissolveMaterials; set => dissolveMaterials = value; }
     
 
-
     [SerializeField] Transform spawnPoint;
 
     void Awake()

@@ -22,7 +22,6 @@ public class GameManagerScript : MonoBehaviour
     //Initiliase a new GameState variable called currentState to track and assign which state we are in.
     [SerializeField] private GameState currentState;
 
-    [SerializeField] private List<GameObject> tempStringList;
     [SerializeField] private List<Material> tempDissolveMaterials;
 
     [SerializeField] private bool moveRigidBodies;
@@ -41,6 +40,8 @@ public class GameManagerScript : MonoBehaviour
     public int StringPointIntersectedWith { get => stringPointIntersectedWith; set => stringPointIntersectedWith = value; }
     public bool MoveRigidBodies {  get => moveRigidBodies; set => moveRigidBodies = value;  }
 
+
+    
     struct TimeThreshold 
     {
         public int Level;
@@ -63,8 +64,7 @@ public class GameManagerScript : MonoBehaviour
     /// List of variables on script per scene 
     /// get passed through to timethreshold struct which get passed into list or dictionary for player prefs
     /// </summary>
-    List<TimeThreshold> timeThresholds;
-
+    List<TimeThreshold> timeThresholds = new List<TimeThreshold>();
 
     void Start()
     {
@@ -73,6 +73,8 @@ public class GameManagerScript : MonoBehaviour
 
         //Grab reference to string movement script to handle death animation
         sM = FindObjectOfType<StringMovement>();
+
+        dissolveAmount = 1f;
     }
 
     void Awake()
@@ -95,9 +97,6 @@ public class GameManagerScript : MonoBehaviour
 
     void Update()
     {
-        //dissolveAmount = Mathf.Clamp01(dissolveAmount - dissolveSpeed * Time.deltaTime);
-        //sM.DissolveMaterials[0].SetFloat("_DissolveAmount", dissolveAmount);
-
         switch (currentState)
         {
             case GameState.Idle:
@@ -110,6 +109,7 @@ public class GameManagerScript : MonoBehaviour
                 break;
             case GameState.Dead:
                 //See Fixed Update
+                //DeathAnimation();
                 break;
             case GameState.GameOver:
                 break;
@@ -127,47 +127,29 @@ public class GameManagerScript : MonoBehaviour
 
     void DeathAnimation()
     {
+        dissolveAmount = Mathf.Clamp01(dissolveAmount - dissolveSpeed * Time.deltaTime);
 
-        //Loop 1st Half of string if intersected
-        if(count1stHalf < sM.StringPointsGO.Count)
+
+        for (int i = 0; i < sM.StringPointsGO.Count; i++)
         {
-            //Destroy(sM.StringPointsGO[(sM.StringPointsGO.Count - 1) - count1stHalf]);
-            dissolveAmount = Mathf.Clamp01(dissolveAmount - dissolveSpeed * Time.deltaTime);
-            sM.DissolveMaterials[(sM.StringPointsGO.Count - 1) - count1stHalf].SetFloat("_DissolveAmount", dissolveAmount);
-            count1stHalf++;
+            sM.DissolveMaterials[(sM.StringPointsGO.Count - 1) - i].SetFloat("_DissolveAmount", dissolveAmount);
         }
 
-
-        //Loop 2nd half of string if intersected
-        if (count2ndHalf < tempStringList.Count)
+        for (int i = 0; i < tempDissolveMaterials.Count; i++)
         {
-            //Destroy(tempStringList[count2ndHalf]);
-            dissolveAmount = Mathf.Clamp01(dissolveAmount - dissolveSpeed * Time.deltaTime);
-            tempDissolveMaterials[count2ndHalf].SetFloat("_DissolveAmount", dissolveAmount);
-            count2ndHalf++;
-        }
-
-        //Check if both animations are finished and change gamestate to game over
-        if(count1stHalf == sM.StringPointsGO.Count && count2ndHalf == tempStringList.Count)
-        {
-            currentState = GameState.GameOver;
+            tempDissolveMaterials[i].SetFloat("_DissolveAmount", dissolveAmount);
         }
 
     }
 
     void InitiliaseDeath()
     {
-        tempStringList = new List<GameObject>();
         tempDissolveMaterials = new List<Material>();
 
         for (int i = stringPointIntersectedWith; i < sM.StringPointsGO.Count; i++)
         {
-            tempStringList.Add(sM.StringPointsGO[i]);
             tempDissolveMaterials.Add(sM.DissolveMaterials[i]);
         }
-
-        count1stHalf = 0;
-        Count2ndHalf = 0;
         currentState = GameState.CleanupLists;
     }
 
