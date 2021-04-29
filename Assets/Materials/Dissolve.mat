@@ -51,5 +51,6 @@ Material:
     m_Floats:
     - _DissolveAmount: 1
     m_Colors:
-    - _DissolveColour: {r: 1, g: 1, b: 1, a: 1}
+    - _DissolveColour: {r: 0, g: 29.763474, b: 57.896072, a: 0.46666667}
+    - _RandomSeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

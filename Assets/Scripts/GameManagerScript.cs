@@ -14,7 +14,6 @@ public class GameManagerScript : MonoBehaviour
     {
         Idle,
         InitialiseDeath,
-        CleanupLists,
         Dead,
         GameOver,
     }
@@ -22,15 +21,13 @@ public class GameManagerScript : MonoBehaviour
     //Initiliase a new GameState variable called currentState to track and assign which state we are in.
     [SerializeField] private GameState currentState;
 
-    [SerializeField] private List<Material> tempDissolveMaterials;
-    [SerializeField] private List<float> dissolveAmounts;
+    [SerializeField] private List<Material> tempList;
 
     [SerializeField] private bool moveRigidBodies;
 
     [SerializeField] private int stringPointIntersectedWith;
     [SerializeField] private  int count2ndHalf, count1stHalf;
 
-    [SerializeField] float dissolveAmount, dissolveSpeed, cascadeSpeed;
 
 
     private StringMovement sM;
@@ -75,19 +72,10 @@ public class GameManagerScript : MonoBehaviour
         //Grab reference to string movement script to handle death animation
         sM = FindObjectOfType<StringMovement>();
 
-        //dissolveAmount = 1f;
-        dissolveAmounts = new List<float>();
-        for (int i = 0; i < sM.DissolveMaterials.Count; i++)
-        {
-            dissolveAmounts.Add(1f);
-        }
-
     }
 
     void Awake()
     {
-
-
         //Checks to see if any Game Managers are present in the scene and either delete or assign this script to them. Necessary for singleton pattern
         if (_instance != null && _instance != this)
         {
@@ -111,12 +99,8 @@ public class GameManagerScript : MonoBehaviour
             case GameState.InitialiseDeath:
                 InitiliaseDeath();
                 break;
-            case GameState.CleanupLists:
-                CleanUpLists();
-                break;
             case GameState.Dead:
                 //See Fixed Update
-                //DeathAnimation();
                 break;
             case GameState.GameOver:
                 break;
@@ -134,20 +118,17 @@ public class GameManagerScript : MonoBehaviour
 
     void DeathAnimation()
     {
-        dissolveAmount = dissolveAmount - dissolveSpeed * Time.deltaTime;
-
-
-        for (int i = 0; i < sM.StringPointsGO.Count; i++)
+        //Loop 1st Half of string if intersected
+        if (count1stHalf < stringPointIntersectedWith)
         {
-            float offset = i * cascadeSpeed;
-            sM.DissolveMaterials[(sM.StringPointsGO.Count - 1) - i].SetFloat("_DissolveAmount", dissolveAmount + offset);
+            sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().startDissolve = true;
             count1stHalf++;
         }
 
-        for (int i = 0; i < tempDissolveMaterials.Count; i++)
+        //Loop 2nd half of string if intersected
+        if (count2ndHalf < sM.StringPointsGO.Count)
         {
-            float offset = i * cascadeSpeed;
-            tempDissolveMaterials[i].SetFloat("_DissolveAmount", dissolveAmount + offset);
+            sM.StringPointsGO[count2ndHalf].GetComponent<Dissolve>().startDissolve = true;
             count2ndHalf++;
         }
 
@@ -155,24 +136,8 @@ public class GameManagerScript : MonoBehaviour
 
     void InitiliaseDeath()
     {
-        tempDissolveMaterials = new List<Material>();
-
-        for (int i = stringPointIntersectedWith; i < sM.StringPointsGO.Count; i++)
-        {
-            tempDissolveMaterials.Add(sM.DissolveMaterials[i]);
-        }
-
         count1stHalf = 0;
-        count2ndHalf = 0;
-        currentState = GameState.CleanupLists;
-    }
-
-    void CleanUpLists()
-    {
-        int amountToRemove = sM.StringPointsData.Count - stringPointIntersectedWith;
-        sM.StringPointsGO.RemoveRange(stringPointIntersectedWith, amountToRemove);
+        count2ndHalf = stringPointIntersectedWith;
         currentState = GameState.Dead;
     }
-
-
 }

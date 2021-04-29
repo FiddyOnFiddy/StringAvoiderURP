@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6638139392463108520}
   - component: {fileID: 2318851008925723400}
   - component: {fileID: 8597181733750312786}
+  - component: {fileID: -5440545914306173368}
   m_Layer: 6
   m_Name: StringPoint
   m_TagString: String Point
@@ -122,3 +123,15 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.9
+--- !u!114 &-5440545914306173368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4618586219003132506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23ade2ad30f1fc40822c884ca39ebc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
