@@ -23,13 +23,14 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private GameState currentState;
 
     [SerializeField] private List<Material> tempDissolveMaterials;
+    [SerializeField] private List<float> dissolveAmounts;
 
     [SerializeField] private bool moveRigidBodies;
 
     [SerializeField] private int stringPointIntersectedWith;
     [SerializeField] private  int count2ndHalf, count1stHalf;
 
-    [SerializeField] float dissolveAmount, dissolveSpeed;
+    [SerializeField] float dissolveAmount, dissolveSpeed, cascadeSpeed;
 
 
     private StringMovement sM;
@@ -74,7 +75,13 @@ public class GameManagerScript : MonoBehaviour
         //Grab reference to string movement script to handle death animation
         sM = FindObjectOfType<StringMovement>();
 
-        dissolveAmount = 1f;
+        //dissolveAmount = 1f;
+        dissolveAmounts = new List<float>();
+        for (int i = 0; i < sM.DissolveMaterials.Count; i++)
+        {
+            dissolveAmounts.Add(1f);
+        }
+
     }
 
     void Awake()
@@ -127,17 +134,21 @@ public class GameManagerScript : MonoBehaviour
 
     void DeathAnimation()
     {
-        dissolveAmount = Mathf.Clamp01(dissolveAmount - dissolveSpeed * Time.deltaTime);
+        dissolveAmount = dissolveAmount - dissolveSpeed * Time.deltaTime;
 
 
         for (int i = 0; i < sM.StringPointsGO.Count; i++)
         {
-            sM.DissolveMaterials[(sM.StringPointsGO.Count - 1) - i].SetFloat("_DissolveAmount", dissolveAmount);
+            float offset = i * cascadeSpeed;
+            sM.DissolveMaterials[(sM.StringPointsGO.Count - 1) - i].SetFloat("_DissolveAmount", dissolveAmount + offset);
+            count1stHalf++;
         }
 
         for (int i = 0; i < tempDissolveMaterials.Count; i++)
         {
-            tempDissolveMaterials[i].SetFloat("_DissolveAmount", dissolveAmount);
+            float offset = i * cascadeSpeed;
+            tempDissolveMaterials[i].SetFloat("_DissolveAmount", dissolveAmount + offset);
+            count2ndHalf++;
         }
 
     }
@@ -150,6 +161,9 @@ public class GameManagerScript : MonoBehaviour
         {
             tempDissolveMaterials.Add(sM.DissolveMaterials[i]);
         }
+
+        count1stHalf = 0;
+        count2ndHalf = 0;
         currentState = GameState.CleanupLists;
     }
 
