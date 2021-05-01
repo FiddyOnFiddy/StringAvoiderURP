@@ -15,7 +15,7 @@ public class Dissolve : MonoBehaviour
     void Start()
     {
         material = GetComponent<SpriteRenderer>().material;
-        dissolveAmount = 1;
+        dissolveAmount = 0;
         dissolveSpeed = 0.8f;
 
         randomSeed = new Vector2(Random.Range(0f, 4f), Random.Range(0f, 3f));
@@ -35,7 +35,7 @@ public class Dissolve : MonoBehaviour
 
     void DissolveStringPoint()
     {
-        dissolveAmount = Mathf.Clamp01(dissolveAmount - dissolveSpeed * Time.deltaTime);
+        dissolveAmount = Mathf.Clamp01(dissolveAmount + dissolveSpeed * Time.deltaTime);
         material.SetFloat("_DissolveAmount", dissolveAmount);
     }
 

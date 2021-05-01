@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dissolve
-  m_Shader: {fileID: -6465566751694194690, guid: 3c7710a5a59d80e47b5bfd744263cfa2, type: 3}
+  m_Name: NewDissolve
+  m_Shader: {fileID: -6465566751694194690, guid: 10145ea2f0343334a8bba0084816c2d5, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -19,20 +19,24 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: e23b713d668f03940a2fd2ae96d66e4c, type: 3}
+    - MainTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: e23b713d668f03940a2fd2ae96d66e4c, type: 3}
+    - _MainTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: d6bd9368b0521cc4287f45b2c88274b4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_6de0962cde4c4f78ad175ac2ae54c999_Texture_1:
         m_Texture: {fileID: 2800000, guid: e23b713d668f03940a2fd2ae96d66e4c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_43419801956f425a90268644ea58ea37_Texture_1:
-        m_Texture: {fileID: 0}
+    - _Texture2DAsset_b37fdc970de748b5b523775a6bae2a2d_Out_0:
+        m_Texture: {fileID: 2800000, guid: e23b713d668f03940a2fd2ae96d66e4c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -49,8 +53,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DissolveAmount: 0.573
+    - DistortionSpeed: 1
+    - _DissolveAmount: 0.306
     m_Colors:
-    - _DissolveColour: {r: 42.224255, g: 1.8214384, b: 2.3181944, a: 0}
+    - DistortionPosition: {r: 1, g: 1, b: 0, a: 0}
+    - DistortionTiling: {r: 1, g: 1, b: 0, a: 0}
+    - _DissolveColour: {r: 89.45409, g: 7.02519, b: 0, a: 0.078431375}
     - _RandomSeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
