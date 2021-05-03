@@ -23,7 +23,7 @@ public class Dissolve : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Dead && startDissolve)
         {

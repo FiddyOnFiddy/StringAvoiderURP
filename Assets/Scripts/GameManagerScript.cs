@@ -21,8 +21,6 @@ public class GameManagerScript : MonoBehaviour
     //Initiliase a new GameState variable called currentState to track and assign which state we are in.
     [SerializeField] private GameState currentState;
 
-    [SerializeField] private List<Material> tempList;
-
     [SerializeField] private bool moveRigidBodies;
 
     [SerializeField] private int stringPointIntersectedWith;
@@ -115,6 +113,12 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
+    void InitiliaseDeath()
+    {
+        count1stHalf = 0;
+        count2ndHalf = stringPointIntersectedWith;
+        currentState = GameState.Dead;
+    }
 
     void DeathAnimation()
     {
@@ -132,11 +136,5 @@ public class GameManagerScript : MonoBehaviour
             count2ndHalf++;
         }
 
-    }
-    void InitiliaseDeath()
-    {
-        count1stHalf = 0;
-        count2ndHalf = stringPointIntersectedWith;
-        currentState = GameState.Dead;
     }
 }
