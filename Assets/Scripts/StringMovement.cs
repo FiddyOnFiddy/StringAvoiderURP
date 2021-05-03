@@ -20,6 +20,8 @@ public class StringMovement : MonoBehaviour
     [SerializeField] List<Rigidbody2D> stringPointsRB;
     [SerializeField] List<Vector2> stringPointsData;
 
+
+
 	public List<GameObject> StringPointsGO { get => stringPointsGO; set => stringPointsGO = value; }
     public List<Rigidbody2D> StringPointsRB { get => stringPointsRB; set => stringPointsRB = value; }
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
@@ -34,6 +36,8 @@ public class StringMovement : MonoBehaviour
 
     void Update()
     {
+
+
         
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Idle)
         {

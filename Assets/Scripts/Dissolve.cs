@@ -37,6 +37,7 @@ public class Dissolve : MonoBehaviour
     {
         dissolveAmount = Mathf.Clamp01(dissolveAmount + dissolveSpeed * Time.deltaTime);
         material.SetFloat("_DissolveAmount", dissolveAmount);
+        material.SetFloat("_DoDisortion", 1.0f);
     }
 
 

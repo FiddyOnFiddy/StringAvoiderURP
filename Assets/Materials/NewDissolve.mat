@@ -53,11 +53,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - DissolveScale: 25
     - DistortionSpeed: 1
-    - _DissolveAmount: 0.306
+    - Distortion_Scale: 1
+    - WindStrength: 0.1
+    - _DissolveAmount: 0.073
+    - _DoDisortion: 0
     m_Colors:
     - DistortionPosition: {r: 1, g: 1, b: 0, a: 0}
     - DistortionTiling: {r: 1, g: 1, b: 0, a: 0}
-    - _DissolveColour: {r: 89.45409, g: 7.02519, b: 0, a: 0.078431375}
+    - _DissolveColour: {r: 89.45409, g: 7.02519, b: 0, a: 0}
     - _RandomSeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
