@@ -53,21 +53,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - AngleOffset: 30
-    - AngleSpeed: 10
-    - CellDensity: 50
     - DissolveScale: 25
     - DistortionSpeed: 1.05
-    - Distortion_Intensity: 10
     - Distortion_Scale: 1
-    - Speed: 0.2
-    - Strength: 153.35
     - WindStrength: 1
     - _DissolveAmount: 0
     - _DoDisortion: 0
     m_Colors:
     - DistortionPosition: {r: 1, g: 1, b: 0, a: 0}
     - DistortionTiling: {r: 0.61, g: 0.36, b: 0, a: 0}
-    - _DissolveColour: {r: 89.45409, g: 7.02519, b: 0, a: 0.078431375}
+    - _DissolveColour: {r: 118.035385, g: 9.269794, b: 0, a: 0.12156863}
     - _RandomSeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
