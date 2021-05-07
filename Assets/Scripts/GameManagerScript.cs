@@ -1,4 +1,7 @@
 using System.Collections;
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity;
@@ -12,6 +15,7 @@ public class GameManagerScript : MonoBehaviour
     //Declaring new enum of type GameState to handle what state we're currently in
     public enum GameState
     {
+        Setup,
         Idle,
         InitialiseDeath,
         Dead,
@@ -22,13 +26,22 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private GameState currentState;
 
     [SerializeField] private bool moveRigidBodies;
+    [SerializeField] private bool dissolveDone;
 
     [SerializeField] private int stringPointIntersectedWith;
     [SerializeField] private  int count2ndHalf, count1stHalf;
 
+    [SerializeField] private List<Material> dissolveMaterials;
+
+    [SerializeField] List<TimeThreshold> medalSplits = new List<TimeThreshold>();
 
 
-    private StringMovement sM;
+    [SerializeField] float dissolveSpeed;
+
+
+
+    [SerializeField] private StringMovement sM;
+
 
     public GameState CurrentState { get => currentState; set => currentState = value; }
     public int Count2ndHalf { get => count2ndHalf; set => count2ndHalf = value;  }
@@ -37,41 +50,10 @@ public class GameManagerScript : MonoBehaviour
     public bool MoveRigidBodies {  get => moveRigidBodies; set => moveRigidBodies = value;  }
 
 
-    
-    struct TimeThreshold 
+    private void OnLevelWasLoaded(int level)
     {
-        public int Level;
-
-        public int Bronze;
-        public int Silver;
-        public int Gold;
-
-        public TimeThreshold(int level, int bronze, int silver, int gold)
-        {
-            this.Level = level;
-            this.Bronze = bronze;
-            this.Silver = silver;
-            this.Gold = gold;
-        }
-    }
-
-
-    /// <summary>
-    /// List of variables on script per scene 
-    /// get passed through to timethreshold struct which get passed into list or dictionary for player prefs
-    /// </summary>
-    List<TimeThreshold> timeThresholds = new List<TimeThreshold>();
-
-    void Start()
-    {
-        //Default Game State should always be idle after string and other componenents have initialised
-        currentState = GameState.Idle;
-
-        //Grab reference to string movement script to handle death animation
         sM = FindObjectOfType<StringMovement>();
-
     }
-
     void Awake()
     {
         //Checks to see if any Game Managers are present in the scene and either delete or assign this script to them. Necessary for singleton pattern
@@ -86,12 +68,24 @@ public class GameManagerScript : MonoBehaviour
         }
 
 
-    }
+        //Load all data upon start of game and pass into local variable for use in game
 
+        currentState = GameState.Setup;
+
+        sM = FindObjectOfType<StringMovement>();        
+
+    }
+    
     void Update()
     {
         switch (currentState)
         {
+            case GameState.Setup:
+                if(Input.GetMouseButtonDown(0))
+                {
+                    currentState = GameState.Idle;
+                }
+                break;
             case GameState.Idle:
                 break;
             case GameState.InitialiseDeath:
@@ -104,7 +98,6 @@ public class GameManagerScript : MonoBehaviour
                 break;
         }
     }
-
     private void FixedUpdate()
     {
         if(currentState == GameState.Dead)
@@ -112,11 +105,18 @@ public class GameManagerScript : MonoBehaviour
             DeathAnimation();
         }
     }
-
     void InitiliaseDeath()
     {
+        dissolveMaterials.Clear();
         count1stHalf = 0;
         count2ndHalf = stringPointIntersectedWith;
+
+        //Cache the dissolve material in a variable to then loop through and check that the dissovle animation has finished so that we can transition to gameover state.
+        for (int i = 0; i < sM.StringPointsGO.Count; i++)
+        {
+            dissolveMaterials.Add(sM.StringPointsGO[i].GetComponent<SpriteRenderer>().material);
+        }
+
         currentState = GameState.Dead;
     }
 
@@ -125,16 +125,103 @@ public class GameManagerScript : MonoBehaviour
         //Loop 1st Half of string if intersected
         if (count1stHalf < stringPointIntersectedWith)
         {
+            sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().DissolveSpeed = dissolveSpeed;
             sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().startDissolve = true;
+
             count1stHalf++;
         }
 
         //Loop 2nd half of string if intersected
         if (count2ndHalf < sM.StringPointsGO.Count)
         {
+            sM.StringPointsGO[count2ndHalf].GetComponent<Dissolve>().DissolveSpeed = dissolveSpeed;
             sM.StringPointsGO[count2ndHalf].GetComponent<Dissolve>().startDissolve = true;
+
+
             count2ndHalf++;
         }
 
+
+        //Check if each elements dissolve amount has reached 1 meaning animatoin is done and set dissolveDone to true. if not all are done we set to false until the final one has changed
+        dissolveDone = false;
+        foreach (Material material in dissolveMaterials)
+        {
+            if (material.GetFloat("_DissolveAmount") == 1)
+            {
+                dissolveDone = true;
+            }
+            else
+            {
+                dissolveDone = false;
+                break;
+            }
+        }
+
+        if(dissolveDone)
+        {
+            currentState = GameState.GameOver;
+        }
+    } 
+
+
+
+    public void Save()
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
+
+        //We write our ingame variables to this data object when the game closes that then gets written to a file to be loaded next session
+        PlayerData data = new PlayerData();
+
+        bf.Serialize(file, data);
+        file.Close();
+
+    }
+
+    public void Load()
+    {
+        if(File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.OpenRead(Application.persistentDataPath + "/playerInfo.dat");
+            PlayerData data = (PlayerData)bf.Deserialize(file);
+
+            file.Close();
+
+            //On load of game/main menu load all data from file into game and store in variable
+
+
+        }
+    }
+
+
+}
+
+
+[Serializable]
+class PlayerData
+{
+
+}
+
+[Serializable]
+public struct TimeThreshold
+{
+    public int Level;
+
+
+    public int Bronze;
+    public int Silver;
+    public int Gold;
+
+    public TimeThreshold(int level, int bronze, int silver, int gold)
+    {
+        this.Level = level;
+
+        this.Bronze = bronze;
+        this.Silver = silver;
+        this.Gold = gold;
     }
 }
+
+

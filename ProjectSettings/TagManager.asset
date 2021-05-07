@@ -6,10 +6,10 @@ TagManager:
   tags:
   - Wall
   - String Point
-  - End
   - SpawnPoint
   - Key
   - Obstacle
+  - EndPoint
   layers:
   - Default
   - TransparentFX

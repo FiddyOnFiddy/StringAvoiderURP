@@ -7,19 +7,24 @@ public class Dissolve : MonoBehaviour
     [SerializeField] Material material;
 
     [SerializeField] float dissolveAmount, dissolveSpeed;
-    [SerializeField] Vector2 randomSeed;
 
     [SerializeField] public bool startDissolve;
+
+    public float DissolveSpeed { set => dissolveSpeed = value; }
 
     // Start is called before the first frame update
     void Start()
     {
         material = GetComponent<SpriteRenderer>().material;
         dissolveAmount = 0;
-        dissolveSpeed = 0.8f;
+        //dissolveSpeed = 1.2f;
 
-        randomSeed = new Vector2(Random.Range(0f, 4f), Random.Range(0f, 3f));
-        material.SetVector("_RandomSeed", randomSeed);
+
+        Quaternion randomRotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+        transform.rotation = randomRotation;
+
+
+
     }
 
     // Update is called once per frame
@@ -29,7 +34,6 @@ public class Dissolve : MonoBehaviour
         {
             DissolveStringPoint();
         }
-
   
     }
 
@@ -37,7 +41,6 @@ public class Dissolve : MonoBehaviour
     {
         dissolveAmount = Mathf.Clamp01(dissolveAmount + dissolveSpeed * Time.deltaTime);
         material.SetFloat("_DissolveAmount", dissolveAmount);
-        material.SetFloat("_DoDisortion", 1.0f);
     }
 
 

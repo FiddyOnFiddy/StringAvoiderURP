@@ -27,18 +27,15 @@ public class StringMovement : MonoBehaviour
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
     
 
-    [SerializeField] Transform spawnPoint;
-
+    [SerializeField] Transform spawnPoint;  
+    
     void Awake()
     {
         InitialiseString();
     }
 
     void Update()
-    {
-
-
-        
+    {  
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Idle)
         {
             CollectInput();

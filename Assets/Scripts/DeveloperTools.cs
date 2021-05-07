@@ -22,12 +22,17 @@ public class DeveloperTools : MonoBehaviour
         {
             ReloadLevel();
         }
+
+        else if(Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
     }
 
     void ReloadLevel()
     {
         SceneManager.LoadScene(currentScene);
-        GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Idle;
+        GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
 
     }
 }

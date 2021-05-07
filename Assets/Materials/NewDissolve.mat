@@ -58,10 +58,10 @@ Material:
     - CellDensity: 50
     - DissolveScale: 25
     - DistortionSpeed: 1.05
-    - Distortion_Intensity: 10
+    - Distortion_Intensity: 2
     - Distortion_Scale: 1
     - Speed: 0.2
-    - Strength: 153.35
+    - Strength: 0.005
     - WindStrength: 1
     - _DissolveAmount: 0
     - _DoDisortion: 0
