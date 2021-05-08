@@ -27,11 +27,11 @@ public class StringMovement : MonoBehaviour
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
     
 
-    [SerializeField] Transform spawnPoint;  
+    [SerializeField] Vector2 spawnPoint;  
     
     void Awake()
     {
-        InitialiseString();
+
     }
 
     void Update()
@@ -93,7 +93,7 @@ public class StringMovement : MonoBehaviour
 
     }
 
-    void CollectInput()
+    public void CollectInput()
     {
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseDelta = mousePosition - previousMousePosition;
@@ -102,7 +102,7 @@ public class StringMovement : MonoBehaviour
 
     }    
 
-    void InitialiseString()
+    public void InitialiseString()
     {
         stringPointsGO = new List<GameObject>();
         stringPointsRB = new List<Rigidbody2D>();
@@ -112,7 +112,7 @@ public class StringMovement : MonoBehaviour
         {
             radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
 
-            stringPointsData.Add(new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians)));
+            stringPointsData.Add(new Vector2((spawnPoint.x + radius * Mathf.Cos(radians)), spawnPoint.y + radius * Mathf.Sin(radians)));
 
             stringPointsGO.Add(Instantiate(stringPointPrefab, stringPointsData[i], Quaternion.identity, this.transform));
             stringPointsGO[i].name = i.ToString();
@@ -124,5 +124,17 @@ public class StringMovement : MonoBehaviour
         boxCollider.size = new Vector2(1.3f, 1.3f);
         boxCollider.edgeRadius = 0.015f;
 
+    }
+
+    public void ResetString()
+    {
+        for (int i = 0; i < noOfSegments; i++)
+        {
+            radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
+
+            stringPointsData[i] = new Vector2((spawnPoint.x + radius * Mathf.Cos(radians)), spawnPoint.y + radius * Mathf.Sin(radians));
+
+            stringPointsGO[i].transform.position = stringPointsData[i];
+        }
     }
 }

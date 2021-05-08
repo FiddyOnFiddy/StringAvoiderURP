@@ -16,12 +16,13 @@ public class GameManagerScript : MonoBehaviour
     //Declaring new enum of type GameState to handle what state we're currently in
     public enum GameState
     {
-        Setup,
-        Playing,
-        InitialiseDeath,
-        Dead,
-        GameOver,
-        NextLevelMenu,
+        Idle,               //Substate we sit in on main menu to see which button the user selects
+        Setup,              //Initiliase everything that needs to be initiliased and set up game state for new level or respawn.
+        Playing,            //For when the player is alive and handle the game loop
+        InitialiseDeath,    //Initiliase the death by setting up the animation
+        Dead,               //Run in fixed update for consistent animation
+        GameOver,           //For when the player has died and death animation has finished
+        NextLevelMenu,      //For when the player reaches the end point and triggers the next level screen with medal
     }
 
     //Initiliase a new GameState variable called currentState to track and assign which state we are in.
@@ -30,6 +31,7 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private bool moveRigidBodies;
     [SerializeField] private bool dissolveDone;
     [SerializeField] private bool triggerNextLevelMenu;
+    [SerializeField] private bool initString;
 
     [SerializeField] private int stringPointIntersectedWith;
     [SerializeField] private  int count2ndHalf, count1stHalf;
@@ -44,7 +46,8 @@ public class GameManagerScript : MonoBehaviour
 
 
     [SerializeField] private StringMovement sM;
-    [SerializeField] Canvas nextLevelCanvas;
+    [SerializeField] Canvas endLevelCanvas, mainMenuCanvas, levelCanvas;
+
 
 
     public GameState CurrentState { get => currentState; set => currentState = value; }
@@ -53,12 +56,8 @@ public class GameManagerScript : MonoBehaviour
     public int StringPointIntersectedWith { get => stringPointIntersectedWith; set => stringPointIntersectedWith = value; }
     public bool MoveRigidBodies {  get => moveRigidBodies; set => moveRigidBodies = value;  }
     public bool TriggerNextLevelMenu { get => triggerNextLevelMenu; set => triggerNextLevelMenu = value; }
+    public bool InitString { get => initString; set => initString = value; }
 
-
-    private void OnLevelWasLoaded(int level)
-    {
-        sM = FindObjectOfType<StringMovement>();
-    }
     void Awake()
     {
         //Checks to see if any Game Managers are present in the scene and either delete or assign this script to them. Necessary for singleton pattern
@@ -72,12 +71,9 @@ public class GameManagerScript : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
+        sM = FindObjectOfType<StringMovement>();
 
-        //Load all data upon start of game and pass into local variable for use in game
-
-        currentState = GameState.Setup;
-
-        sM = FindObjectOfType<StringMovement>();        
+        currentState = GameState.Idle;
 
     }
     
@@ -86,10 +82,7 @@ public class GameManagerScript : MonoBehaviour
         switch (currentState)
         {
             case GameState.Setup:
-                if(Input.GetMouseButtonDown(0))
-                {
-                    currentState = GameState.Playing;
-                }
+                SetUp();
                 break;
             case GameState.Playing:
                 break;
@@ -100,11 +93,8 @@ public class GameManagerScript : MonoBehaviour
                 //See Fixed Update
                 break;
             case GameState.GameOver:
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-                GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
                 break;
             case GameState.NextLevelMenu:
-                NextLevelScreen();
                 break;
         }
     }
@@ -114,6 +104,24 @@ public class GameManagerScript : MonoBehaviour
         if(currentState == GameState.Dead)
         {
             DeathAnimation();
+        }
+    }
+
+    void SetUp()
+    {
+        mainMenuCanvas.enabled = false;
+        levelCanvas.enabled = true;
+
+        if(initString)
+        {
+            sM.InitialiseString();
+            initString = false;
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            currentState = GameState.Playing;
+            sM.InitialiseString();
         }
     }
 
@@ -181,18 +189,11 @@ public class GameManagerScript : MonoBehaviour
                 currentState = GameState.GameOver;
             }
         }
-    } 
-
-    void NextLevelScreen()
-    {
-        nextLevelCanvas.enabled = true;
     }
 
-    //Move this into a UI controller script that gets passed into all buttons to handle what they do
-    public void NextLevel()
+    public void ResetString()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-
+        sM.ResetString();
     }
 
 

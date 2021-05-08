@@ -12,14 +12,6 @@ public class TimerScript : MonoBehaviour
 
     [SerializeField] float levelTime = 0f;
 
-
-    private void OnLevelWasLoaded(int level)
-    {
-        timerText = GameObject.Find("Timer").GetComponent<TMP_Text>();
-
-    }
-
-
     // Update is called once per frame
     void Update()
     {
