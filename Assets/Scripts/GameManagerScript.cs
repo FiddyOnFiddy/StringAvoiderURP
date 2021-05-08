@@ -5,6 +5,7 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity;
+using UnityEngine.SceneManagement;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -16,10 +17,11 @@ public class GameManagerScript : MonoBehaviour
     public enum GameState
     {
         Setup,
-        Idle,
+        Playing,
         InitialiseDeath,
         Dead,
         GameOver,
+        NextLevelMenu,
     }
 
     //Initiliase a new GameState variable called currentState to track and assign which state we are in.
@@ -27,6 +29,7 @@ public class GameManagerScript : MonoBehaviour
 
     [SerializeField] private bool moveRigidBodies;
     [SerializeField] private bool dissolveDone;
+    [SerializeField] private bool triggerNextLevelMenu;
 
     [SerializeField] private int stringPointIntersectedWith;
     [SerializeField] private  int count2ndHalf, count1stHalf;
@@ -41,6 +44,7 @@ public class GameManagerScript : MonoBehaviour
 
 
     [SerializeField] private StringMovement sM;
+    [SerializeField] Canvas nextLevelCanvas;
 
 
     public GameState CurrentState { get => currentState; set => currentState = value; }
@@ -48,6 +52,7 @@ public class GameManagerScript : MonoBehaviour
     public int Count1stHalf { get => count1stHalf; set => count1stHalf = value;  }
     public int StringPointIntersectedWith { get => stringPointIntersectedWith; set => stringPointIntersectedWith = value; }
     public bool MoveRigidBodies {  get => moveRigidBodies; set => moveRigidBodies = value;  }
+    public bool TriggerNextLevelMenu { get => triggerNextLevelMenu; set => triggerNextLevelMenu = value; }
 
 
     private void OnLevelWasLoaded(int level)
@@ -83,10 +88,10 @@ public class GameManagerScript : MonoBehaviour
             case GameState.Setup:
                 if(Input.GetMouseButtonDown(0))
                 {
-                    currentState = GameState.Idle;
+                    currentState = GameState.Playing;
                 }
                 break;
-            case GameState.Idle:
+            case GameState.Playing:
                 break;
             case GameState.InitialiseDeath:
                 InitiliaseDeath();
@@ -95,9 +100,15 @@ public class GameManagerScript : MonoBehaviour
                 //See Fixed Update
                 break;
             case GameState.GameOver:
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
+                break;
+            case GameState.NextLevelMenu:
+                NextLevelScreen();
                 break;
         }
     }
+
     private void FixedUpdate()
     {
         if(currentState == GameState.Dead)
@@ -105,6 +116,7 @@ public class GameManagerScript : MonoBehaviour
             DeathAnimation();
         }
     }
+
     void InitiliaseDeath()
     {
         dissolveMaterials.Clear();
@@ -159,10 +171,29 @@ public class GameManagerScript : MonoBehaviour
 
         if(dissolveDone)
         {
-            currentState = GameState.GameOver;
+
+            if(triggerNextLevelMenu)
+            {
+                currentState = GameState.NextLevelMenu;
+            }
+            else
+            {
+                currentState = GameState.GameOver;
+            }
         }
     } 
 
+    void NextLevelScreen()
+    {
+        nextLevelCanvas.enabled = true;
+    }
+
+    //Move this into a UI controller script that gets passed into all buttons to handle what they do
+    public void NextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
+    }
 
 
     public void Save()

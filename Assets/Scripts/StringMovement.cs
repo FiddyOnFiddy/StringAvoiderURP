@@ -36,7 +36,7 @@ public class StringMovement : MonoBehaviour
 
     void Update()
     {  
-        if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Idle)
+        if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing)
         {
             CollectInput();
             if (Input.GetMouseButtonDown(0))

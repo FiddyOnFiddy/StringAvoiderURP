@@ -11,16 +11,24 @@ public class TimerScript : MonoBehaviour
     [SerializeField] TMP_Text timerText;
 
     [SerializeField] float levelTime = 0f;
-    // Start is called before the first frame update
-    void Start()
+
+
+    private void OnLevelWasLoaded(int level)
     {
-        
+        timerText = GameObject.Find("Timer").GetComponent<TMP_Text>();
+
     }
+
 
     // Update is called once per frame
     void Update()
     {
-        if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Idle)
+        if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Setup)
+        {
+            levelTime = 0f;
+
+        }
+        else if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing)
         {
             levelTime += Time.deltaTime;
         }
