@@ -31,7 +31,7 @@ public class GameManagerScript : MonoBehaviour
     //List of references all scripts and this script require. Store all references in Game Manager so there is a centralised location for references and all scripts pass through Game Manager for access.
     [SerializeField] private GameState currentState;                                                        //Tracks which state we are currently in which is passed to a switch statement for processing.
     [SerializeField] private StringMovement sM;                                                             //Holds reference to the string and all it's child components.
-    [SerializeField] private Canvas endLevelCanvas, mainMenuCanvas, levelCanvas;                            //Reference to all UI Canvas for various Game States.
+    [SerializeField] private Canvas mainMenuCanvas, levelCanvas, endLevelCanvas;                            //Reference to all UI Canvas for various Game States.
     [SerializeField] private List<Material> dissolveMaterials;                                              //Reference to materials attached to each string point allowing us to access dissolve script plus material per string point.
 
     [Space(5)]
@@ -51,6 +51,7 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] public int currentLevel = 1;
     [SerializeField] private float levelTime = 0f;                                                          //Time to complete level which is passed to the level text and which will be saved in file representing best time per level. To be added to total time variable for time across all levels.
     [SerializeField] private float dissolveSpeed;                                                           //Determines how fast dissolve animation will be.
+    [SerializeField] TMP_Text deathCounter;
 
     [Space(8)]
     [Header("Medal Time Splits:")]
@@ -68,6 +69,7 @@ public class GameManagerScript : MonoBehaviour
     public int StringPointIntersectedWith { get => stringPointIntersectedWith; set => stringPointIntersectedWith = value; }
     public float LevelTime { get => levelTime; set => levelTime = value; }
     public float DissolveSpeed { get => dissolveSpeed; set => dissolveSpeed = value; }
+    public int DeathCount { get => deathCount; set => deathCount = value; }
 
 
     void Awake()
@@ -83,8 +85,9 @@ public class GameManagerScript : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        //If currentLevel is null set text to play otherwise set to Continue
+        Load();
 
+        deathCounter.text = "Deaths: " + deathCount;
         sM = FindObjectOfType<StringMovement>();
 
         currentState = GameState.Idle;
@@ -93,11 +96,6 @@ public class GameManagerScript : MonoBehaviour
     
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            currentLevel = 2;
-            Save();
-        }
 
         //Switch statement which takes our current state and decides what to do based on that state.
         switch (currentState)
@@ -163,9 +161,11 @@ public class GameManagerScript : MonoBehaviour
 
     void InitialiseDeath()
     {
+        deathCounter.text = "Deaths: " + deathCount;
         count1stHalf = 0;
         count2ndHalf = stringPointIntersectedWith;
 
+        Save();
         currentState = GameState.Dead;
     }
 
@@ -242,7 +242,7 @@ public class GameManagerScript : MonoBehaviour
 
         //We write our ingame variables to this data object when the game closes that then gets written to a file to be loaded next session.
         PlayerData data = new PlayerData();
-        data.currentLevel = currentLevel;
+        data.deathCount = deathCount;
 
         bf.Serialize(file, data);
         file.Close();
@@ -259,7 +259,7 @@ public class GameManagerScript : MonoBehaviour
             file.Close();
 
             //On load of game/main menu load all data from file into game and store in variable
-            currentLevel = data.currentLevel;
+            deathCount = data.deathCount;
         }
     }
 
