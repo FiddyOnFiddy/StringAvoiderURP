@@ -7,12 +7,19 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] TMP_Text playButtonText;
+
     public void PlayGame()
     {
-        StartCoroutine(LoadYourAsyncScene());        
+        StartCoroutine(PlayorContinue());        
     }
 
-    private void Awake()
+    public void NextLevel()
+    {
+        StartCoroutine(LoadNextLevel());
+        GameManagerScript.Instance.Save();
+    }
+
+    private void Start()
     {
         if (GameManagerScript.Instance.currentLevel > 1)
         {
@@ -24,13 +31,8 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    IEnumerator LoadYourAsyncScene()
+    IEnumerator PlayorContinue()
     {
-        // The Application loads the Scene in the background as the current Scene runs.
-        // This is particularly good for creating loading screens.
-        // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
-        // a sceneBuildIndex of 1 as shown in Build Settings.
-        
 
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("level" + GameManagerScript.Instance.currentLevel.ToString(), LoadSceneMode.Additive);
 
@@ -43,6 +45,23 @@ public class UIManager : MonoBehaviour
         GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
         GameManagerScript.Instance.isPlayContinue = true;
         GameManagerScript.Instance.InitString = true;
-
     }
+
+    IEnumerator LoadNextLevel()
+    {
+        SceneManager.UnloadSceneAsync("level" + GameManagerScript.Instance.currentLevel.ToString(), UnloadSceneOptions.None);
+
+        GameManagerScript.Instance.currentLevel++;
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("level" + GameManagerScript.Instance.currentLevel.ToString(), LoadSceneMode.Additive);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        GameManagerScript.Instance.SM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
+        GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
+        GameManagerScript.Instance.ResetString();
+    }
+
 }

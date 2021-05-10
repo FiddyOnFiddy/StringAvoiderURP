@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3973941378643036655}
   - component: {fileID: 84855896178905870}
+  - component: {fileID: 2104272803}
+  - component: {fileID: 2089994637434665713}
   m_Layer: 0
   m_Name: ___GAME MANAGER___
   m_TagString: Untagged
@@ -44,10 +46,172 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
-  tempStringList: []
-  particleRed: {fileID: 0}
-  particleBlue: {fileID: 0}
+  sM: {fileID: 0}
+  mainMenuCanvas: {fileID: 0}
+  levelCanvas: {fileID: 0}
+  endLevelCanvas: {fileID: 0}
+  dissolveMaterials: []
   moveRigidBodies: 0
+  dissolveDone: 0
+  triggerNextLevelMenu: 0
+  initString: 0
+  isPlayContinue: 0
+  isLevelSelectScreen: 0
+  isOptions: 0
+  isSpeedrun: 0
+  isRespawn: 0
   stringPointIntersectedWith: 0
   count2ndHalf: 0
   count1stHalf: 0
+  deathCount: 0
+  currentLevel: 1
+  levelTime: 0
+  dissolveSpeed: 2.5
+  deathCounter: {fileID: 0}
+  medalSplits:
+  - Level: 0
+    Bronze: 5
+    Silver: 3
+    Gold: 1
+  - Level: 1
+    Bronze: 8
+    Silver: 6
+    Gold: 4
+  - Level: 2
+    Bronze: 7
+    Silver: 4
+    Gold: 3
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+  - Level: 0
+    Bronze: 0
+    Silver: 0
+    Gold: 0
+--- !u!114 &2104272803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3973941378643036654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db5c315b9b9d7343a5014b2950edc7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerText: {fileID: 0}
+--- !u!114 &2089994637434665713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3973941378643036654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51edbe23ac4cf194aadb8401ced1c514, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playButtonText: {fileID: 0}

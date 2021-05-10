@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Dissolve : MonoBehaviour
 {
-    [SerializeField] Material material;
+    private Material material;
 
-    [SerializeField] float dissolveAmount;
+    private float dissolveAmount;
 
-    [SerializeField] public bool startDissolve;
+    public bool startDissolve;
 
     public float DissolveAmount { set => dissolveAmount = value; }
 

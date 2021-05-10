@@ -4,31 +4,35 @@ using UnityEngine;
 
 public class StringMovement : MonoBehaviour
 {
-    [SerializeField] int noOfSegments;
-    public int NoOfSegments { get => noOfSegments; set => noOfSegments = value; }
-
-    [SerializeField] float segmentLength = 0.025f;
-    [SerializeField] float radius = 0.1f;
-
-    [SerializeField] Vector2 mousePosition, previousMousePosition, mouseDelta;
-    [SerializeField] float mouseSensitivity, mouseDeltaLimit = 0.25f; 
-
-    float radians;
-
-    [SerializeField] GameObject stringPointPrefab;
-    [SerializeField] List<GameObject> stringPointsGO;
-    [SerializeField] List<Rigidbody2D> stringPointsRB;
-    [SerializeField] List<Vector2> stringPointsData;
+    private float radians;
+    private Vector2 mousePosition, previousMousePosition, mouseDelta;
 
 
+    [Space(5)]
+    [Header("String Initialisation Data:")]
+    [SerializeField] private int noOfSegments;
+    [SerializeField] private float segmentLength = 0.025f;
+    [SerializeField] private float radius = 0.1f;
+
+    [Space(5)]
+    [Header("Speed Limit:")]
+    [SerializeField] private float stringSpeedLimit = 0.25f;
+
+    [Space(5)]
+    [Header("Containers For All Data:")]
+    [SerializeField] private GameObject stringPointPrefab;
+    [SerializeField] private List<GameObject> stringPointsGO;
+    [SerializeField] private List<Rigidbody2D> stringPointsRB;
+    [SerializeField] private List<Vector2> stringPointsData;
+
+
+    [Space(2)]
+    [SerializeField] private Transform spawnPoint;  
 
 	public List<GameObject> StringPointsGO { get => stringPointsGO; set => stringPointsGO = value; }
     public List<Rigidbody2D> StringPointsRB { get => stringPointsRB; set => stringPointsRB = value; }
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
-    
-
-    [SerializeField] private Transform spawnPoint;  
-
+    public int NoOfSegments { get => noOfSegments; set => noOfSegments = value; }
     public Transform SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
 
     void Update()
@@ -94,8 +98,8 @@ public class StringMovement : MonoBehaviour
     {
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseDelta = mousePosition - previousMousePosition;
-        mouseDelta.x = Mathf.Clamp(mouseDelta.x, -mouseDeltaLimit, mouseDeltaLimit);
-        mouseDelta.y = Mathf.Clamp(mouseDelta.y, -mouseDeltaLimit, mouseDeltaLimit);
+        mouseDelta.x = Mathf.Clamp(mouseDelta.x, -stringSpeedLimit, stringSpeedLimit);
+        mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);
 
     }    
 

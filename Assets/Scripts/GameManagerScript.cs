@@ -43,13 +43,19 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] public bool isPlayContinue, isLevelSelectScreen, isOptions, isSpeedrun, isRespawn;
 
     [Space(5)]
-    [Header("Numerical Values:")]
+    [Header("String Collision Info:")]
     [SerializeField] private int stringPointIntersectedWith;                                                //Lets us know which string point we have collided with to play the animation from that point looping outwards in either direction.
     [SerializeField] private  int count2ndHalf, count1stHalf;                                               //Count variables that represent "i" in our if statement for looping through in each direction. Reason for count variables is we are using if statement and not for loop.
+
+    [Space(5)]
+    [Header("Persistant Data:")]
     [SerializeField] private int deathCount;                                                                //Death count variable that tracks total death count and gets written to and read from file.
     [Min(1)]
     [SerializeField] public int currentLevel = 1;
     [SerializeField] private float levelTime = 0f;                                                          //Time to complete level which is passed to the level text and which will be saved in file representing best time per level. To be added to total time variable for time across all levels.
+
+    [Space(5)]
+    [Header("Misc:")]
     [SerializeField] private float dissolveSpeed;                                                           //Determines how fast dissolve animation will be.
     [SerializeField] TMP_Text deathCounter;
 
@@ -115,6 +121,7 @@ public class GameManagerScript : MonoBehaviour
                 ResetString();
                 break;
             case GameState.NextLevelMenu:
+                NextLevelScreen();
                 break;
         }
     }
@@ -130,11 +137,14 @@ public class GameManagerScript : MonoBehaviour
 
     void SetUp()
     {
+        mainMenuCanvas.enabled = false;
+        levelCanvas.enabled = true;
+        endLevelCanvas.enabled = false;
+
+
         //Bool check so that if we die and need to reset string we can call setup to reset and reinitialise everthing and not have it try and spawn a new string or enable disable canvasses that shouldn't be.  *** SUBJECT TO CHANGE ***
         if(isPlayContinue)
         {
-            mainMenuCanvas.enabled = false;
-            levelCanvas.enabled = true;
 
             if(initString)
             {
@@ -165,7 +175,6 @@ public class GameManagerScript : MonoBehaviour
         count1stHalf = 0;
         count2ndHalf = stringPointIntersectedWith;
 
-        Save();
         currentState = GameState.Dead;
     }
 
@@ -210,6 +219,8 @@ public class GameManagerScript : MonoBehaviour
             }
             else
             {
+                deathCount++;
+
                 //As of now the player automatically respawns after they die and the animation has finished but perhaps we spawn a death ui for retry/main menu/level select or quit? I'm more drawn to insta respawn
                 currentState = GameState.GameOver;
             }
@@ -220,6 +231,8 @@ public class GameManagerScript : MonoBehaviour
     {
         sM.ResetString();
         dissolveDone = false;
+        triggerNextLevelMenu = false;
+
 
         for (int i = 0; i < sM.StringPointsGO.Count; i++)
         {
@@ -232,6 +245,11 @@ public class GameManagerScript : MonoBehaviour
         stringPointIntersectedWith = 0;
 
         currentState = GameState.Setup;
+    }
+
+    void NextLevelScreen()
+    {
+        endLevelCanvas.enabled = true;
     }
 
 
