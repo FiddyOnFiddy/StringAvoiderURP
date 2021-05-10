@@ -6,11 +6,10 @@ public class Dissolve : MonoBehaviour
 {
     [SerializeField] Material material;
 
-    [SerializeField] float dissolveAmount, dissolveSpeed;
+    [SerializeField] float dissolveAmount;
 
     [SerializeField] public bool startDissolve;
 
-    public float DissolveSpeed { set => dissolveSpeed = value; }
     public float DissolveAmount { set => dissolveAmount = value; }
 
     // Start is called before the first frame update
@@ -38,7 +37,7 @@ public class Dissolve : MonoBehaviour
 
     void DissolveStringPoint()
     {
-        dissolveAmount = Mathf.Clamp01(dissolveAmount + dissolveSpeed * Time.deltaTime);
+        dissolveAmount = Mathf.Clamp01(dissolveAmount + GameManagerScript.Instance.DissolveSpeed * Time.deltaTime);
         material.SetFloat("_DissolveAmount", dissolveAmount);
     }
 

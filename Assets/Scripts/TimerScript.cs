@@ -10,22 +10,21 @@ public class TimerScript : MonoBehaviour
 
     [SerializeField] TMP_Text timerText;
 
-    [SerializeField] float levelTime = 0f;
 
     // Update is called once per frame
     void Update()
     {
         if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Setup)
         {
-            levelTime = 0f;
+            GameManagerScript.Instance.LevelTime = 0f;
 
         }
         else if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing)
         {
-            levelTime += Time.deltaTime;
+            GameManagerScript.Instance.LevelTime += Time.deltaTime;
         }
 
-        timerText.SetText(FormatTime(levelTime));
+        timerText.SetText(FormatTime(GameManagerScript.Instance.LevelTime));
     }
 
     public string FormatTime(float time)

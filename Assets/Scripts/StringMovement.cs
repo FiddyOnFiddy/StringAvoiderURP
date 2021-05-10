@@ -30,15 +30,9 @@ public class StringMovement : MonoBehaviour
     [SerializeField] private Transform spawnPoint;  
 
     public Transform SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
-    
-    void Awake()
-    {
-
-    }
 
     void Update()
     {
-
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing)
         {
             CollectInput();
