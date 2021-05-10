@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
 
     public void PlayGame()
     {
-        StartCoroutine(PlayorContinue());        
+        StartCoroutine(PlayOrContinue());        
     }
 
     public void NextLevel()
@@ -31,7 +31,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    IEnumerator PlayorContinue()
+    IEnumerator PlayOrContinue()
     {
 
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("level" + GameManagerScript.Instance.currentLevel.ToString(), LoadSceneMode.Additive);

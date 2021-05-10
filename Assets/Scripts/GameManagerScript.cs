@@ -18,7 +18,7 @@ public class GameManagerScript : MonoBehaviour
     //Declaring new enum of type GameState to handle what state we're currently in
     public enum GameState
     {
-        Idle,               //Substate we sit in on main menu to see which button the user selects
+        Idle,               //Sub-state we sit in on main menu to see which button the user selects
         Setup,              //Initiliase everything that needs to be initiliased and set up game state for new level or respawn.
         Playing,            //For when the player is alive and handle the game loop
         InitialiseDeath,    //Initiliase the death by setting up the animation
@@ -49,6 +49,7 @@ public class GameManagerScript : MonoBehaviour
 
     [Space(5)]
     [Header("Persistant Data:")]
+
     [SerializeField] private int deathCount;                                                                //Death count variable that tracks total death count and gets written to and read from file.
     [Min(1)]
     [SerializeField] public int currentLevel = 1;
@@ -97,7 +98,6 @@ public class GameManagerScript : MonoBehaviour
         sM = FindObjectOfType<StringMovement>();
 
         currentState = GameState.Idle;
-
     }
     
     void Update()
@@ -132,6 +132,7 @@ public class GameManagerScript : MonoBehaviour
         if(currentState == GameState.Dead)
         {
             DeathAnimation();
+
         }
     }
 
@@ -145,7 +146,6 @@ public class GameManagerScript : MonoBehaviour
         //Bool check so that if we die and need to reset string we can call setup to reset and reinitialise everthing and not have it try and spawn a new string or enable disable canvasses that shouldn't be.  *** SUBJECT TO CHANGE ***
         if(isPlayContinue)
         {
-
             if(initString)
             {
                 sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
@@ -156,7 +156,6 @@ public class GameManagerScript : MonoBehaviour
                 {
                     dissolveMaterials.Add(sM.StringPointsGO[i].GetComponent<SpriteRenderer>().material);
                 }
-
                 initString = false;
                 isPlayContinue = false;
             }
@@ -185,6 +184,7 @@ public class GameManagerScript : MonoBehaviour
         {
             sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().startDissolve = true;
             count1stHalf++;
+
         }
 
         //Loop 2nd half of string if intersected
@@ -282,7 +282,7 @@ public class GameManagerScript : MonoBehaviour
             {
                 data.currentLevel = 1;
             }
-            currentLevel = data.currentLevel;
+            //currentLevel = data.currentLevel;
         }
     }
 
