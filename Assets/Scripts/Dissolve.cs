@@ -41,5 +41,11 @@ public class Dissolve : MonoBehaviour
         material.SetFloat("_DissolveAmount", dissolveAmount);
     }
 
+    public void ResetDissolve()
+    {
+        dissolveAmount = 0;
+        material.SetFloat("_DissolveAmount", dissolveAmount);
+        startDissolve = false;
+    }
 
 }

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity;
 using UnityEngine.SceneManagement;
+using TMPro;
+
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -27,26 +29,28 @@ public class GameManagerScript : MonoBehaviour
 
     [Header("Global References:")]
     //List of references all scripts and this script require. Store all references in Game Manager so there is a centralised location for references and all scripts pass through Game Manager for access.
-    [SerializeField] private GameState currentState;                                    //Tracks which state we are currently in which is passed to a switch statement for processing.
-    [SerializeField] private StringMovement sM;                                         //Holds reference to the string and all it's child components.
-    [SerializeField] private Canvas endLevelCanvas, mainMenuCanvas, levelCanvas;        //Reference to all UI Canvas for various Game States.
-    [SerializeField] private List<Material> dissolveMaterials;                          //Reference to materials attached to each string point allowing us to access dissolve script plus material per string point.
+    [SerializeField] private GameState currentState;                                                        //Tracks which state we are currently in which is passed to a switch statement for processing.
+    [SerializeField] private StringMovement sM;                                                             //Holds reference to the string and all it's child components.
+    [SerializeField] private Canvas endLevelCanvas, mainMenuCanvas, levelCanvas;                            //Reference to all UI Canvas for various Game States.
+    [SerializeField] private List<Material> dissolveMaterials;                                              //Reference to materials attached to each string point allowing us to access dissolve script plus material per string point.
 
     [Space(5)]
     [Header("Boolean States:")]
-    [SerializeField] private bool moveRigidBodies;                                      //Controls when to update physics ensuring it's after input + render update.
-    [SerializeField] private bool dissolveDone;                                         //Determines when all string points have finished animation to then transition to next state.
-    [SerializeField] private bool triggerNextLevelMenu;                                 //Used to determine if we collided with the end trigger instead of a wall.
-    [SerializeField] private bool initString;                                           //Used to initalise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
+    [SerializeField] private bool moveRigidBodies;                                                          //Controls when to update physics ensuring it's after input + render update.
+    [SerializeField] private bool dissolveDone;                                                             //Determines when all string points have finished animation to then transition to next state.
+    [SerializeField] private bool triggerNextLevelMenu;                                                     //Used to determine if we collided with the end trigger instead of a wall.
+    [SerializeField] private bool initString;                                                               //Used to initalise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
+    [SerializeField] public bool isPlayContinue, isLevelSelectScreen, isOptions, isSpeedrun, isRespawn;
 
     [Space(5)]
     [Header("Numerical Values:")]
-    [SerializeField] private int stringPointIntersectedWith;                            //Lets us know which string point we have collided with to play the animation from that point looping outwards in either direction.
-    [SerializeField] private  int count2ndHalf, count1stHalf;                           //Count variables that represent "i" in our if statement for looping through in each direction. Reason for count variables is we are using if statement and not for loop.
-    [SerializeField] private int deathCount;                                            //Death count variable that tracks total death count and gets written to and read from file.
-    [SerializeField] private float levelTime = 0f;                                      //Time to complete level which is passed to the level text and which will be saved in file representing best time per level. To be added to total time variable for time across all levels.
-    [SerializeField] private float dissolveSpeed;                                       //Determines how fast dissolve animation will be.
-
+    [SerializeField] private int stringPointIntersectedWith;                                                //Lets us know which string point we have collided with to play the animation from that point looping outwards in either direction.
+    [SerializeField] private  int count2ndHalf, count1stHalf;                                               //Count variables that represent "i" in our if statement for looping through in each direction. Reason for count variables is we are using if statement and not for loop.
+    [SerializeField] private int deathCount;                                                                //Death count variable that tracks total death count and gets written to and read from file.
+    [Min(1)]
+    [SerializeField] public int currentLevel = 1;
+    [SerializeField] private float levelTime = 0f;                                                          //Time to complete level which is passed to the level text and which will be saved in file representing best time per level. To be added to total time variable for time across all levels.
+    [SerializeField] private float dissolveSpeed;                                                           //Determines how fast dissolve animation will be.
 
     [Space(8)]
     [Header("Medal Time Splits:")]
@@ -79,6 +83,8 @@ public class GameManagerScript : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
+        //If currentLevel is null set text to play otherwise set to Continue
+
         sM = FindObjectOfType<StringMovement>();
 
         currentState = GameState.Idle;
@@ -87,22 +93,28 @@ public class GameManagerScript : MonoBehaviour
     
     void Update()
     {
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            currentLevel = 2;
+            Save();
+        }
+
         //Switch statement which takes our current state and decides what to do based on that state.
         switch (currentState)
         {
             case GameState.Setup:
-                //SetUp();
+                SetUp();
                 break;
             case GameState.Playing:
                 break;
             case GameState.InitialiseDeath:
-                //InitialiseDeath();
+                InitialiseDeath();
                 break;
             case GameState.Dead:
                 //See Fixed Update
                 break;
             case GameState.GameOver:
-                //ResetString();
+                ResetString();
                 break;
             case GameState.NextLevelMenu:
                 break;
@@ -114,41 +126,45 @@ public class GameManagerScript : MonoBehaviour
         //Checks for Dead state to play the death animation. Placed in fixed update for consistent frame rate.
         if(currentState == GameState.Dead)
         {
-            //DeathAnimation();
+            DeathAnimation();
         }
     }
 
     void SetUp()
     {
-        //Initialise the level and all relevant variables.
-        //What we do depends on if player hit Play/Continue or Level Select or Speedrun mode. Will be boolean check which decides what to do for each use case.
-        mainMenuCanvas.enabled = false;
-        levelCanvas.enabled = true;
-
-
-        if(initString)
+        //Bool check so that if we die and need to reset string we can call setup to reset and reinitialise everthing and not have it try and spawn a new string or enable disable canvasses that shouldn't be.  *** SUBJECT TO CHANGE ***
+        if(isPlayContinue)
         {
-            sM.InitialiseString();
-            initString = false;
+            mainMenuCanvas.enabled = false;
+            levelCanvas.enabled = true;
+
+            if(initString)
+            {
+                sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
+                sM.InitialiseString();
+
+                //Grab reference to all material components attached to each string point
+                for (int i = 0; i < sM.StringPointsGO.Count; i++)
+                {
+                    dissolveMaterials.Add(sM.StringPointsGO[i].GetComponent<SpriteRenderer>().material);
+                }
+
+                initString = false;
+                isPlayContinue = false;
+            }
         }
 
         if (Input.GetMouseButtonDown(0))
         {
             currentState = GameState.Playing;
         }
+
     }
 
     void InitialiseDeath()
     {
-        dissolveMaterials.Clear();
         count1stHalf = 0;
         count2ndHalf = stringPointIntersectedWith;
-
-        //Cache the dissolve material in a variable to then loop through and check that the dissovle animation has finished so that we can transition to gameover state.
-        for (int i = 0; i < sM.StringPointsGO.Count; i++)
-        {
-            dissolveMaterials.Add(sM.StringPointsGO[i].GetComponent<SpriteRenderer>().material);
-        }
 
         currentState = GameState.Dead;
     }
@@ -159,7 +175,6 @@ public class GameManagerScript : MonoBehaviour
         if (count1stHalf < stringPointIntersectedWith)
         {
             sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().startDissolve = true;
-
             count1stHalf++;
         }
 
@@ -167,13 +182,11 @@ public class GameManagerScript : MonoBehaviour
         if (count2ndHalf < sM.StringPointsGO.Count)
         {
             sM.StringPointsGO[count2ndHalf].GetComponent<Dissolve>().startDissolve = true;
-
-
             count2ndHalf++;
         }
 
 
-        //Check if each elements dissolve amount has reached 1 meaning animatoin is done and set dissolveDone to true. if not all are done we set to false until the final one has changed
+        //Check if each elements dissolve amount has reached 1 meaning animation is done and set dissolveDone to true. If are not done we set to false until the final one has changed
         dissolveDone = false;
         foreach (Material material in dissolveMaterials)
         {
@@ -197,6 +210,7 @@ public class GameManagerScript : MonoBehaviour
             }
             else
             {
+                //As of now the player automatically respawns after they die and the animation has finished but perhaps we spawn a death ui for retry/main menu/level select or quit? I'm more drawn to insta respawn
                 currentState = GameState.GameOver;
             }
         }
@@ -207,15 +221,9 @@ public class GameManagerScript : MonoBehaviour
         sM.ResetString();
         dissolveDone = false;
 
-        foreach (Material material in dissolveMaterials)
-        {
-            material.SetFloat("_DissolveAmount", 0);
-        }
-
         for (int i = 0; i < sM.StringPointsGO.Count; i++)
         {
-            sM.StringPointsGO[i].GetComponent<Dissolve>().startDissolve = false;
-            sM.StringPointsGO[i].GetComponent<Dissolve>().DissolveAmount = 0;
+            sM.StringPointsGO[i].GetComponent<Dissolve>().ResetDissolve();
 
         }
 
@@ -234,6 +242,7 @@ public class GameManagerScript : MonoBehaviour
 
         //We write our ingame variables to this data object when the game closes that then gets written to a file to be loaded next session.
         PlayerData data = new PlayerData();
+        data.currentLevel = currentLevel;
 
         bf.Serialize(file, data);
         file.Close();
@@ -250,6 +259,7 @@ public class GameManagerScript : MonoBehaviour
             file.Close();
 
             //On load of game/main menu load all data from file into game and store in variable
+            currentLevel = data.currentLevel;
         }
     }
 
@@ -264,6 +274,8 @@ public class GameManagerScript : MonoBehaviour
 class PlayerData
 {
     public int deathCount;
+    //Maybe make this the last level played and not the most recent completed level. As someone may have replayed a level but haven't completed the game so continue should just take them to the level they were last on or the level after that level if they completed it last session (determined by the end UI)
+    public int currentLevel;
 }
 
 /// <summary>
