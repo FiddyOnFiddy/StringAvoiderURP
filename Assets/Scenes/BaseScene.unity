@@ -733,7 +733,7 @@ PrefabInstance:
       objectReference: {fileID: 1086546771}
     - target: {fileID: 84855896178905870, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
       propertyPath: currentLevel
-      value: 1
+      value: 47
       objectReference: {fileID: 0}
     - target: {fileID: 84855896178905870, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
       propertyPath: deathCounter

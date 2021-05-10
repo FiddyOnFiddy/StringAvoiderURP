@@ -219,8 +219,6 @@ public class GameManagerScript : MonoBehaviour
             }
             else
             {
-                deathCount++;
-
                 //As of now the player automatically respawns after they die and the animation has finished but perhaps we spawn a death ui for retry/main menu/level select or quit? I'm more drawn to insta respawn
                 currentState = GameState.GameOver;
             }
@@ -261,6 +259,7 @@ public class GameManagerScript : MonoBehaviour
         //We write our ingame variables to this data object when the game closes that then gets written to a file to be loaded next session.
         PlayerData data = new PlayerData();
         data.deathCount = deathCount;
+        data.currentLevel = currentLevel;
 
         bf.Serialize(file, data);
         file.Close();
@@ -278,6 +277,12 @@ public class GameManagerScript : MonoBehaviour
 
             //On load of game/main menu load all data from file into game and store in variable
             deathCount = data.deathCount;
+
+            if(data.currentLevel == 0)
+            {
+                data.currentLevel = 1;
+            }
+            currentLevel = data.currentLevel;
         }
     }
 
