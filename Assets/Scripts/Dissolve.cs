@@ -11,13 +11,13 @@ public class Dissolve : MonoBehaviour
     [SerializeField] public bool startDissolve;
 
     public float DissolveSpeed { set => dissolveSpeed = value; }
+    public float DissolveAmount { set => dissolveAmount = value; }
 
     // Start is called before the first frame update
     void Start()
     {
         material = GetComponent<SpriteRenderer>().material;
         dissolveAmount = 0;
-        //dissolveSpeed = 1.2f;
 
 
         Quaternion randomRotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
@@ -33,8 +33,7 @@ public class Dissolve : MonoBehaviour
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Dead && startDissolve)
         {
             DissolveStringPoint();
-        }
-  
+        }  
     }
 
     void DissolveStringPoint()

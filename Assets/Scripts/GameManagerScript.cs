@@ -42,6 +42,7 @@ public class GameManagerScript : MonoBehaviour
 
 
     [SerializeField] float dissolveSpeed;
+    [SerializeField] int deathCount;
 
 
 
@@ -57,6 +58,8 @@ public class GameManagerScript : MonoBehaviour
     public bool MoveRigidBodies {  get => moveRigidBodies; set => moveRigidBodies = value;  }
     public bool TriggerNextLevelMenu { get => triggerNextLevelMenu; set => triggerNextLevelMenu = value; }
     public bool InitString { get => initString; set => initString = value; }
+    public StringMovement SM { get => sM; set => sM = value; }
+
 
     void Awake()
     {
@@ -87,12 +90,13 @@ public class GameManagerScript : MonoBehaviour
             case GameState.Playing:
                 break;
             case GameState.InitialiseDeath:
-                InitiliaseDeath();
+                InitialiseDeath();
                 break;
             case GameState.Dead:
                 //See Fixed Update
                 break;
             case GameState.GameOver:
+                ResetString();
                 break;
             case GameState.NextLevelMenu:
                 break;
@@ -121,11 +125,10 @@ public class GameManagerScript : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             currentState = GameState.Playing;
-            sM.InitialiseString();
         }
     }
 
-    void InitiliaseDeath()
+    void InitialiseDeath()
     {
         dissolveMaterials.Clear();
         count1stHalf = 0;
@@ -194,6 +197,25 @@ public class GameManagerScript : MonoBehaviour
     public void ResetString()
     {
         sM.ResetString();
+        dissolveDone = false;
+
+        foreach (Material material in dissolveMaterials)
+        {
+            material.SetFloat("_DissolveAmount", 0);
+        }
+
+        for (int i = 0; i < sM.StringPointsGO.Count; i++)
+        {
+            sM.StringPointsGO[i].GetComponent<Dissolve>().startDissolve = false;
+            sM.StringPointsGO[i].GetComponent<Dissolve>().DissolveAmount = 0;
+
+        }
+
+        count1stHalf = 0;
+        count2ndHalf = 0;
+        stringPointIntersectedWith = 0;
+
+        currentState = GameState.Setup;
     }
 
 
@@ -204,10 +226,10 @@ public class GameManagerScript : MonoBehaviour
 
         //We write our ingame variables to this data object when the game closes that then gets written to a file to be loaded next session
         PlayerData data = new PlayerData();
+        data.deathCount = deathCount;
 
         bf.Serialize(file, data);
         file.Close();
-
     }
 
     public void Load()
@@ -221,8 +243,7 @@ public class GameManagerScript : MonoBehaviour
             file.Close();
 
             //On load of game/main menu load all data from file into game and store in variable
-
-
+            deathCount = data.deathCount;
         }
     }
 
@@ -233,7 +254,7 @@ public class GameManagerScript : MonoBehaviour
 [Serializable]
 class PlayerData
 {
-
+    public int deathCount;
 }
 
 [Serializable]

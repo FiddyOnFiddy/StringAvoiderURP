@@ -27,7 +27,9 @@ public class StringMovement : MonoBehaviour
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
     
 
-    [SerializeField] Vector2 spawnPoint;  
+    [SerializeField] private Transform spawnPoint;  
+
+    public Transform SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
     
     void Awake()
     {
@@ -35,7 +37,8 @@ public class StringMovement : MonoBehaviour
     }
 
     void Update()
-    {  
+    {
+
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing)
         {
             CollectInput();
@@ -112,7 +115,7 @@ public class StringMovement : MonoBehaviour
         {
             radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
 
-            stringPointsData.Add(new Vector2((spawnPoint.x + radius * Mathf.Cos(radians)), spawnPoint.y + radius * Mathf.Sin(radians)));
+            stringPointsData.Add(new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians)));
 
             stringPointsGO.Add(Instantiate(stringPointPrefab, stringPointsData[i], Quaternion.identity, this.transform));
             stringPointsGO[i].name = i.ToString();
@@ -132,7 +135,7 @@ public class StringMovement : MonoBehaviour
         {
             radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
 
-            stringPointsData[i] = new Vector2((spawnPoint.x + radius * Mathf.Cos(radians)), spawnPoint.y + radius * Mathf.Sin(radians));
+            stringPointsData[i] = new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians));
 
             stringPointsGO[i].transform.position = stringPointsData[i];
         }
