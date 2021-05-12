@@ -11,13 +11,12 @@ public class UIManager : MonoBehaviour
     private static UIManager _instance;
     public static UIManager Instance { get { return _instance; } }
 
-    [SerializeField] TMP_Text playButtonText;
+    [SerializeField] public TMP_Text playButtonText, levelTime;
     [SerializeField] public TMP_Text deathCounter;
     public TMP_Text timerText;
     [SerializeField] GameObject button;
     [SerializeField] GameObject content;
     [SerializeField] Sprite lockSymbol;
-
 
     private void Awake()
     {

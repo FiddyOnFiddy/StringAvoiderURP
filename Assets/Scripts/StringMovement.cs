@@ -5,7 +5,7 @@ using UnityEngine;
 public class StringMovement : MonoBehaviour
 {
     private float radians;
-    private Vector2 mousePosition, previousMousePosition, mouseDelta;
+    public Vector2 mousePosition, previousMousePosition, mouseDelta;
 
 
     [Space(5)]
@@ -37,9 +37,9 @@ public class StringMovement : MonoBehaviour
 
     void Update()
     {
+        CollectInput();
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing)
         {
-            CollectInput();
             if (Input.GetMouseButtonDown(0))
             {
                 

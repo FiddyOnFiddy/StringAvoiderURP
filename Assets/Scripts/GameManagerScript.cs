@@ -168,6 +168,8 @@ public class GameManagerScript : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            sM.previousMousePosition = sM.mousePosition;
+            sM.mouseDelta = Vector2.zero;
             currentState = GameState.Playing;
         }
 
@@ -253,6 +255,27 @@ public class GameManagerScript : MonoBehaviour
     void NextLevelScreen()
     {
         endScreenCanvas.enabled = true;
+        UIManager.Instance.levelTime.text = "Level Time: " + levelTime.ToString() + "       " + CalculateMedal();
+    }
+    string CalculateMedal()
+    {
+        string message = null ;
+        if(levelTime < medalSplits[currentLevel - 1].Gold)
+        {
+            message = "You received a gold medal";
+            
+        }
+        else if(levelTime < medalSplits[currentLevel - 1].Silver)
+        {
+            message = "You received a silver medal";
+
+        }
+        else
+        {
+            message = "You received a bronze medal";
+
+        }
+        return message;
     }
 
     public IEnumerator PlayOrContinue()
@@ -375,17 +398,12 @@ class PlayerData
 [Serializable]
 public struct TimeThreshold
 {
-    public int Level;
-
-
     public int Bronze;
     public int Silver;
     public int Gold;
 
     public TimeThreshold(int level, int bronze, int silver, int gold)
     {
-        this.Level = level;
-
         this.Bronze = bronze;
         this.Silver = silver;
         this.Gold = gold;
