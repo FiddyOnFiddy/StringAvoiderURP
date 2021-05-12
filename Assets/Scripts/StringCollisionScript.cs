@@ -10,8 +10,9 @@ public class StringCollisionScript : MonoBehaviour
     {
         if(collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("Wall"))
         {
-            TriggerDeath(collision);
             GameManagerScript.Instance.DeathCount++;
+            GameManagerScript.Instance.Save();
+            TriggerDeath(collision);
         }
         else if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("EndPoint"))
         {

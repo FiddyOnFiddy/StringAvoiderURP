@@ -7,10 +7,6 @@ using TMPro;
 
 public class TimerScript : MonoBehaviour
 {
-
-    [SerializeField] TMP_Text timerText;
-
-
     // Update is called once per frame
     void Update()
     {
@@ -24,7 +20,7 @@ public class TimerScript : MonoBehaviour
             GameManagerScript.Instance.LevelTime += Time.deltaTime;
         }
 
-        timerText.SetText(FormatTime(GameManagerScript.Instance.LevelTime));
+        UIManager.Instance.timerText.SetText(FormatTime(GameManagerScript.Instance.LevelTime));
     }
 
     public string FormatTime(float time)

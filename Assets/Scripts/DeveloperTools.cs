@@ -5,34 +5,63 @@ using UnityEngine.SceneManagement;
 
 public class DeveloperTools : MonoBehaviour
 {
-    private string currentScene;
-
+    AsyncOperation asyncLoad;
     // Start is called before the first frame update
     void Awake()
     {
-        currentScene = SceneManager.GetActiveScene().name;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKeyUp(KeyCode.R))
+        if(Input.GetKeyUp(KeyCode.Space))
         {
-            ReloadLevel();
+            GameManagerScript.Instance.ResetSaveFile();
         }
 
-        else if(Input.GetKeyUp(KeyCode.RightArrow))
+        if(Input.GetKeyUp(KeyCode.P))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            Debug.Log(GameManagerScript.Instance.isLevelComplete.ContainsKey(GameManagerScript.Instance.currentLevel));
+        }
+
+
+        if (Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            StartCoroutine(ChangeLevel(true));
+
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            StartCoroutine(ChangeLevel(false));
+
         }
     }
 
-    void ReloadLevel()
+    IEnumerator ChangeLevel(bool isNextLevel)
     {
-        SceneManager.LoadScene(currentScene);
-        GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
 
+        SceneManager.UnloadSceneAsync("level" + GameManagerScript.Instance.currentLevel.ToString(), UnloadSceneOptions.None);
+
+        if (isNextLevel)
+        {
+            GameManagerScript.Instance.currentLevel++;
+        }
+        else if(!isNextLevel)
+        {
+            GameManagerScript.Instance.currentLevel--;
+        }
+        asyncLoad = SceneManager.LoadSceneAsync("level" + GameManagerScript.Instance.currentLevel.ToString(), LoadSceneMode.Additive);
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        GameManagerScript.Instance.SM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
+        GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
+        GameManagerScript.Instance.ResetString();
+        GameManagerScript.Instance.Save();
     }
+
 }

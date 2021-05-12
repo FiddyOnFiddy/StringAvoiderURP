@@ -7,6 +7,7 @@ using UnityEngine;
 using Unity;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.EventSystems;
 
 
 public class GameManagerScript : MonoBehaviour
@@ -31,7 +32,7 @@ public class GameManagerScript : MonoBehaviour
     //List of references all scripts and this script require. Store all references in Game Manager so there is a centralised location for references and all scripts pass through Game Manager for access.
     [SerializeField] private GameState currentState;                                                        //Tracks which state we are currently in which is passed to a switch statement for processing.
     [SerializeField] private StringMovement sM;                                                             //Holds reference to the string and all it's child components.
-    [SerializeField] private Canvas mainMenuCanvas, levelCanvas, endLevelCanvas;                            //Reference to all UI Canvas for various Game States.
+    [SerializeField] public Canvas mainMenuCanvas, levelCanvas, levelSelectCanvas, endLevelCanvas;          //Reference to all UI Canvas for various Game States.
     [SerializeField] private List<Material> dissolveMaterials;                                              //Reference to materials attached to each string point allowing us to access dissolve script plus material per string point.
 
     [Space(5)]
@@ -40,7 +41,6 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private bool dissolveDone;                                                             //Determines when all string points have finished animation to then transition to next state.
     [SerializeField] private bool triggerNextLevelMenu;                                                     //Used to determine if we collided with the end trigger instead of a wall.
     [SerializeField] private bool initString;                                                               //Used to initalise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
-    [SerializeField] public bool isPlayContinue, isLevelSelectScreen, isOptions, isSpeedrun, isRespawn;
 
     [Space(5)]
     [Header("String Collision Info:")]
@@ -58,11 +58,16 @@ public class GameManagerScript : MonoBehaviour
     [Space(5)]
     [Header("Misc:")]
     [SerializeField] private float dissolveSpeed;                                                           //Determines how fast dissolve animation will be.
-    [SerializeField] TMP_Text deathCounter;
 
     [Space(8)]
     [Header("Medal Time Splits:")]
-    [SerializeField] private List<TimeThreshold> medalSplits = new List<TimeThreshold>();       //List of custom struct TimeThreshold which holds the medal time splits for each level.
+    [SerializeField] private List<TimeThreshold> medalSplits = new List<TimeThreshold>();                   //List of custom struct TimeThreshold which holds the medal time splits for each level.
+
+    public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>();
+    public int maxLevelCount;
+
+
+    AsyncOperation asyncLoad;
 
 
     //All the expression body properties for getting and setting any relevant data and access outside of Game Manager.
@@ -92,9 +97,15 @@ public class GameManagerScript : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
+        
+        mainMenuCanvas.enabled = true;
+        levelCanvas.enabled = false;
+        levelSelectCanvas.enabled = false;
+        endLevelCanvas.enabled = false;
+
+
         Load();
 
-        deathCounter.text = "Deaths: " + deathCount;
         sM = FindObjectOfType<StringMovement>();
 
         currentState = GameState.Idle;
@@ -102,7 +113,6 @@ public class GameManagerScript : MonoBehaviour
     
     void Update()
     {
-
         //Switch statement which takes our current state and decides what to do based on that state.
         switch (currentState)
         {
@@ -132,7 +142,6 @@ public class GameManagerScript : MonoBehaviour
         if(currentState == GameState.Dead)
         {
             DeathAnimation();
-
         }
     }
 
@@ -140,25 +149,22 @@ public class GameManagerScript : MonoBehaviour
     {
         mainMenuCanvas.enabled = false;
         levelCanvas.enabled = true;
+        levelSelectCanvas.enabled = false;
         endLevelCanvas.enabled = false;
 
 
         //Bool check so that if we die and need to reset string we can call setup to reset and reinitialise everthing and not have it try and spawn a new string or enable disable canvasses that shouldn't be.  *** SUBJECT TO CHANGE ***
-        if(isPlayContinue)
+        if (initString)
         {
-            if(initString)
-            {
-                sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
-                sM.InitialiseString();
+            sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
+            sM.InitialiseString();
 
-                //Grab reference to all material components attached to each string point
-                for (int i = 0; i < sM.StringPointsGO.Count; i++)
-                {
-                    dissolveMaterials.Add(sM.StringPointsGO[i].GetComponent<SpriteRenderer>().material);
-                }
-                initString = false;
-                isPlayContinue = false;
+            //Grab reference to all material components attached to each string point
+            for (int i = 0; i < sM.StringPointsGO.Count; i++)
+            {
+                dissolveMaterials.Add(sM.StringPointsGO[i].GetComponent<SpriteRenderer>().material);
             }
+            initString = false;
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -170,7 +176,7 @@ public class GameManagerScript : MonoBehaviour
 
     void InitialiseDeath()
     {
-        deathCounter.text = "Deaths: " + deathCount;
+        UIManager.Instance.deathCounter.text = "Deaths: " + deathCount;
         count1stHalf = 0;
         count2ndHalf = stringPointIntersectedWith;
 
@@ -250,6 +256,51 @@ public class GameManagerScript : MonoBehaviour
         endLevelCanvas.enabled = true;
     }
 
+    public IEnumerator PlayOrContinue()
+    {
+
+        asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        currentState = GameState.Setup;
+        initString = true;
+    }
+
+    public IEnumerator LoadNextLevel()
+    {
+        isLevelComplete.Add(currentLevel, true);
+
+        SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
+
+        currentLevel++;
+        asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
+        currentState = GameState.Setup;
+        ResetString();
+    }
+
+    public IEnumerator LevelSelect()
+    {
+        asyncLoad = SceneManager.LoadSceneAsync(EventSystem.current.currentSelectedGameObject.name, LoadSceneMode.Additive);
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+
+        currentState = GameState.Setup;
+        initString = true;
+    }
 
     public void Save()
     {
@@ -260,6 +311,8 @@ public class GameManagerScript : MonoBehaviour
         PlayerData data = new PlayerData();
         data.deathCount = deathCount;
         data.currentLevel = currentLevel;
+        data.isLevelComplete = isLevelComplete;
+
 
         bf.Serialize(file, data);
         file.Close();
@@ -282,10 +335,20 @@ public class GameManagerScript : MonoBehaviour
             {
                 data.currentLevel = 1;
             }
-            //currentLevel = data.currentLevel;
+            currentLevel = data.currentLevel;
+            isLevelComplete = data.isLevelComplete;
         }
     }
 
+    public void ResetSaveFile()
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
+        PlayerData data = new PlayerData();
+
+        bf.Serialize(file, data);
+        file.Close();
+    }
 
 }
 
@@ -299,6 +362,10 @@ class PlayerData
     public int deathCount;
     //Maybe make this the last level played and not the most recent completed level. As someone may have replayed a level but haven't completed the game so continue should just take them to the level they were last on or the level after that level if they completed it last session (determined by the end UI)
     public int currentLevel;
+
+    public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>();
+
+
 }
 
 /// <summary>
