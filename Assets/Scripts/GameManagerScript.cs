@@ -32,7 +32,7 @@ public class GameManagerScript : MonoBehaviour
     //List of references all scripts and this script require. Store all references in Game Manager so there is a centralised location for references and all scripts pass through Game Manager for access.
     [SerializeField] private GameState currentState;                                                        //Tracks which state we are currently in which is passed to a switch statement for processing.
     [SerializeField] private StringMovement sM;                                                             //Holds reference to the string and all it's child components.
-    [SerializeField] public Canvas mainMenuCanvas, levelCanvas, levelSelectCanvas, endLevelCanvas;          //Reference to all UI Canvas for various Game States.
+    [SerializeField] public Canvas mainMenuCanvas, levelSelectCanvas, gameCanvas, endScreenCanvas;          //Reference to all UI Canvas for various Game States.
     [SerializeField] private List<Material> dissolveMaterials;                                              //Reference to materials attached to each string point allowing us to access dissolve script plus material per string point.
 
     [Space(5)]
@@ -99,10 +99,9 @@ public class GameManagerScript : MonoBehaviour
 
         
         mainMenuCanvas.enabled = true;
-        levelCanvas.enabled = false;
+        gameCanvas.enabled = false;
         levelSelectCanvas.enabled = false;
-        endLevelCanvas.enabled = false;
-
+        endScreenCanvas.enabled = false;
 
         Load();
 
@@ -148,9 +147,9 @@ public class GameManagerScript : MonoBehaviour
     void SetUp()
     {
         mainMenuCanvas.enabled = false;
-        levelCanvas.enabled = true;
+        gameCanvas.enabled = true;
         levelSelectCanvas.enabled = false;
-        endLevelCanvas.enabled = false;
+        endScreenCanvas.enabled = false;
 
 
         //Bool check so that if we die and need to reset string we can call setup to reset and reinitialise everthing and not have it try and spawn a new string or enable disable canvasses that shouldn't be.  *** SUBJECT TO CHANGE ***
@@ -253,7 +252,7 @@ public class GameManagerScript : MonoBehaviour
 
     void NextLevelScreen()
     {
-        endLevelCanvas.enabled = true;
+        endScreenCanvas.enabled = true;
     }
 
     public IEnumerator PlayOrContinue()
@@ -273,7 +272,7 @@ public class GameManagerScript : MonoBehaviour
 
     public IEnumerator LoadNextLevel()
     {
-        isLevelComplete.Add(currentLevel, true);
+        isLevelComplete[currentLevel] = true;
 
         SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
 
@@ -293,6 +292,8 @@ public class GameManagerScript : MonoBehaviour
     public IEnumerator LevelSelect()
     {
         asyncLoad = SceneManager.LoadSceneAsync(EventSystem.current.currentSelectedGameObject.name, LoadSceneMode.Additive);
+        currentLevel = Int16.Parse(System.Text.RegularExpressions.Regex.Match(EventSystem.current.currentSelectedGameObject.name, @"\d+").Value);
+
         while (!asyncLoad.isDone)
         {
             yield return null;

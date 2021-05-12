@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     public TMP_Text timerText;
     [SerializeField] GameObject button;
     [SerializeField] GameObject content;
+    [SerializeField] Sprite lockSymbol;
 
 
     private void Awake()
@@ -70,11 +71,6 @@ public class UIManager : MonoBehaviour
         GameManagerScript.Instance.mainMenuCanvas.enabled = true;
     }
 
-    public void Test()
-    {
-        Debug.Log("HI");
-    }
-
     void SetupLevelSelectScreen()
     {
         for (int i = 1; i <= GameManagerScript.Instance.maxLevelCount; i++)
@@ -87,6 +83,7 @@ public class UIManager : MonoBehaviour
             {
                 Button button = clone.GetComponent<Button>();
                 button.interactable = false;
+                clone.GetComponent<Image>().sprite = lockSymbol;
             }
             else
             {

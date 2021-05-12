@@ -405,25 +405,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 671753692, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 671753692, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 671753692, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 1738440103, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1738440103, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -1458.815
+      value: -2033.2709
       objectReference: {fileID: 0}
     - target: {fileID: 826186510493880734, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -442,61 +430,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 128855874}
     - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2104272804}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: BackButton
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UIManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: UIManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 1489695628087493483, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2110606295862684478, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5387268628296990523, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_Name
       value: ___UI___
@@ -631,6 +567,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3992700542562227670}
     - target: {fileID: 84855896178905870, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
+      propertyPath: gameCanvas
+      value: 
+      objectReference: {fileID: 1086546771}
+    - target: {fileID: 84855896178905870, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
       propertyPath: levelCanvas
       value: 
       objectReference: {fileID: 1086546771}
@@ -655,6 +595,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 402995489}
     - target: {fileID: 84855896178905870, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
+      propertyPath: endScreenCanvas
+      value: 
+      objectReference: {fileID: 6333122942054862173}
+    - target: {fileID: 84855896178905870, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
       propertyPath: levelSelectCanvas
       value: 
       objectReference: {fileID: 1126771706}
@@ -670,6 +614,10 @@ PrefabInstance:
       propertyPath: timerText
       value: 
       objectReference: {fileID: 3992700542562227670}
+    - target: {fileID: 2089994637434665713, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
+      propertyPath: lockSymbol
+      value: 
+      objectReference: {fileID: 21300000, guid: dca4cc456a0f14646a515e92ee894e2c, type: 3}
     - target: {fileID: 2089994637434665713, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
       propertyPath: deathCounter
       value: 
