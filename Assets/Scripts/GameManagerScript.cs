@@ -97,7 +97,6 @@ public class GameManagerScript : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        
         mainMenuCanvas.enabled = true;
         gameCanvas.enabled = false;
         levelSelectCanvas.enabled = false;
@@ -295,8 +294,6 @@ public class GameManagerScript : MonoBehaviour
 
     public IEnumerator LoadNextLevel()
     {
-        isLevelComplete[currentLevel] = true;
-
         SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
 
         currentLevel++;

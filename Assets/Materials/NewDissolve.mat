@@ -63,7 +63,7 @@ Material:
     - Speed: 0.2
     - Strength: 0.005
     - WindStrength: 1
-    - _DissolveAmount: 0
+    - _DissolveAmount: 0.447
     - _DoDisortion: 0
     m_Colors:
     - DistortionPosition: {r: 1, g: 1, b: 0, a: 0}

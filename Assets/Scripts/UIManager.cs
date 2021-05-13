@@ -78,7 +78,7 @@ public class UIManager : MonoBehaviour
             clone.name = "Level" + i.ToString();
             clone.GetComponentInChildren<TMP_Text>().text = i.ToString();
 
-            if(GameManagerScript.Instance.isLevelComplete.ContainsKey(i) == false)
+            if(GameManagerScript.Instance.isLevelComplete.ContainsKey(i) == false && i > 1)
             {
                 Button button = clone.GetComponent<Button>();
                 button.interactable = false;

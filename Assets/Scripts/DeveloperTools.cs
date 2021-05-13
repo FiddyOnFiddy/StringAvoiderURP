@@ -23,8 +23,6 @@ public class DeveloperTools : MonoBehaviour
         if(Input.GetKeyUp(KeyCode.P))
         {
             Debug.Log(GameManagerScript.Instance.isLevelComplete.Count);
-            Debug.Log(GameManagerScript.Instance.isLevelComplete[1]);
-            Debug.Log(GameManagerScript.Instance.isLevelComplete[2]);
         }
 
 
