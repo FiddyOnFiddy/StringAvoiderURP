@@ -22,7 +22,13 @@ public class DeveloperTools : MonoBehaviour
 
         if(Input.GetKeyUp(KeyCode.P))
         {
-            Debug.Log(GameManagerScript.Instance.isLevelComplete.Count);
+            Debug.Log(GameManagerScript.Instance.medalSplitsDict.Count);
+
+            for (int i = 1; i <= GameManagerScript.Instance.medalSplitsDict.Count; i++)
+            {
+                Debug.Log(GameManagerScript.Instance.medalSplitsDict[i]);
+
+            }
         }
 
 

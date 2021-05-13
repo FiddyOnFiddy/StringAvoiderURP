@@ -29,4 +29,12 @@ public class StringCollisionScript : MonoBehaviour
         GameManagerScript.Instance.MoveRigidBodies = false;
         GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.InitialiseDeath;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Player"))
+        {
+
+        }
+    }
 }

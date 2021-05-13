@@ -45,7 +45,7 @@ public class GameManagerScript : MonoBehaviour
     [Space(5)]
     [Header("String Collision Info:")]
     [SerializeField] private int stringPointIntersectedWith;                                                //Lets us know which string point we have collided with to play the animation from that point looping outwards in either direction.
-    [SerializeField] private  int count2ndHalf, count1stHalf;                                               //Count variables that represent "i" in our if statement for looping through in each direction. Reason for count variables is we are using if statement and not for loop.
+    [SerializeField] private int count2ndHalf, count1stHalf;                                               //Count variables that represent "i" in our if statement for looping through in each direction. Reason for count variables is we are using if statement and not for loop.
 
     [Space(5)]
     [Header("Persistant Data:")]
@@ -61,23 +61,25 @@ public class GameManagerScript : MonoBehaviour
 
     [Space(8)]
     [Header("Medal Time Splits:")]
-    [SerializeField] private List<TimeThreshold> medalSplits = new List<TimeThreshold>();                   //List of custom struct TimeThreshold which holds the medal time splits for each level.
+    public List<Vector2> medalSplits = new List<Vector2>();
 
+
+    public Dictionary<int, Vector2> medalSplitsDict = new Dictionary<int, Vector2>();
     public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>();
     public int maxLevelCount;
 
-
+    public int animationSpeed;
     AsyncOperation asyncLoad;
 
 
     //All the expression body properties for getting and setting any relevant data and access outside of Game Manager.
     public GameState CurrentState { get => currentState; set => currentState = value; }
     public StringMovement SM { get => sM; set => sM = value; }
-    public bool MoveRigidBodies {  get => moveRigidBodies; set => moveRigidBodies = value;  }
+    public bool MoveRigidBodies { get => moveRigidBodies; set => moveRigidBodies = value; }
     public bool TriggerNextLevelMenu { get => triggerNextLevelMenu; set => triggerNextLevelMenu = value; }
     public bool InitString { get => initString; set => initString = value; }
-    public int Count2ndHalf { get => count2ndHalf; set => count2ndHalf = value;  }
-    public int Count1stHalf { get => count1stHalf; set => count1stHalf = value;  }
+    public int Count2ndHalf { get => count2ndHalf; set => count2ndHalf = value; }
+    public int Count1stHalf { get => count1stHalf; set => count1stHalf = value; }
     public int StringPointIntersectedWith { get => stringPointIntersectedWith; set => stringPointIntersectedWith = value; }
     public float LevelTime { get => levelTime; set => levelTime = value; }
     public float DissolveSpeed { get => dissolveSpeed; set => dissolveSpeed = value; }
@@ -97,6 +99,11 @@ public class GameManagerScript : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
+        for (int i = 0; i < medalSplits.Count; i++)
+        {
+            medalSplitsDict[i + 1] = medalSplits[i];
+        }
+
         mainMenuCanvas.enabled = true;
         gameCanvas.enabled = false;
         levelSelectCanvas.enabled = false;
@@ -108,7 +115,7 @@ public class GameManagerScript : MonoBehaviour
 
         currentState = GameState.Idle;
     }
-    
+
     void Update()
     {
         //Switch statement which takes our current state and decides what to do based on that state.
@@ -126,7 +133,7 @@ public class GameManagerScript : MonoBehaviour
                 //See Fixed Update
                 break;
             case GameState.GameOver:
-                ResetString();
+                ReloadLevel();
                 break;
             case GameState.NextLevelMenu:
                 NextLevelScreen();
@@ -137,7 +144,7 @@ public class GameManagerScript : MonoBehaviour
     private void FixedUpdate()
     {
         //Checks for Dead state to play the death animation. Placed in fixed update for consistent frame rate.
-        if(currentState == GameState.Dead)
+        if (currentState == GameState.Dead)
         {
             DeathAnimation();
         }
@@ -188,16 +195,21 @@ public class GameManagerScript : MonoBehaviour
         //Loop 1st Half of string if intersected
         if (count1stHalf < stringPointIntersectedWith)
         {
-            sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().startDissolve = true;
-            count1stHalf++;
-
+            for (int i = 0; i < animationSpeed; i++)
+            {
+                sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().startDissolve = true;
+                count1stHalf++;
+            }
         }
 
         //Loop 2nd half of string if intersected
         if (count2ndHalf < sM.StringPointsGO.Count)
         {
-            sM.StringPointsGO[count2ndHalf].GetComponent<Dissolve>().startDissolve = true;
-            count2ndHalf++;
+            for (int i = 0; i < animationSpeed; i++)
+            {
+                sM.StringPointsGO[count2ndHalf].GetComponent<Dissolve>().startDissolve = true;
+                count2ndHalf++;
+            }
         }
 
 
@@ -216,10 +228,9 @@ public class GameManagerScript : MonoBehaviour
             }
         }
 
-        if(dissolveDone)
+        if (dissolveDone)
         {
-
-            if(triggerNextLevelMenu)
+            if (triggerNextLevelMenu)
             {
                 currentState = GameState.NextLevelMenu;
             }
@@ -256,15 +267,16 @@ public class GameManagerScript : MonoBehaviour
         endScreenCanvas.enabled = true;
         UIManager.Instance.levelTime.text = "Level Time: " + levelTime.ToString() + "       " + CalculateMedal();
     }
+
     string CalculateMedal()
     {
-        string message = null ;
-        if(levelTime < medalSplits[currentLevel - 1].Gold)
+        string message = null;
+        if (levelTime < medalSplitsDict[currentLevel].x)
         {
             message = "You received a gold medal";
-            
+
         }
-        else if(levelTime < medalSplits[currentLevel - 1].Silver)
+        else if (levelTime < medalSplitsDict[currentLevel].y)
         {
             message = "You received a silver medal";
 
@@ -309,6 +321,19 @@ public class GameManagerScript : MonoBehaviour
         ResetString();
     }
 
+    public void ReloadLevel()
+    {
+        SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
+
+        SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+
+        sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
+        currentState = GameState.Setup;
+        ResetString();
+         
+    }
+
+
     public IEnumerator LevelSelect()
     {
         asyncLoad = SceneManager.LoadSceneAsync(EventSystem.current.currentSelectedGameObject.name, LoadSceneMode.Additive);
@@ -341,7 +366,7 @@ public class GameManagerScript : MonoBehaviour
 
     public void Load()
     {
-        if(File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
+        if (File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
         {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.OpenRead(Application.persistentDataPath + "/playerInfo.dat");
@@ -352,7 +377,7 @@ public class GameManagerScript : MonoBehaviour
             //On load of game/main menu load all data from file into game and store in variable
             deathCount = data.deathCount;
 
-            if(data.currentLevel == 0)
+            if (data.currentLevel == 0)
             {
                 data.currentLevel = 1;
             }
@@ -385,26 +410,5 @@ class PlayerData
     public int currentLevel;
 
     public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>();
-
-
 }
-
-/// <summary>
-/// Medal time splits for each level. Level is the level we're on, rest are splits for that level.
-/// </summary>
-[Serializable]
-public struct TimeThreshold
-{
-    public int Bronze;
-    public int Silver;
-    public int Gold;
-
-    public TimeThreshold(int level, int bronze, int silver, int gold)
-    {
-        this.Bronze = bronze;
-        this.Silver = silver;
-        this.Gold = gold;
-    }
-}
-
 
