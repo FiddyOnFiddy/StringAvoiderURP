@@ -71,6 +71,12 @@ public class GameManagerScript : MonoBehaviour
 
     public int animationSpeed;
     AsyncOperation asyncLoad;
+    [SerializeField] private int totalTimeToComplete;
+
+    [SerializeField] public Dictionary<int, float> timePerLevel = new Dictionary<int, float>();
+
+
+
 
 
     //All the expression body properties for getting and setting any relevant data and access outside of Game Manager.
@@ -114,6 +120,7 @@ public class GameManagerScript : MonoBehaviour
 
         Load();
 
+
         sM = FindObjectOfType<StringMovement>();
 
         currentState = GameState.Idle;
@@ -122,7 +129,6 @@ public class GameManagerScript : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(Time.timeScale);
         mouseOnUIObject = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
 
         #region State switch statement
@@ -308,6 +314,11 @@ public class GameManagerScript : MonoBehaviour
         return message;
     }
 
+    void CalculateTotalTimePerLevel()
+    {
+
+    }
+
     public IEnumerator PlayOrContinue()
     {
 
@@ -350,7 +361,7 @@ public class GameManagerScript : MonoBehaviour
         currentState = GameState.Setup;
         ResetString();
         Save();
-         
+
     }
 
     public void LoadMainMenu()
@@ -384,10 +395,12 @@ public class GameManagerScript : MonoBehaviour
         FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
 
         //We write our ingame variables to this data object when the game closes that then gets written to a file to be loaded next session.
-        PlayerData data = new PlayerData();
-        data.deathCount = deathCount;
+        PlayerData data = new PlayerData(deathCount, currentLevel, totalTimeToComplete, isLevelComplete, timePerLevel);
+        /*data.deathCount = deathCount;
         data.currentLevel = currentLevel;
         data.isLevelComplete = isLevelComplete;
+        data.totalTimeToComplete = totalTimeToComplete;
+        data.timePerLevel = timePerLevel;*/
 
 
         bf.Serialize(file, data);
@@ -413,6 +426,8 @@ public class GameManagerScript : MonoBehaviour
             }
             currentLevel = data.currentLevel;
             isLevelComplete = data.isLevelComplete;
+            totalTimeToComplete = data.totalTimeToComplete;
+            timePerLevel = data.timePerLevel;
         }
     }
 
@@ -420,7 +435,7 @@ public class GameManagerScript : MonoBehaviour
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
-        PlayerData data = new PlayerData();
+        PlayerData data = new PlayerData(0, 0, 0, new Dictionary<int, bool> (maxLevelCount), new Dictionary<int, float>(maxLevelCount));
 
         bf.Serialize(file, data);
         file.Close();
@@ -435,10 +450,25 @@ public class GameManagerScript : MonoBehaviour
 [Serializable]
 class PlayerData
 {
+    //Death Count across entire save
     public int deathCount;
+
     //Maybe make this the last level played and not the most recent completed level. As someone may have replayed a level but haven't completed the game so continue should just take them to the level they were last on or the level after that level if they completed it last session (determined by the end UI)
     public int currentLevel;
 
-    public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>();
+    //Total time across all levels to complete the game using best times including revists via level select
+    public int totalTimeToComplete;
+
+    public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>(30);
+    public Dictionary<int, float> timePerLevel = new Dictionary<int, float>(30);
+
+    public PlayerData(int DeathCount, int CurrentLevel, int TotalTimePerLEvel, Dictionary<int, bool> IsLevelComplete, Dictionary<int, float> TimePerLevel)
+    {
+        deathCount = DeathCount;
+        currentLevel = CurrentLevel;
+        totalTimeToComplete = TotalTimePerLEvel;
+        isLevelComplete = IsLevelComplete;
+        timePerLevel = TimePerLevel;
+    }
 }
 

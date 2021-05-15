@@ -17,6 +17,7 @@ public class StringCollisionScript : MonoBehaviour
         else if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("EndPoint"))
         {
             GameManagerScript.Instance.isLevelComplete[GameManagerScript.Instance.currentLevel + 1] = true;
+            PopulateTimerPerLevelData();         
             GameManagerScript.Instance.Save();
             GameManagerScript.Instance.TriggerNextLevelMenu = true;
             TriggerDeath(collision);
@@ -28,5 +29,20 @@ public class StringCollisionScript : MonoBehaviour
         GameManagerScript.Instance.StringPointIntersectedWith = Int16.Parse(collision.contacts[0].collider.name);
         GameManagerScript.Instance.MoveRigidBodies = false;
         GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.InitialiseDeath;
+    }
+
+    void PopulateTimerPerLevelData()
+    {
+        if (GameManagerScript.Instance.timePerLevel.ContainsKey(GameManagerScript.Instance.currentLevel))
+        {
+            if (GameManagerScript.Instance.LevelTime < GameManagerScript.Instance.timePerLevel[GameManagerScript.Instance.currentLevel])
+            {
+                GameManagerScript.Instance.timePerLevel[GameManagerScript.Instance.currentLevel] = GameManagerScript.Instance.LevelTime;
+            }
+        }
+        else
+        {
+            GameManagerScript.Instance.timePerLevel[GameManagerScript.Instance.currentLevel] = GameManagerScript.Instance.LevelTime;
+        }
     }
 }
