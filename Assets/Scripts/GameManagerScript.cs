@@ -71,7 +71,7 @@ public class GameManagerScript : MonoBehaviour
 
     public int animationSpeed;
     AsyncOperation asyncLoad;
-    [SerializeField] private int totalTimeToComplete;
+    [SerializeField] private float totalTimeToComplete;
 
     [SerializeField] public Dictionary<int, float> timePerLevel = new Dictionary<int, float>();
 
@@ -216,26 +216,25 @@ public class GameManagerScript : MonoBehaviour
 
     void DeathAnimation()
     {
-        //Loop 1st Half of string if intersected
-        if (count1stHalf < stringPointIntersectedWith)
+        for (int i = 0; i < animationSpeed; i++)
         {
-            for (int i = 0; i < animationSpeed; i++)
+            //Loop 1st Half of string if intersected
+            if (count1stHalf < stringPointIntersectedWith)
             {
                 sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().startDissolve = true;
                 count1stHalf++;
-            }
+            }         
         }
 
-        //Loop 2nd half of string if intersected
-        if (count2ndHalf < sM.StringPointsGO.Count)
+        for (int i = 0; i < animationSpeed; i++)
         {
-            for (int i = 0; i < animationSpeed; i++)
+            //Loop 2nd half of string if intersected
+            if (count2ndHalf < sM.StringPointsGO.Count)
             {
                 sM.StringPointsGO[count2ndHalf].GetComponent<Dissolve>().startDissolve = true;
                 count2ndHalf++;
             }
         }
-
 
         //Check if each elements dissolve amount has reached 1 meaning animation is done and set dissolveDone to true. If are not done we set to false until the final one has changed
         dissolveDone = false;
@@ -314,9 +313,17 @@ public class GameManagerScript : MonoBehaviour
         return message;
     }
 
-    void CalculateTotalTimePerLevel()
+    public void CalculateTotalTimePerLevel()
     {
+        totalTimeToComplete = 0f;
+        for (int i = 1; i <= maxLevelCount; i++)
+        {
+            if (timePerLevel.ContainsKey(i))
+            {
 
+                totalTimeToComplete += timePerLevel[i];
+            }
+        }
     }
 
     public IEnumerator PlayOrContinue()
@@ -396,11 +403,6 @@ public class GameManagerScript : MonoBehaviour
 
         //We write our ingame variables to this data object when the game closes that then gets written to a file to be loaded next session.
         PlayerData data = new PlayerData(deathCount, currentLevel, totalTimeToComplete, isLevelComplete, timePerLevel);
-        /*data.deathCount = deathCount;
-        data.currentLevel = currentLevel;
-        data.isLevelComplete = isLevelComplete;
-        data.totalTimeToComplete = totalTimeToComplete;
-        data.timePerLevel = timePerLevel;*/
 
 
         bf.Serialize(file, data);
@@ -435,7 +437,7 @@ public class GameManagerScript : MonoBehaviour
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
-        PlayerData data = new PlayerData(0, 0, 0, new Dictionary<int, bool> (maxLevelCount), new Dictionary<int, float>(maxLevelCount));
+        PlayerData data = new PlayerData(0, 0, 0, new Dictionary<int, bool>(maxLevelCount), new Dictionary<int, float>(maxLevelCount));
 
         bf.Serialize(file, data);
         file.Close();
@@ -457,16 +459,16 @@ class PlayerData
     public int currentLevel;
 
     //Total time across all levels to complete the game using best times including revists via level select
-    public int totalTimeToComplete;
+    public float totalTimeToComplete;
 
     public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>(30);
     public Dictionary<int, float> timePerLevel = new Dictionary<int, float>(30);
 
-    public PlayerData(int DeathCount, int CurrentLevel, int TotalTimePerLEvel, Dictionary<int, bool> IsLevelComplete, Dictionary<int, float> TimePerLevel)
+    public PlayerData(int DeathCount, int CurrentLevel, float TotalTimeToComplete, Dictionary<int, bool> IsLevelComplete, Dictionary<int, float> TimePerLevel)
     {
         deathCount = DeathCount;
         currentLevel = CurrentLevel;
-        totalTimeToComplete = TotalTimePerLEvel;
+        totalTimeToComplete = TotalTimeToComplete;
         isLevelComplete = IsLevelComplete;
         timePerLevel = TimePerLevel;
     }

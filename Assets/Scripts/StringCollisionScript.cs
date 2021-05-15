@@ -17,7 +17,8 @@ public class StringCollisionScript : MonoBehaviour
         else if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("EndPoint"))
         {
             GameManagerScript.Instance.isLevelComplete[GameManagerScript.Instance.currentLevel + 1] = true;
-            PopulateTimerPerLevelData();         
+            PopulateTimerPerLevelData();
+            GameManagerScript.Instance.CalculateTotalTimePerLevel();
             GameManagerScript.Instance.Save();
             GameManagerScript.Instance.TriggerNextLevelMenu = true;
             TriggerDeath(collision);

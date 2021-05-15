@@ -22,11 +22,7 @@ public class DeveloperTools : MonoBehaviour
 
         if(Input.GetKeyUp(KeyCode.P))
         {
-            for (int i = 1; i <= GameManagerScript.Instance.timePerLevel.Count; i++)
-            {
-                Debug.Log(GameManagerScript.Instance.timePerLevel[i]);
-            }
-            
+            GameManagerScript.Instance.CalculateTotalTimePerLevel();
         }
 
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject content;
     [SerializeField] Sprite lockSymbol;
     [SerializeField] GameObject pauseMenuPanel;
+    private GameObject[] clones;
 
     private void Awake()
     {
@@ -30,7 +32,7 @@ public class UIManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
-
+        clones = new GameObject[30];
         SetupLevelSelectScreen();
         deathCounter.text = "Deaths: " + GameManagerScript.Instance.DeathCount;
         pauseMenuPanel.SetActive(false);
@@ -94,6 +96,7 @@ public class UIManager : MonoBehaviour
     {
         GameManagerScript.Instance.Save();
         pauseMenuPanel.SetActive(false);
+        UpdateLevelSelect();
         GameManagerScript.Instance.LoadMainMenu();
     }
     
@@ -112,20 +115,41 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 1; i <= GameManagerScript.Instance.maxLevelCount; i++)
         {
-            GameObject clone = Instantiate(button, content.transform.position, Quaternion.identity, content.transform);
-            clone.name = "Level" + i.ToString();
-            clone.GetComponentInChildren<TMP_Text>().text = i.ToString();
+            clones[i - 1] = Instantiate(button, content.transform.position, Quaternion.identity, content.transform);
+            clones[i - 1].name = "Level" + i.ToString();
+            clones[i - 1].GetComponentInChildren<TMP_Text>().text = i.ToString();
 
             if(GameManagerScript.Instance.isLevelComplete.ContainsKey(i) == false && i > 1)
             {
-                Button button = clone.GetComponent<Button>();
+                Button button = clones[i - 1].GetComponent<Button>();
                 button.interactable = false;
-                clone.GetComponent<Image>().sprite = lockSymbol;
+                clones[i - 1].GetComponent<Image>().sprite = lockSymbol;
             }
             else
             {
-                clone.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GameManagerScript.Instance.LevelSelect()); });
+                clones[i - 1].GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GameManagerScript.Instance.LevelSelect()); });
             }
         }     
+    }
+
+    void UpdateLevelSelect()
+    {
+        for (int i = 0; i < clones.Length; i++)
+        {
+            Destroy(clones[i]);
+        }
+        Array.Clear(clones, 0, clones.Length);
+
+        if (GameManagerScript.Instance.currentLevel > 1)
+        {
+            playButtonText.text = "Continue";
+        }
+        else
+        {
+            playButtonText.text = "Play";
+        }
+
+
+        SetupLevelSelectScreen();
     }
 }
