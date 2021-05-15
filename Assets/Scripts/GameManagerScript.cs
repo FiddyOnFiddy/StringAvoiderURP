@@ -41,6 +41,7 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private bool dissolveDone;                                                             //Determines when all string points have finished animation to then transition to next state.
     [SerializeField] private bool triggerNextLevelMenu;                                                     //Used to determine if we collided with the end trigger instead of a wall.
     [SerializeField] private bool initString;                                                               //Used to initalise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
+    [SerializeField] private bool mouseOnUIObject;
 
     [Space(5)]
     [Header("String Collision Info:")]
@@ -84,10 +85,12 @@ public class GameManagerScript : MonoBehaviour
     public float LevelTime { get => levelTime; set => levelTime = value; }
     public float DissolveSpeed { get => dissolveSpeed; set => dissolveSpeed = value; }
     public int DeathCount { get => deathCount; set => deathCount = value; }
+    public bool MouseOnUIObject { get => mouseOnUIObject; }
 
 
     void Awake()
     {
+        #region Initialisation Stuff
         //Checks to see if any Game Managers are present in the scene and either delete or assign this script to them. Necessary for singleton pattern.
         if (_instance != null && _instance != this)
         {
@@ -114,10 +117,15 @@ public class GameManagerScript : MonoBehaviour
         sM = FindObjectOfType<StringMovement>();
 
         currentState = GameState.Idle;
+        #endregion
     }
 
     void Update()
     {
+        Debug.Log(Time.timeScale);
+        mouseOnUIObject = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+
+        #region State switch statement
         //Switch statement which takes our current state and decides what to do based on that state.
         switch (currentState)
         {
@@ -125,6 +133,7 @@ public class GameManagerScript : MonoBehaviour
                 SetUp();
                 break;
             case GameState.Playing:
+                Time.timeScale = 1f;
                 break;
             case GameState.InitialiseDeath:
                 InitialiseDeath();
@@ -139,6 +148,7 @@ public class GameManagerScript : MonoBehaviour
                 NextLevelScreen();
                 break;
         }
+        #endregion
     }
 
     private void FixedUpdate()
@@ -158,9 +168,12 @@ public class GameManagerScript : MonoBehaviour
         endScreenCanvas.enabled = false;
 
 
+
         //Bool check so that if we die and need to reset string we can call setup to reset and reinitialise everthing and not have it try and spawn a new string or enable disable canvasses that shouldn't be.  *** SUBJECT TO CHANGE ***
         if (initString)
         {
+            levelTime = 0f;
+
             sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
             sM.InitialiseString();
 
@@ -172,13 +185,18 @@ public class GameManagerScript : MonoBehaviour
             initString = false;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        WaitForInput();
+
+    }
+
+    public void WaitForInput()
+    {
+        if (Input.GetMouseButtonDown(0) && !GameManagerScript.Instance.MouseOnUIObject)
         {
             sM.previousMousePosition = sM.mousePosition;
             sM.mouseDelta = Vector2.zero;
             currentState = GameState.Playing;
         }
-
     }
 
     void InitialiseDeath()
@@ -259,6 +277,7 @@ public class GameManagerScript : MonoBehaviour
         count2ndHalf = 0;
         stringPointIntersectedWith = 0;
 
+        levelTime = 0f;
         currentState = GameState.Setup;
     }
 
@@ -330,7 +349,18 @@ public class GameManagerScript : MonoBehaviour
         sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
         currentState = GameState.Setup;
         ResetString();
+        Save();
          
+    }
+
+    public void LoadMainMenu()
+    {
+        SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
+        currentState = GameState.Idle;
+        sM.DeleteString();
+        dissolveMaterials.Clear();
+        gameCanvas.enabled = false;
+        mainMenuCanvas.enabled = true;
     }
 
 

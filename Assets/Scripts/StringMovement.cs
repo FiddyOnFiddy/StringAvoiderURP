@@ -38,7 +38,7 @@ public class StringMovement : MonoBehaviour
     void Update()
     {
         CollectInput();
-        if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing)
+        if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && !GameManagerScript.Instance.MouseOnUIObject)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -137,5 +137,18 @@ public class StringMovement : MonoBehaviour
 
             stringPointsGO[i].transform.position = stringPointsData[i];
         }
+    }
+
+    public void DeleteString()
+    {
+
+        for (int i = 0; i < NoOfSegments; i++)
+        {
+            Destroy(stringPointsGO[i]);
+        }
+
+        stringPointsGO.Clear();
+        stringPointsRB.Clear();
+        StringPointsData.Clear();
     }
 }

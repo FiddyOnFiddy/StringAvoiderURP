@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject button;
     [SerializeField] GameObject content;
     [SerializeField] Sprite lockSymbol;
+    [SerializeField] GameObject pauseMenuPanel;
 
     private void Awake()
     {
@@ -32,6 +33,7 @@ public class UIManager : MonoBehaviour
 
         SetupLevelSelectScreen();
         deathCounter.text = "Deaths: " + GameManagerScript.Instance.DeathCount;
+        pauseMenuPanel.SetActive(false);
 
     }
 
@@ -49,7 +51,7 @@ public class UIManager : MonoBehaviour
 
     public void PlayGame()
     {
-        StartCoroutine(GameManagerScript.Instance.PlayOrContinue());        
+        StartCoroutine(GameManagerScript.Instance.PlayOrContinue());
     }
 
     public void NextLevel()
@@ -68,6 +70,42 @@ public class UIManager : MonoBehaviour
     {
         GameManagerScript.Instance.levelSelectCanvas.enabled = false;
         GameManagerScript.Instance.mainMenuCanvas.enabled = true;
+    }
+
+    public void RestartButton()
+    {
+        GameManagerScript.Instance.ReloadLevel();
+    }
+
+    public void PauseMenuButton()
+    {
+        Time.timeScale = 0f;
+        pauseMenuPanel.SetActive(true);
+        GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
+    }
+
+    public void ResumeButton()
+    {
+        //Time.timeScale = 1f;
+        pauseMenuPanel.SetActive(false);
+    }
+
+    public void MainMenuButton()
+    {
+        GameManagerScript.Instance.Save();
+        pauseMenuPanel.SetActive(false);
+        GameManagerScript.Instance.LoadMainMenu();
+    }
+    
+    public void QuitButton()
+    {
+        GameManagerScript.Instance.Save();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+         Application.Quit();
+#endif
     }
 
     void SetupLevelSelectScreen()
