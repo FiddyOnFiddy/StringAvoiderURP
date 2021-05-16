@@ -26,6 +26,7 @@ public class GameManagerScript : MonoBehaviour
         Dead,               //Run in fixed update for consistent animation
         GameOver,           //For when the player has died and death animation has finished
         NextLevelMenu,      //For when the player reaches the end point and triggers the next level screen with medal
+        LastLevelMenu
     }
 
     [Header("Global References:")]
@@ -39,7 +40,7 @@ public class GameManagerScript : MonoBehaviour
     [Header("Boolean States:")]
     [SerializeField] private bool moveRigidBodies;                                                          //Controls when to update physics ensuring it's after input + render update.
     [SerializeField] private bool dissolveDone;                                                             //Determines when all string points have finished animation to then transition to next state.
-    [SerializeField] private bool triggerNextLevelMenu;                                                     //Used to determine if we collided with the end trigger instead of a wall.
+    [SerializeField] private bool triggerNextLevelMenu, triggerLastLevelMenu;                               //Used to determine if we collided with the end trigger instead of a wall.
     [SerializeField] private bool initString;                                                               //Used to initalise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
     [SerializeField] private bool mouseOnUIObject;
 
@@ -74,6 +75,8 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private float totalTimeToComplete;
 
     [SerializeField] public Dictionary<int, float> timePerLevel = new Dictionary<int, float>();
+    public Dictionary<int, string> currentMedalPerLevel = new Dictionary<int, string>(30);
+    public string bronze = "Bronze", silver = "Silver", gold = "Gold", endScreenText;
 
 
 
@@ -84,6 +87,7 @@ public class GameManagerScript : MonoBehaviour
     public StringMovement SM { get => sM; set => sM = value; }
     public bool MoveRigidBodies { get => moveRigidBodies; set => moveRigidBodies = value; }
     public bool TriggerNextLevelMenu { get => triggerNextLevelMenu; set => triggerNextLevelMenu = value; }
+    public bool TriggerLastLevelMenu { get => triggerLastLevelMenu; set => triggerLastLevelMenu = value; }
     public bool InitString { get => initString; set => initString = value; }
     public int Count2ndHalf { get => count2ndHalf; set => count2ndHalf = value; }
     public int Count1stHalf { get => count1stHalf; set => count1stHalf = value; }
@@ -152,6 +156,9 @@ public class GameManagerScript : MonoBehaviour
                 break;
             case GameState.NextLevelMenu:
                 NextLevelScreen();
+                break;
+            case GameState.LastLevelMenu:
+                LastLevelScreen();
                 break;
         }
         #endregion
@@ -223,7 +230,7 @@ public class GameManagerScript : MonoBehaviour
             {
                 sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().startDissolve = true;
                 count1stHalf++;
-            }         
+            }
         }
 
         for (int i = 0; i < animationSpeed; i++)
@@ -257,6 +264,10 @@ public class GameManagerScript : MonoBehaviour
             {
                 currentState = GameState.NextLevelMenu;
             }
+            else if(triggerLastLevelMenu)
+            {
+                currentState = GameState.LastLevelMenu;
+            }
             else
             {
                 //As of now the player automatically respawns after they die and the animation has finished but perhaps we spawn a death ui for retry/main menu/level select or quit? I'm more drawn to insta respawn
@@ -288,28 +299,40 @@ public class GameManagerScript : MonoBehaviour
 
     void NextLevelScreen()
     {
+        CalculateMedal();
         endScreenCanvas.enabled = true;
-        UIManager.Instance.levelTime.text = "Level Time: " + levelTime.ToString() + "       " + CalculateMedal();
+        UIManager.Instance.lastLevelPanel.SetActive(false);
+        UIManager.Instance.endScreenPanel.SetActive(true);
+        UIManager.Instance.levelTime.text = "Level Time: " + levelTime.ToString() + "       " + endScreenText;
+        
     }
 
-    string CalculateMedal()
+    void LastLevelScreen()
+    {
+        CalculateMedal();
+        endScreenCanvas.enabled = true;
+        UIManager.Instance.lastLevelPanel.SetActive(true);
+        UIManager.Instance.endScreenPanel.SetActive(false);
+        UIManager.Instance.lastLevelPanelText.text = "Time To Complete All Levels: " + totalTimeToComplete.ToString();
+    }
+
+    public string CalculateMedal()
     {
         string message = null;
         if (levelTime < medalSplitsDict[currentLevel].x)
         {
-            message = "You received a gold medal";
+            message = gold;      
 
         }
         else if (levelTime < medalSplitsDict[currentLevel].y)
         {
-            message = "You received a silver medal";
-
+            message = silver;
         }
         else
         {
-            message = "You received a bronze medal";
-
+            message = bronze;
         }
+        endScreenText = "You Received A " + message + " " + "Medal!";
         return message;
     }
 
@@ -343,19 +366,46 @@ public class GameManagerScript : MonoBehaviour
 
     public IEnumerator LoadNextLevel()
     {
-        SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
-
-        currentLevel++;
-        asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
-
-        while (!asyncLoad.isDone)
+        if(currentLevel < maxLevelCount)
         {
-            yield return null;
-        }
+            SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
 
-        sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
-        currentState = GameState.Setup;
-        ResetString();
+            currentLevel++;
+            asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+
+            while (!asyncLoad.isDone)
+            {
+                yield return null;
+            }
+
+            sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
+            currentState = GameState.Setup;
+            ResetString();
+            Save();
+        }
+        
+    }
+
+    public IEnumerator LoadPreviousLevel()
+    {
+        if(currentLevel > 1)
+        {
+            SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
+
+            currentLevel--;
+            asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+
+            while (!asyncLoad.isDone)
+            {
+                yield return null;
+            }
+
+            sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
+            currentState = GameState.Setup;
+            ResetString();
+            Save();
+        }
+        
     }
 
     public void ReloadLevel()
@@ -378,6 +428,7 @@ public class GameManagerScript : MonoBehaviour
         sM.DeleteString();
         dissolveMaterials.Clear();
         gameCanvas.enabled = false;
+        endScreenCanvas.enabled = false;
         mainMenuCanvas.enabled = true;
     }
 
@@ -402,7 +453,7 @@ public class GameManagerScript : MonoBehaviour
         FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
 
         //We write our ingame variables to this data object when the game closes that then gets written to a file to be loaded next session.
-        PlayerData data = new PlayerData(deathCount, currentLevel, totalTimeToComplete, isLevelComplete, timePerLevel);
+        PlayerData data = new PlayerData(deathCount, currentLevel, totalTimeToComplete, isLevelComplete, timePerLevel, currentMedalPerLevel);
 
 
         bf.Serialize(file, data);
@@ -430,6 +481,7 @@ public class GameManagerScript : MonoBehaviour
             isLevelComplete = data.isLevelComplete;
             totalTimeToComplete = data.totalTimeToComplete;
             timePerLevel = data.timePerLevel;
+            currentMedalPerLevel = data.currentMedalPerLevel;
         }
     }
 
@@ -437,7 +489,7 @@ public class GameManagerScript : MonoBehaviour
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
-        PlayerData data = new PlayerData(0, 0, 0, new Dictionary<int, bool>(maxLevelCount), new Dictionary<int, float>(maxLevelCount));
+        PlayerData data = new PlayerData(0, 0, 0, new Dictionary<int, bool>(maxLevelCount), new Dictionary<int, float>(maxLevelCount), new Dictionary<int, string>(maxLevelCount));
 
         bf.Serialize(file, data);
         file.Close();
@@ -463,14 +515,16 @@ class PlayerData
 
     public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>(30);
     public Dictionary<int, float> timePerLevel = new Dictionary<int, float>(30);
+    public Dictionary<int, string> currentMedalPerLevel = new Dictionary<int, string>(30);
 
-    public PlayerData(int DeathCount, int CurrentLevel, float TotalTimeToComplete, Dictionary<int, bool> IsLevelComplete, Dictionary<int, float> TimePerLevel)
+    public PlayerData(int DeathCount, int CurrentLevel, float TotalTimeToComplete, Dictionary<int, bool> IsLevelComplete, Dictionary<int, float> TimePerLevel, Dictionary<int, string> CurrentMedalPerLevel)
     {
         deathCount = DeathCount;
         currentLevel = CurrentLevel;
         totalTimeToComplete = TotalTimeToComplete;
         isLevelComplete = IsLevelComplete;
         timePerLevel = TimePerLevel;
+        currentMedalPerLevel = CurrentMedalPerLevel;
     }
 }
 

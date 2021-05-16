@@ -20,6 +20,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] Sprite lockSymbol;
     [SerializeField] GameObject pauseMenuPanel;
     private GameObject[] clones;
+    [SerializeField] public TMP_Text lastLevelPanelText;
+    [SerializeField] public GameObject endScreenPanel, lastLevelPanel;
 
     private void Awake()
     {
@@ -35,6 +37,8 @@ public class UIManager : MonoBehaviour
         clones = new GameObject[30];
         SetupLevelSelectScreen();
         deathCounter.text = "Deaths: " + GameManagerScript.Instance.DeathCount;
+        lastLevelPanel.SetActive(false);
+        endScreenPanel.SetActive(true);
         pauseMenuPanel.SetActive(false);
 
     }
@@ -49,6 +53,11 @@ public class UIManager : MonoBehaviour
         {
             playButtonText.text = "Play";
         }
+    }
+
+    private void Update()
+    {
+
     }
 
     public void PlayGame()
@@ -66,6 +75,9 @@ public class UIManager : MonoBehaviour
     {
         GameManagerScript.Instance.levelSelectCanvas.enabled = true;
         GameManagerScript.Instance.mainMenuCanvas.enabled = false;
+
+
+
     }
 
     public void BackButton()
@@ -99,7 +111,7 @@ public class UIManager : MonoBehaviour
         UpdateLevelSelect();
         GameManagerScript.Instance.LoadMainMenu();
     }
-    
+
     public void QuitButton()
     {
         GameManagerScript.Instance.Save();
@@ -119,7 +131,9 @@ public class UIManager : MonoBehaviour
             clones[i - 1].name = "Level" + i.ToString();
             clones[i - 1].GetComponentInChildren<TMP_Text>().text = i.ToString();
 
-            if(GameManagerScript.Instance.isLevelComplete.ContainsKey(i) == false && i > 1)
+            GameManagerScript.Instance.currentMedalPerLevel.TryGetValue(i, out string value);
+
+            if (GameManagerScript.Instance.isLevelComplete.ContainsKey(i) == false && i > 1)
             {
                 Button button = clones[i - 1].GetComponent<Button>();
                 button.interactable = false;
@@ -128,8 +142,21 @@ public class UIManager : MonoBehaviour
             else
             {
                 clones[i - 1].GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GameManagerScript.Instance.LevelSelect()); });
+
+                if (value == GameManagerScript.Instance.gold)
+                {
+                    clones[i - 1].GetComponent<Image>().color = Color.yellow;
+                }
+                else if (value == GameManagerScript.Instance.silver)
+                {
+                    clones[i - 1].GetComponent<Image>().color = Color.cyan;
+                }
+                else if(value == GameManagerScript.Instance.bronze)
+                {
+                    clones[i - 1].GetComponent<Image>().color =Color.red;
+                }
             }
-        }     
+        }
     }
 
     void UpdateLevelSelect()
@@ -152,4 +179,5 @@ public class UIManager : MonoBehaviour
 
         SetupLevelSelectScreen();
     }
+
 }
