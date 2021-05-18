@@ -48,18 +48,14 @@ MonoBehaviour:
   currentState: 0
   sM: {fileID: 0}
   mainMenuCanvas: {fileID: 0}
-  levelCanvas: {fileID: 0}
-  endLevelCanvas: {fileID: 0}
+  levelSelectCanvas: {fileID: 0}
+  gameCanvas: {fileID: 0}
+  endScreenCanvas: {fileID: 0}
   dissolveMaterials: []
   moveRigidBodies: 0
   dissolveDone: 0
   triggerNextLevelMenu: 0
   initString: 0
-  isPlayContinue: 0
-  isLevelSelectScreen: 0
-  isOptions: 0
-  isSpeedrun: 0
-  isRespawn: 0
   stringPointIntersectedWith: 0
   count2ndHalf: 0
   count1stHalf: 0
@@ -67,128 +63,39 @@ MonoBehaviour:
   currentLevel: 1
   levelTime: 0
   dissolveSpeed: 2.5
-  deathCounter: {fileID: 0}
   medalSplits:
-  - Level: 0
-    Bronze: 5
-    Silver: 3
-    Gold: 1
-  - Level: 1
-    Bronze: 8
-    Silver: 6
-    Gold: 4
-  - Level: 2
-    Bronze: 7
-    Silver: 4
-    Gold: 3
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
-  - Level: 0
-    Bronze: 0
-    Silver: 0
-    Gold: 0
+  - {x: 92701.625, y: 6.95e-43}
+  - {x: 8.229819e-10, y: 0.00000021176453}
+  - {x: -2.377126e+29, y: 6.95e-43}
+  - {x: 4.6e-44, y: 0.00000016688938}
+  - {x: 92701.625, y: 6.95e-43}
+  - {x: 92701.875, y: 6.95e-43}
+  - {x: -2.377132e+29, y: 6.95e-43}
+  - {x: 6.9e-44, y: 0.0000006489172}
+  - {x: 92701.625, y: 6.95e-43}
+  - {x: 92701.875, y: 6.95e-43}
+  - {x: 92702.125, y: 6.95e-43}
+  - {x: 9.583458e+26, y: 11229.858}
+  - {x: -2.377138e+29, y: 6.95e-43}
+  - {x: 9.1e-44, y: 1.094709e+27}
+  - {x: 92701.625, y: 6.95e-43}
+  - {x: 92701.875, y: 6.95e-43}
+  - {x: 92702.125, y: 6.95e-43}
+  - {x: 92702.375, y: 6.95e-43}
+  - {x: -2.3771471e+29, y: 6.95e-43}
+  - {x: 1.36e-43, y: 1.0561242e-38}
+  - {x: 92701.625, y: 6.95e-43}
+  - {x: 92701.875, y: 6.95e-43}
+  - {x: 92702.125, y: 6.95e-43}
+  - {x: 92702.375, y: 6.95e-43}
+  - {x: 92702.625, y: 6.95e-43}
+  - {x: 92702.875, y: 6.95e-43}
+  - {x: -2.3771562e+29, y: 6.95e-43}
+  - {x: 2.03e-43, y: 1.0653034e-38}
+  - {x: 178710.25, y: 6.95e-43}
+  - {x: 178711.75, y: 6.95e-43}
+  maxLevelCount: 0
+  animationSpeed: 2
 --- !u!114 &2104272803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,7 +108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7db5c315b9b9d7343a5014b2950edc7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timerText: {fileID: 0}
 --- !u!114 &2089994637434665713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,3 +121,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playButtonText: {fileID: 0}
+  levelTime: {fileID: 0}
+  deathCounter: {fileID: 0}
+  timerText: {fileID: 0}
+  button: {fileID: 0}
+  content: {fileID: 0}
+  lockSymbol: {fileID: 0}
