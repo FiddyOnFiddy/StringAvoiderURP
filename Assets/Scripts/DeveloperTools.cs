@@ -22,52 +22,19 @@ public class DeveloperTools : MonoBehaviour
 
         if(Input.GetKeyUp(KeyCode.P))
         {
-            Debug.Log(GameManagerScript.Instance.medalSplitsDict.Count);
 
-            for (int i = 1; i <= GameManagerScript.Instance.medalSplitsDict.Count; i++)
-            {
-                Debug.Log(GameManagerScript.Instance.medalSplitsDict[i]);
-
-            }
         }
 
 
         if (Input.GetKeyUp(KeyCode.RightArrow))
         {
-            StartCoroutine(ChangeLevel(true));
+            StartCoroutine(GameManagerScript.Instance.LoadNextLevel());
 
         }
         else if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
-            StartCoroutine(ChangeLevel(false));
+            StartCoroutine(GameManagerScript.Instance.LoadPreviousLevel());
 
         }
     }
-
-    IEnumerator ChangeLevel(bool isNextLevel)
-    {
-
-        SceneManager.UnloadSceneAsync("level" + GameManagerScript.Instance.currentLevel.ToString(), UnloadSceneOptions.None);
-
-        if (isNextLevel)
-        {
-            GameManagerScript.Instance.currentLevel++;
-        }
-        else if(!isNextLevel)
-        {
-            GameManagerScript.Instance.currentLevel--;
-        }
-        asyncLoad = SceneManager.LoadSceneAsync("level" + GameManagerScript.Instance.currentLevel.ToString(), LoadSceneMode.Additive);
-        // Wait until the asynchronous scene fully loads
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-
-        GameManagerScript.Instance.SM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
-        GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
-        GameManagerScript.Instance.ResetString();
-        GameManagerScript.Instance.Save();
-    }
-
 }

@@ -10,12 +10,8 @@ public class TimerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Setup)
-        {
-            GameManagerScript.Instance.LevelTime = 0f;
 
-        }
-        else if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing)
+        if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing)
         {
             GameManagerScript.Instance.LevelTime += Time.deltaTime;
         }
