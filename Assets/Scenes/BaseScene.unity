@@ -230,7 +230,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -372,7 +372,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: noOfSegments
-      value: 100
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: spawnPoint.x
@@ -384,7 +384,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: segmentLength
-      value: 0.04
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: stringPointPrefab
@@ -432,7 +432,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1738440103, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -10361.077
+      value: -0.00024414062
       objectReference: {fileID: 0}
     - target: {fileID: 304533970042714434, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
