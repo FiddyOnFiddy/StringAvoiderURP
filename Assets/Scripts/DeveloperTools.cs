@@ -22,7 +22,6 @@ public class DeveloperTools : MonoBehaviour
 
         if(Input.GetKeyUp(KeyCode.P))
         {
-
         }
 
 
