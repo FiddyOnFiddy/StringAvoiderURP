@@ -68,6 +68,6 @@ Material:
     m_Colors:
     - DistortionPosition: {r: 1, g: 1, b: 0, a: 0}
     - DistortionTiling: {r: 0.61, g: 0.36, b: 0, a: 0}
-    - _DissolveColour: {r: 0, g: 103.61853, b: 256, a: 0}
+    - _DissolveColour: {r: 0, g: 176.88321, b: 255.99997, a: 0}
     - _RandomSeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

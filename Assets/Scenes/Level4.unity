@@ -159,22 +159,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3459101966410363328, guid: ddb2a90dd1281d84eb73d11f7024462f, type: 3}
-      propertyPath: m_Color.a
-      value: 0.19607843
-      objectReference: {fileID: 0}
-    - target: {fileID: 3459101966410363328, guid: ddb2a90dd1281d84eb73d11f7024462f, type: 3}
-      propertyPath: m_Color.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3459101966410363328, guid: ddb2a90dd1281d84eb73d11f7024462f, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3459101966410363328, guid: ddb2a90dd1281d84eb73d11f7024462f, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
+    - target: {fileID: 574168432, guid: ddb2a90dd1281d84eb73d11f7024462f, type: 3}
+      propertyPath: keyRB
+      value: 
+      objectReference: {fileID: 2017904051}
     - target: {fileID: 4199107528527822752, guid: ddb2a90dd1281d84eb73d11f7024462f, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -225,38 +213,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ddb2a90dd1281d84eb73d11f7024462f, type: 3}
---- !u!1 &574168431 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4199107528527822758, guid: ddb2a90dd1281d84eb73d11f7024462f, type: 3}
-  m_PrefabInstance: {fileID: 574168430}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &574168432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 574168431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4bbd76bcbd7f434497deff00796bf78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  keyRB: {fileID: 2017904051}
-  hasKey: 0
-  distance: 0.05
-  direction: {x: 0, y: 0}
-  activationDistance: 1.64
-  gravityRange: 1.2
-  minForce: 57.19
-  maxForce: 23.6
-  minDrag: 0.4
-  maxDrag: 1.09
-  force: 24
-  drag: 1
-  distancePercentage: 0.04
-  sprite: {fileID: 0}
-  defaultColor: {r: 1, g: 1, b: 0, a: 0.19607843}
 --- !u!1 &1012915174
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,6 +547,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1236708631 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4777603590230535181, guid: 617f6d03847c0134b850408c0533406b, type: 3}
+  m_PrefabInstance: {fileID: 4728674667962536764}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1236708632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1236708631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deb9b36e472ad93478071add491ef431, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockList:
+  - {fileID: 1369592406}
+  defaultScale: {x: 0, y: 0, z: 0}
+  currentScale: {x: 0, y: 0, z: 0}
+  speed: 1
+--- !u!1 &1369592406 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4199107528527822758, guid: ddb2a90dd1281d84eb73d11f7024462f, type: 3}
+  m_PrefabInstance: {fileID: 574168430}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1622308081
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -691,7 +674,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 294446433442866163, guid: 617f6d03847c0134b850408c0533406b, type: 3}
       propertyPath: m_DynamicOccludee
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 913219271056402873, guid: 617f6d03847c0134b850408c0533406b, type: 3}
       propertyPath: m_RootOrder
@@ -738,8 +721,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3842157154725005681, guid: 617f6d03847c0134b850408c0533406b, type: 3}
+      propertyPath: m_EdgeRadius
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842157154725005681, guid: 617f6d03847c0134b850408c0533406b, type: 3}
       propertyPath: m_Points.Array.size
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842157154725005681, guid: 617f6d03847c0134b850408c0533406b, type: 3}
+      propertyPath: m_UseAdjacentEndPoint
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842157154725005681, guid: 617f6d03847c0134b850408c0533406b, type: 3}
+      propertyPath: m_AdjacentStartPoint.x
+      value: -3.47
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842157154725005681, guid: 617f6d03847c0134b850408c0533406b, type: 3}
+      propertyPath: m_UseAdjacentStartPoint
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3842157154725005681, guid: 617f6d03847c0134b850408c0533406b, type: 3}
       propertyPath: m_Points.Array.data[0].y
