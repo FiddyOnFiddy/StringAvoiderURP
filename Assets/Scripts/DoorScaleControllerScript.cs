@@ -50,7 +50,5 @@ public class DoorScaleControllerScript : MonoBehaviour
     {
         //transform.localScale = Vector3.Lerp(currentScale, defaultScale, Time.time * speed);
         transform.localScale = Vector3.MoveTowards(currentScale, defaultScale, speed / 100);
-
-
     }
 }

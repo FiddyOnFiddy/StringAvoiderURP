@@ -15,12 +15,13 @@ public class StringMovement : MonoBehaviour
     [Space(5)]
     [Header("String Initialisation Data:")]
     [SerializeField] private int noOfSegments;
-    [SerializeField] private float segmentLength = 0.025f;
-    [SerializeField] private float radius = 0.1f;
+
+    [SerializeField] private float segmentLength;
+    [SerializeField] private float radius;
 
     [Space(5)]
     [Header("Speed Limit:")]
-    [SerializeField] private float stringSpeedLimit = 0.25f;
+    [SerializeField] private float stringSpeedLimit;
 
     [Space(5)]
     [Header("Containers For All Data:")]
@@ -100,10 +101,11 @@ public class StringMovement : MonoBehaviour
 
     public void CollectInput()
     {
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mouseDelta = mousePosition - previousMousePosition;
         mouseDelta.x = Mathf.Clamp(mouseDelta.x, -stringSpeedLimit, stringSpeedLimit);
         mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseDelta = mousePosition - previousMousePosition;
+        
 
     }    
 

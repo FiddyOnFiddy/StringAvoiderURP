@@ -98,16 +98,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   keyRB: {fileID: 0}
   hasKey: 0
-  distance: 0.05
+  distance: 0
   direction: {x: 0, y: 0}
-  activationDistance: 1.64
-  gravityRange: 1.2
-  minForce: 57.19
-  maxForce: 23.6
-  minDrag: 0.4
-  maxDrag: 1.09
-  force: 24
-  drag: 1
-  distancePercentage: 0.04
+  activationDistance: 0.25
+  gravityRange: 0.6
+  minForce: 0
+  maxForce: 200
+  minDrag: 0
+  maxDrag: 3
+  force: 0
+  drag: 0
+  distancePercentage: 0
   sprite: {fileID: 0}
   defaultColor: {r: 1, g: 1, b: 0, a: 0.19607843}

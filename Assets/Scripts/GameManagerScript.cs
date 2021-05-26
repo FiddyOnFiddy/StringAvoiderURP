@@ -8,6 +8,7 @@ using Unity;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 
 public class GameManagerScript : MonoBehaviour
@@ -78,6 +79,10 @@ public class GameManagerScript : MonoBehaviour
     public Dictionary<int, string> currentMedalPerLevel = new Dictionary<int, string>(30);
     public string bronze = "Bronze", silver = "Silver", gold = "Gold", endScreenText;
 
+    [SerializeField] private float _hudRefreshRate;
+ 
+    private float _timer;
+    
 
 
 
@@ -99,6 +104,8 @@ public class GameManagerScript : MonoBehaviour
 
     void Awake()
     {
+        Application.targetFrameRate = 144;
+        
         #region Initialisation Stuff
         //Checks to see if any Game Managers are present in the scene and either delete or assign this script to them. Necessary for singleton pattern.
         if (_instance != null && _instance != this)
@@ -134,6 +141,8 @@ public class GameManagerScript : MonoBehaviour
     void Update()
     {
         mouseOnUIObject = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+        ShowFPS();
+        
 
         #region State switch statement
         //Switch statement which takes our current state and decides what to do based on that state.
@@ -162,6 +171,16 @@ public class GameManagerScript : MonoBehaviour
                 break;
         }
         #endregion
+    }
+
+    void ShowFPS()
+    {
+        if (Time.unscaledTime > _timer)
+        {
+            int fps = (int)(1f / Time.unscaledDeltaTime);
+            UIManager.Instance.fpsCounterLabel.text = fps.ToString();
+            _timer = Time.unscaledTime + _hudRefreshRate;
+        }
     }
 
     private void FixedUpdate()
@@ -204,7 +223,7 @@ public class GameManagerScript : MonoBehaviour
 
     public void WaitForInput()
     {
-        if (Input.GetMouseButtonDown(0) && !GameManagerScript.Instance.MouseOnUIObject)
+        if (Input.GetMouseButtonDown(0) && !GameManagerScript.Instance.MouseOnUIObject && UIManager.Instance.pauseMenuPanel.activeSelf == false)
         {
             sM.previousMousePosition = sM.mousePosition;
             sM.mouseDelta = Vector2.zero;
@@ -496,7 +515,7 @@ public class GameManagerScript : MonoBehaviour
         bf.Serialize(file, data);
         file.Close();
     }
-
+    
 }
 
 
