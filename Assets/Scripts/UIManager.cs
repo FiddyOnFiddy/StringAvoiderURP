@@ -22,6 +22,7 @@ public class UIManager : MonoBehaviour
     private GameObject[] clones;
     [SerializeField] public TMP_Text lastLevelPanelText;
     [SerializeField] public GameObject endScreenPanel, lastLevelPanel;
+    [SerializeField] public Color bronze, silver, gold;
 
     private void Awake()
     {
@@ -34,6 +35,7 @@ public class UIManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+
         clones = new GameObject[30];
         SetupLevelSelectScreen();
         deathCounter.text = "Deaths: " + GameManagerScript.Instance.DeathCount;
@@ -54,12 +56,6 @@ public class UIManager : MonoBehaviour
             playButtonText.text = "Play";
         }
     }
-
-    private void Update()
-    {
-
-    }
-
     public void PlayGame()
     {
         StartCoroutine(GameManagerScript.Instance.PlayOrContinue());
@@ -83,6 +79,7 @@ public class UIManager : MonoBehaviour
     public void BackButton()
     {
         GameManagerScript.Instance.levelSelectCanvas.enabled = false;
+        GameManagerScript.Instance.optionsCanvas.enabled = false;
         GameManagerScript.Instance.mainMenuCanvas.enabled = true;
     }
 
@@ -112,6 +109,17 @@ public class UIManager : MonoBehaviour
         GameManagerScript.Instance.LoadMainMenu();
     }
 
+    public void OptionsButton()
+    {
+        GameManagerScript.Instance.mainMenuCanvas.enabled = false;
+        GameManagerScript.Instance.optionsCanvas.enabled = true;
+    }
+
+    public void ResetSaveButton()
+    {
+        GameManagerScript.Instance.ResetSaveFile();
+        GameManagerScript.Instance.Load();
+    }
     public void QuitButton()
     {
         GameManagerScript.Instance.Save();

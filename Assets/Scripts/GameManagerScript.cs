@@ -33,7 +33,7 @@ public class GameManagerScript : MonoBehaviour
     //List of references all scripts and this script require. Store all references in Game Manager so there is a centralised location for references and all scripts pass through Game Manager for access.
     [SerializeField] private GameState currentState;                                                        //Tracks which state we are currently in which is passed to a switch statement for processing.
     [SerializeField] private StringMovement sM;                                                             //Holds reference to the string and all it's child components.
-    [SerializeField] public Canvas mainMenuCanvas, levelSelectCanvas, gameCanvas, endScreenCanvas;          //Reference to all UI Canvas for various Game States.
+    [SerializeField] public Canvas mainMenuCanvas, levelSelectCanvas, gameCanvas, endScreenCanvas, optionsCanvas;          //Reference to all UI Canvas for various Game States.
     [SerializeField] private List<Material> dissolveMaterials;                                              //Reference to materials attached to each string point allowing us to access dissolve script plus material per string point.
 
     [Space(5)]
@@ -71,13 +71,12 @@ public class GameManagerScript : MonoBehaviour
     public int maxLevelCount;
 
     public int animationSpeed;
-    AsyncOperation asyncLoad;
+    private AsyncOperation _asyncLoad;
     [SerializeField] private float totalTimeToComplete;
 
     [SerializeField] public Dictionary<int, float> timePerLevel = new Dictionary<int, float>();
     public Dictionary<int, string> currentMedalPerLevel = new Dictionary<int, string>(30);
     public string bronze = "Bronze", silver = "Silver", gold = "Gold", endScreenText;
-
 
 
 
@@ -121,6 +120,7 @@ public class GameManagerScript : MonoBehaviour
         gameCanvas.enabled = false;
         levelSelectCanvas.enabled = false;
         endScreenCanvas.enabled = false;
+        optionsCanvas.enabled = false;
 
         Load();
 
@@ -272,6 +272,8 @@ public class GameManagerScript : MonoBehaviour
             {
                 //As of now the player automatically respawns after they die and the animation has finished but perhaps we spawn a death ui for retry/main menu/level select or quit? I'm more drawn to insta respawn
                 currentState = GameState.GameOver;
+
+                
             }
         }
     }
@@ -352,10 +354,10 @@ public class GameManagerScript : MonoBehaviour
     public IEnumerator PlayOrContinue()
     {
 
-        asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+        _asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
 
         // Wait until the asynchronous scene fully loads
-        while (!asyncLoad.isDone)
+        while (!_asyncLoad.isDone)
         {
             yield return null;
         }
@@ -371,9 +373,9 @@ public class GameManagerScript : MonoBehaviour
             SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
 
             currentLevel++;
-            asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+            _asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
 
-            while (!asyncLoad.isDone)
+            while (!_asyncLoad.isDone)
             {
                 yield return null;
             }
@@ -393,9 +395,9 @@ public class GameManagerScript : MonoBehaviour
             SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
 
             currentLevel--;
-            asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+            _asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
 
-            while (!asyncLoad.isDone)
+            while (!_asyncLoad.isDone)
             {
                 yield return null;
             }
@@ -435,10 +437,10 @@ public class GameManagerScript : MonoBehaviour
 
     public IEnumerator LevelSelect()
     {
-        asyncLoad = SceneManager.LoadSceneAsync(EventSystem.current.currentSelectedGameObject.name, LoadSceneMode.Additive);
+        _asyncLoad = SceneManager.LoadSceneAsync(EventSystem.current.currentSelectedGameObject.name, LoadSceneMode.Additive);
         currentLevel = Int16.Parse(System.Text.RegularExpressions.Regex.Match(EventSystem.current.currentSelectedGameObject.name, @"\d+").Value);
 
-        while (!asyncLoad.isDone)
+        while (!_asyncLoad.isDone)
         {
             yield return null;
         }
@@ -489,7 +491,7 @@ public class GameManagerScript : MonoBehaviour
     {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
-        PlayerData data = new PlayerData(0, 0, 0, new Dictionary<int, bool>(maxLevelCount), new Dictionary<int, float>(maxLevelCount), new Dictionary<int, string>(maxLevelCount));
+        PlayerData data = new PlayerData(0, 1, 0, new Dictionary<int, bool>(maxLevelCount), new Dictionary<int, float>(maxLevelCount), new Dictionary<int, string>(maxLevelCount));
 
         bf.Serialize(file, data);
         file.Close();
@@ -513,9 +515,11 @@ class PlayerData
     //Total time across all levels to complete the game using best times including revists via level select
     public float totalTimeToComplete;
 
+
     public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>(30);
     public Dictionary<int, float> timePerLevel = new Dictionary<int, float>(30);
     public Dictionary<int, string> currentMedalPerLevel = new Dictionary<int, string>(30);
+
 
     public PlayerData(int DeathCount, int CurrentLevel, float TotalTimeToComplete, Dictionary<int, bool> IsLevelComplete, Dictionary<int, float> TimePerLevel, Dictionary<int, string> CurrentMedalPerLevel)
     {
@@ -527,4 +531,3 @@ class PlayerData
         currentMedalPerLevel = CurrentMedalPerLevel;
     }
 }
-

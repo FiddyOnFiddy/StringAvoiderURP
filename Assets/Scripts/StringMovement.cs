@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
+using UnityEngine.Rendering.Universal;
 
 public class StringMovement : MonoBehaviour
 {
@@ -27,9 +31,9 @@ public class StringMovement : MonoBehaviour
 
 
     [Space(2)]
-    [SerializeField] private Transform spawnPoint;  
+    [SerializeField] private Transform spawnPoint;
 
-	public List<GameObject> StringPointsGO { get => stringPointsGO; set => stringPointsGO = value; }
+    public List<GameObject> StringPointsGO { get => stringPointsGO; set => stringPointsGO = value; }
     public List<Rigidbody2D> StringPointsRB { get => stringPointsRB; set => stringPointsRB = value; }
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
     public int NoOfSegments { get => noOfSegments; set => noOfSegments = value; }
@@ -37,9 +41,9 @@ public class StringMovement : MonoBehaviour
 
     void Update()
     {
-        CollectInput();
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && !GameManagerScript.Instance.MouseOnUIObject)
         {
+            CollectInput();
             if (Input.GetMouseButtonDown(0))
             {
                 
@@ -52,6 +56,8 @@ public class StringMovement : MonoBehaviour
                 UpdateStringPointsData(mouseDelta.x, mouseDelta.y);
                 GameManagerScript.Instance.MoveRigidBodies = true;
                 previousMousePosition = mousePosition;
+                
+
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -64,14 +70,13 @@ public class StringMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-       if(GameManagerScript.Instance.MoveRigidBodies)
+        if (GameManagerScript.Instance.MoveRigidBodies)
         {
             UpdateRigidBodies();
         }
-        
     }
-  
-
+    
+    
     public void UpdateStringPointsData(float x, float y)
     {
         stringPointsData[0] = new Vector2(x + stringPointsData[0].x, y + stringPointsData[0].y);
@@ -91,7 +96,6 @@ public class StringMovement : MonoBehaviour
         {
             stringPointsRB[i].MovePosition(stringPointsData[i]);
         }
-
     }
 
     public void CollectInput()
@@ -124,7 +128,6 @@ public class StringMovement : MonoBehaviour
         BoxCollider2D boxCollider = stringPointsGO[0].AddComponent<BoxCollider2D>();
         boxCollider.size = new Vector2(1.3f, 1.3f);
         boxCollider.edgeRadius = 0.015f;
-
     }
 
     public void ResetString()
