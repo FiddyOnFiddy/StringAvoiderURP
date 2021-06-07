@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Unity.Mathematics;
@@ -29,6 +30,8 @@ public class StringMovement : MonoBehaviour
     [SerializeField] private List<GameObject> stringPointsGO;
     [SerializeField] private List<Rigidbody2D> stringPointsRB;
     [SerializeField] private List<Vector2> stringPointsData;
+    private PolygonCollider2D stringPolyCol;
+
 
 
     [Space(2)]
@@ -39,12 +42,14 @@ public class StringMovement : MonoBehaviour
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
     public int NoOfSegments { get => noOfSegments; set => noOfSegments = value; }
     public Transform SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
+    
 
     void Update()
-    {
+    {            
+        CollectInput();
+
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && !GameManagerScript.Instance.MouseOnUIObject)
         {
-            CollectInput();
             if (Input.GetMouseButtonDown(0))
             {
                 
@@ -88,6 +93,7 @@ public class StringMovement : MonoBehaviour
 
             stringPointsData[i] = new Vector2(stringPointsData[i - 1].x + segmentLength * Mathf.Cos(nodeAngle), stringPointsData[i - 1].y + segmentLength * Mathf.Sin(nodeAngle));
         }
+
     }
 
     public void UpdateRigidBodies()
@@ -115,6 +121,7 @@ public class StringMovement : MonoBehaviour
         stringPointsRB = new List<Rigidbody2D>();
         stringPointsData = new List<Vector2>();
 
+
         for (int i = 0; i < noOfSegments; i++)
         {
             radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
@@ -124,6 +131,7 @@ public class StringMovement : MonoBehaviour
             stringPointsGO.Add(Instantiate(stringPointPrefab, stringPointsData[i], Quaternion.identity, this.transform));
             stringPointsGO[i].name = i.ToString();
             stringPointsRB.Add(stringPointsGO[i].GetComponent<Rigidbody2D>());
+
         }
 
         stringPointsGO[0].GetComponent<CircleCollider2D>().enabled = false;
