@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Collections.Generic;
 using ProtoBuf;
+using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
@@ -14,6 +15,8 @@ public class GameManagerScript : MonoBehaviour
 
     private static GameManagerScript _instance;
     public static GameManagerScript Instance { get { return _instance; } }
+    private string _saveFile;
+    [field: SerializeField] public SaveData Data { get; private set; }
 
     //Declaring new enum of type GameState to handle what state we're currently in
     public enum GameState
@@ -51,9 +54,7 @@ public class GameManagerScript : MonoBehaviour
     [Space(5)]
     [Header("Persistant Data:")]
 
-    [SerializeField] private int deathCount;                                                                //Death count variable that tracks total death count and gets written to and read from file.
     [Min(1)]
-    [SerializeField] public int currentLevel = 1;
     [SerializeField] private float levelTime = 0f;                                                          //Time to complete level which is passed to the level text and which will be saved in file representing best time per level. To be added to total time variable for time across all levels.
 
     [Space(5)]
@@ -68,15 +69,11 @@ public class GameManagerScript : MonoBehaviour
 
 
     public Dictionary<int, Vector2> medalSplitsDict = new Dictionary<int, Vector2>();
-    public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>();
     public int maxLevelCount;
 
     public int animationSpeed;
     private AsyncOperation _asyncLoad;
-    [SerializeField] private float totalTimeToComplete;
 
-    [SerializeField] public Dictionary<int, float> timePerLevel = new Dictionary<int, float>();
-    public Dictionary<int, string> currentMedalPerLevel = new Dictionary<int, string>(30);
     public string bronze = "Bronze", silver = "Silver", gold = "Gold", endScreenText;
 
     [SerializeField] private float _hudRefreshRate;
@@ -92,19 +89,16 @@ public class GameManagerScript : MonoBehaviour
     public bool MoveRigidBodies { get => moveRigidBodies; set => moveRigidBodies = value; }
     public bool TriggerNextLevelMenu { get => triggerNextLevelMenu; set => triggerNextLevelMenu = value; }
     public bool TriggerLastLevelMenu { get => triggerLastLevelMenu; set => triggerLastLevelMenu = value; }
-    public bool InitString { get => initString; set => initString = value; }
-    public int Count2ndHalf { get => count2ndHalf; set => count2ndHalf = value; }
-    public int Count1stHalf { get => count1stHalf; set => count1stHalf = value; }
     public int StringPointIntersectedWith { get => stringPointIntersectedWith; set => stringPointIntersectedWith = value; }
     public float LevelTime { get => levelTime; set => levelTime = value; }
     public float DissolveSpeed { get => dissolveSpeed; set => dissolveSpeed = value; }
-    public int DeathCount { get => deathCount; set => deathCount = value; }
     public bool MouseOnUIObject { get => mouseOnUIObject; }
 
 
     void Awake()
     {
-        Application.targetFrameRate = 0;
+        Application.targetFrameRate = 60;
+        _saveFile = Path.Combine(Application.persistentDataPath, "save001.dat");
 
         defaultDissolveSpeed = dissolveSpeed;
         #region Initialisation Stuff
@@ -130,7 +124,7 @@ public class GameManagerScript : MonoBehaviour
         endScreenCanvas.enabled = false;
         optionsCanvas.enabled = false;
 
-        Load();
+        LoadGame();
 
 
         sM = FindObjectOfType<StringMovement>();
@@ -236,7 +230,7 @@ public class GameManagerScript : MonoBehaviour
 
     void InitialiseDeath()
     {
-        UIManager.Instance.deathCounter.text = "Deaths: " + deathCount;
+        UIManager.Instance.deathCounter.text = "Deaths: " + Data.DeathCount;
         count1stHalf = 0;
         count2ndHalf = stringPointIntersectedWith;
 
@@ -339,13 +333,13 @@ public class GameManagerScript : MonoBehaviour
         endScreenCanvas.enabled = true;
         UIManager.Instance.lastLevelPanel.SetActive(true);
         UIManager.Instance.endScreenPanel.SetActive(false);
-        UIManager.Instance.lastLevelPanelText.text = "Time To Complete All Levels: " + totalTimeToComplete.ToString();
+        UIManager.Instance.lastLevelPanelText.text = "Time To Complete All Levels: " + Data.TotalTimeToComplete.ToString();
     }
 
     public string CalculateMedal()
     {
         string message = null;
-        if (levelTime < medalSplitsDict[currentLevel].x)
+        if (levelTime < medalSplitsDict[Data.CurrentLevel].x)
         {
             message = gold;      
 
@@ -407,7 +401,7 @@ public class GameManagerScript : MonoBehaviour
             sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
             currentState = GameState.Setup;
             ResetString();
-            Save();
+            SaveGame();
         }
         
     }
@@ -429,7 +423,7 @@ public class GameManagerScript : MonoBehaviour
             sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
             currentState = GameState.Setup;
             ResetString();
-            Save();
+            SaveGame();
         }
         
     }
@@ -443,7 +437,7 @@ public class GameManagerScript : MonoBehaviour
         sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
         currentState = GameState.Setup;
         ResetString();
-        Save();
+        SaveGame();
 
     }
 
@@ -472,53 +466,30 @@ public class GameManagerScript : MonoBehaviour
         currentState = GameState.Setup;
         initString = true;
     }
-
-    public void Save()
+    
+    public void LoadGame()
     {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
-
-        //We write our ingame variables to this data object when the game closes that then gets written to a file to be loaded next session.
-        PlayerData data = new PlayerData(deathCount, currentLevel, totalTimeToComplete, isLevelComplete, timePerLevel, currentMedalPerLevel);
-
-
-        bf.Serialize(file, data);
-        file.Close();
+        //Check if file exists or not, if not do nothing, if so then load save data into the Data object which holds all our persistant data
+        if (!File.Exists(_saveFile))
+            return;
+ 
+        
+        using var file = File.OpenRead(_saveFile);
+        Data = Serializer.Deserialize<SaveData>(file);
     }
 
-    public void Load()
+    public void SaveGame()
     {
-        if (File.Exists(Application.persistentDataPath + "/playerInfo.dat"))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.OpenRead(Application.persistentDataPath + "/playerInfo.dat");
-            PlayerData data = (PlayerData)bf.Deserialize(file);
-
-            file.Close();
-
-            //On load of game/main menu load all data from file into game and store in variable
-            deathCount = data.deathCount;
-
-            if (data.currentLevel == 0)
-            {
-                data.currentLevel = 1;
-            }
-            currentLevel = data.currentLevel;
-            isLevelComplete = data.isLevelComplete;
-            totalTimeToComplete = data.totalTimeToComplete;
-            timePerLevel = data.timePerLevel;
-            currentMedalPerLevel = data.currentMedalPerLevel;
-        }
+        using var file = File.OpenWrite(_saveFile);
+        Serializer.Serialize(file, Data);
     }
-
+    
     public void ResetSaveFile()
     {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Open(Application.persistentDataPath + "/playerInfo.dat", FileMode.OpenOrCreate);
-        PlayerData data = new PlayerData(0, 1, 0, new Dictionary<int, bool>(maxLevelCount), new Dictionary<int, float>(maxLevelCount), new Dictionary<int, string>(maxLevelCount));
-
-        bf.Serialize(file, data);
-        file.Close();
+        if (File.Exists(_saveFile))
+        {
+            File.Delete(_saveFile);
+        }
     }
     
 }
@@ -527,31 +498,17 @@ public class GameManagerScript : MonoBehaviour
 /// <summary>
 /// All data that is to be written to file for saving persistent data between sessions.
 /// </summary>
+[ProtoContract]
 [Serializable]
-class PlayerData
+public class SaveData
 {
-    //Death Count across entire save
-    public int deathCount;
-
-    //Maybe make this the last level played and not the most recent completed level. As someone may have replayed a level but haven't completed the game so continue should just take them to the level they were last on or the level after that level if they completed it last session (determined by the end UI)
-    public int currentLevel;
-
-    //Total time across all levels to complete the game using best times including revists via level select
-    public float totalTimeToComplete;
+    [ProtoMember((1))] public int DeathCount { get; set; }
+    [ProtoMember(2)] public int CurrentLevel { get; set; } = 1;
+    [ProtoMember(3)] public float TotalTimeToComplete { get; set; }
 
 
-    public Dictionary<int, bool> isLevelComplete = new Dictionary<int, bool>(30);
-    public Dictionary<int, float> timePerLevel = new Dictionary<int, float>(30);
-    public Dictionary<int, string> currentMedalPerLevel = new Dictionary<int, string>(30);
+    [ProtoMember(4)]public Dictionary<int, bool> IsLevelComplete { get; set; } = new Dictionary<int, bool>(30);
+    [ProtoMember(5)]public Dictionary<int, float> TimePerLevel { get; set; }= new Dictionary<int, float>(30);
+    [ProtoMember(6)]public Dictionary<int, string> CurrentMedalPerLevel { get; set; }= new Dictionary<int, string>(30);
 
-
-    public PlayerData(int DeathCount, int CurrentLevel, float TotalTimeToComplete, Dictionary<int, bool> IsLevelComplete, Dictionary<int, float> TimePerLevel, Dictionary<int, string> CurrentMedalPerLevel)
-    {
-        deathCount = DeathCount;
-        currentLevel = CurrentLevel;
-        totalTimeToComplete = TotalTimeToComplete;
-        isLevelComplete = IsLevelComplete;
-        timePerLevel = TimePerLevel;
-        currentMedalPerLevel = CurrentMedalPerLevel;
-    }
 }

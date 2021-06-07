@@ -10,8 +10,8 @@ public class StringCollisionScript : MonoBehaviour
     {
         if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("Wall"))
         {
-            GameManagerScript.Instance.DeathCount++;
-            GameManagerScript.Instance.Save();
+            GameManagerScript.Instance.Data.DeathCount++;
+            GameManagerScript.Instance.SaveGame();
             TriggerDeath(collision);
         }
         else if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("EndPoint"))
@@ -20,7 +20,7 @@ public class StringCollisionScript : MonoBehaviour
             GameManagerScript.Instance.isLevelComplete[GameManagerScript.Instance.currentLevel + 1] = true;
             PopulateTimerPerLevelData();
             CalculateBestMedalPerLevel();
-            GameManagerScript.Instance.Save();
+            GameManagerScript.Instance.SaveGame();
             if (GameManagerScript.Instance.currentLevel < GameManagerScript.Instance.maxLevelCount)
             {
                 GameManagerScript.Instance.TriggerNextLevelMenu = true;

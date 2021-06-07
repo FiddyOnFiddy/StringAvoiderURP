@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour
 
         clones = new GameObject[30];
         SetupLevelSelectScreen();
-        deathCounter.text = "Deaths: " + GameManagerScript.Instance.DeathCount;
+        deathCounter.text = "Deaths: " + GameManagerScript.Instance.Data.DeathCount;
         lastLevelPanel.SetActive(false);
         endScreenPanel.SetActive(true);
         pauseMenuPanel.SetActive(false);
@@ -64,7 +64,6 @@ public class UIManager : MonoBehaviour
     public void NextLevel()
     {
         StartCoroutine(GameManagerScript.Instance.LoadNextLevel());
-        GameManagerScript.Instance.Save();
     }
 
     public void LevelSelect()
@@ -103,7 +102,7 @@ public class UIManager : MonoBehaviour
 
     public void MainMenuButton()
     {
-        GameManagerScript.Instance.Save();
+        GameManagerScript.Instance.SaveGame();
         pauseMenuPanel.SetActive(false);
         UpdateLevelSelect();
         GameManagerScript.Instance.LoadMainMenu();
@@ -118,11 +117,11 @@ public class UIManager : MonoBehaviour
     public void ResetSaveButton()
     {
         GameManagerScript.Instance.ResetSaveFile();
-        GameManagerScript.Instance.Load();
+        GameManagerScript.Instance.LoadGame();
     }
     public void QuitButton()
     {
-        GameManagerScript.Instance.Save();
+        GameManagerScript.Instance.SaveGame();
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
