@@ -11,17 +11,16 @@ public class StringCollisionScript : MonoBehaviour
         if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("Wall"))
         {
             GameManagerScript.Instance.Data.DeathCount++;
-            GameManagerScript.Instance.SaveGame();
-            TriggerDeath(collision);
+            GameManagerScript.Instance.SaveGame();            TriggerDeath(collision);
         }
         else if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("EndPoint"))
         {
             GameManagerScript.Instance.CalculateTotalTimePerLevel();
-            GameManagerScript.Instance.isLevelComplete[GameManagerScript.Instance.currentLevel + 1] = true;
+            GameManagerScript.Instance.Data.IsLevelComplete[GameManagerScript.Instance.Data.CurrentLevel + 1] = true;
             PopulateTimerPerLevelData();
             CalculateBestMedalPerLevel();
-            GameManagerScript.Instance.SaveGame();
-            if (GameManagerScript.Instance.currentLevel < GameManagerScript.Instance.maxLevelCount)
+            GameManagerScript.Instance.SaveGame();            
+            if (GameManagerScript.Instance.Data.CurrentLevel < GameManagerScript.Instance.maxLevelCount)
             {
                 GameManagerScript.Instance.TriggerNextLevelMenu = true;
             }
@@ -42,24 +41,24 @@ public class StringCollisionScript : MonoBehaviour
 
     void CalculateBestMedalPerLevel()
     {
-        GameManagerScript.Instance.currentMedalPerLevel.TryGetValue(GameManagerScript.Instance.currentLevel, out string value);
+        GameManagerScript.Instance.Data.CurrentMedalPerLevel.TryGetValue(GameManagerScript.Instance.Data.CurrentLevel, out string value);
 
         if (GameManagerScript.Instance.CalculateMedal() == GameManagerScript.Instance.gold)
         {
             if (value != GameManagerScript.Instance.gold)
             {
-                GameManagerScript.Instance.currentMedalPerLevel[GameManagerScript.Instance.currentLevel] = GameManagerScript.Instance.gold;
+                GameManagerScript.Instance.Data.CurrentMedalPerLevel[GameManagerScript.Instance.Data.CurrentLevel] = GameManagerScript.Instance.gold;
             }
             else
             {
-                GameManagerScript.Instance.currentMedalPerLevel[GameManagerScript.Instance.currentLevel] = GameManagerScript.Instance.gold;
+                GameManagerScript.Instance.Data.CurrentMedalPerLevel[GameManagerScript.Instance.Data.CurrentLevel] = GameManagerScript.Instance.gold;
             }
         }
         else if (GameManagerScript.Instance.CalculateMedal() == GameManagerScript.Instance.silver)
         {
             if (value == GameManagerScript.Instance.bronze)
             {
-                GameManagerScript.Instance.currentMedalPerLevel[GameManagerScript.Instance.currentLevel] = GameManagerScript.Instance.silver;
+                GameManagerScript.Instance.Data.CurrentMedalPerLevel[GameManagerScript.Instance.Data.CurrentLevel] = GameManagerScript.Instance.silver;
             }
             else if (value == GameManagerScript.Instance.gold)
             {
@@ -67,18 +66,18 @@ public class StringCollisionScript : MonoBehaviour
             }
             else
             {
-                GameManagerScript.Instance.currentMedalPerLevel[GameManagerScript.Instance.currentLevel] = GameManagerScript.Instance.silver;
+                GameManagerScript.Instance.Data.CurrentMedalPerLevel[GameManagerScript.Instance.Data.CurrentLevel] = GameManagerScript.Instance.silver;
             }
         }
         else if (GameManagerScript.Instance.CalculateMedal() == GameManagerScript.Instance.bronze)
         {
             if (value == GameManagerScript.Instance.gold | value == GameManagerScript.Instance.silver)
             {
-
+                
             }
             else
             {
-                GameManagerScript.Instance.currentMedalPerLevel[GameManagerScript.Instance.currentLevel] = GameManagerScript.Instance.bronze;
+                GameManagerScript.Instance.Data.CurrentMedalPerLevel[GameManagerScript.Instance.Data.CurrentLevel] = GameManagerScript.Instance.bronze;
 
             }
 
@@ -88,16 +87,16 @@ public class StringCollisionScript : MonoBehaviour
 
     void PopulateTimerPerLevelData()
     {
-        if (GameManagerScript.Instance.timePerLevel.ContainsKey(GameManagerScript.Instance.currentLevel))
+        if (GameManagerScript.Instance.Data.TimePerLevel.ContainsKey(GameManagerScript.Instance.Data.CurrentLevel))
         {
-            if (GameManagerScript.Instance.LevelTime < GameManagerScript.Instance.timePerLevel[GameManagerScript.Instance.currentLevel])
+            if (GameManagerScript.Instance.LevelTime < GameManagerScript.Instance.Data.TimePerLevel[GameManagerScript.Instance.Data.CurrentLevel])
             {
-                GameManagerScript.Instance.timePerLevel[GameManagerScript.Instance.currentLevel] = GameManagerScript.Instance.LevelTime;
+                GameManagerScript.Instance.Data.TimePerLevel[GameManagerScript.Instance.Data.CurrentLevel] = GameManagerScript.Instance.LevelTime;
             }
         }
         else
         {
-            GameManagerScript.Instance.timePerLevel[GameManagerScript.Instance.currentLevel] = GameManagerScript.Instance.LevelTime;
+            GameManagerScript.Instance.Data.TimePerLevel[GameManagerScript.Instance.Data.CurrentLevel] = GameManagerScript.Instance.LevelTime;
         }
     }
 }

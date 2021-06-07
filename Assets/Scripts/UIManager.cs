@@ -47,7 +47,7 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        if (GameManagerScript.Instance.currentLevel > 1)
+        if (GameManagerScript.Instance.Data.CurrentLevel > 1)
         {
             playButtonText.text = "Continue";
         }
@@ -138,9 +138,9 @@ public class UIManager : MonoBehaviour
             clones[i - 1].name = "Level" + i.ToString();
             clones[i - 1].GetComponentInChildren<TMP_Text>().text = i.ToString();
 
-            GameManagerScript.Instance.currentMedalPerLevel.TryGetValue(i, out string value);
+            GameManagerScript.Instance.Data.CurrentMedalPerLevel.TryGetValue(i, out string value);
 
-            if (GameManagerScript.Instance.isLevelComplete.ContainsKey(i) == false && i > 1)
+            if (GameManagerScript.Instance.Data.IsLevelComplete.ContainsKey(i) == false && i > 1)
             {
                 Button button = clones[i - 1].GetComponent<Button>();
                 button.interactable = false;
@@ -174,7 +174,7 @@ public class UIManager : MonoBehaviour
         }
         Array.Clear(clones, 0, clones.Length);
 
-        if (GameManagerScript.Instance.currentLevel > 1)
+        if (GameManagerScript.Instance.Data.CurrentLevel > 1)
         {
             playButtonText.text = "Continue";
         }

@@ -358,8 +358,16 @@ PrefabInstance:
       value: String
       objectReference: {fileID: 0}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: radius
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: noOfSegments
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: segmentLength
-      value: 0.2
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: stringSpeedLimit

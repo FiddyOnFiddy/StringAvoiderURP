@@ -101,6 +101,15 @@ public class GameManagerScript : MonoBehaviour
         _saveFile = Path.Combine(Application.persistentDataPath, "save001.dat");
 
         defaultDissolveSpeed = dissolveSpeed;
+
+        /*
+        Data.DeathCount = 0;
+        Data.CurrentLevel = 1;
+        Data.TotalTimeToComplete = 0;
+        Data.IsLevelComplete = new Dictionary<int, bool>(maxLevelCount);
+        Data.TimePerLevel = new Dictionary<int, float>(maxLevelCount);
+        Data.CurrentMedalPerLevel = new Dictionary<int, string>(maxLevelCount);*/
+        
         #region Initialisation Stuff
         //Checks to see if any Game Managers are present in the scene and either delete or assign this script to them. Necessary for singleton pattern.
         if (_instance != null && _instance != this)
@@ -344,7 +353,7 @@ public class GameManagerScript : MonoBehaviour
             message = gold;      
 
         }
-        else if (levelTime < medalSplitsDict[currentLevel].y)
+        else if (levelTime < medalSplitsDict[Data.CurrentLevel].y)
         {
             message = silver;
         }
@@ -358,13 +367,13 @@ public class GameManagerScript : MonoBehaviour
 
     public void CalculateTotalTimePerLevel()
     {
-        totalTimeToComplete = 0f;
+        Data.TotalTimeToComplete = 0f;
         for (int i = 1; i <= maxLevelCount; i++)
         {
-            if (timePerLevel.ContainsKey(i))
+            if (Data.TimePerLevel.ContainsKey(i))
             {
 
-                totalTimeToComplete += timePerLevel[i];
+                Data.TotalTimeToComplete += Data.TimePerLevel[i];
             }
         }
     }
@@ -372,7 +381,7 @@ public class GameManagerScript : MonoBehaviour
     public IEnumerator PlayOrContinue()
     {
 
-        _asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+        _asyncLoad = SceneManager.LoadSceneAsync("level" + Data.CurrentLevel.ToString(), LoadSceneMode.Additive);
 
         // Wait until the asynchronous scene fully loads
         while (!_asyncLoad.isDone)
@@ -386,12 +395,12 @@ public class GameManagerScript : MonoBehaviour
 
     public IEnumerator LoadNextLevel()
     {
-        if(currentLevel < maxLevelCount)
+        if(Data.CurrentLevel < maxLevelCount)
         {
-            SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
+            SceneManager.UnloadSceneAsync("level" + Data.CurrentLevel.ToString(), UnloadSceneOptions.None);
 
-            currentLevel++;
-            _asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+            Data.CurrentLevel++;
+            _asyncLoad = SceneManager.LoadSceneAsync("level" + Data.CurrentLevel.ToString(), LoadSceneMode.Additive);
 
             while (!_asyncLoad.isDone)
             {
@@ -408,12 +417,12 @@ public class GameManagerScript : MonoBehaviour
 
     public IEnumerator LoadPreviousLevel()
     {
-        if(currentLevel > 1)
+        if(Data.CurrentLevel > 1)
         {
-            SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
+            SceneManager.UnloadSceneAsync("level" + Data.CurrentLevel.ToString(), UnloadSceneOptions.None);
 
-            currentLevel--;
-            _asyncLoad = SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+            Data.CurrentLevel--;
+            _asyncLoad = SceneManager.LoadSceneAsync("level" + Data.CurrentLevel.ToString(), LoadSceneMode.Additive);
 
             while (!_asyncLoad.isDone)
             {
@@ -430,9 +439,9 @@ public class GameManagerScript : MonoBehaviour
 
     public void ReloadLevel()
     {
-        SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
+        SceneManager.UnloadSceneAsync("level" + Data.CurrentLevel.ToString(), UnloadSceneOptions.None);
 
-        SceneManager.LoadSceneAsync("level" + currentLevel.ToString(), LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync("level" + Data.CurrentLevel.ToString(), LoadSceneMode.Additive);
 
         sM.SpawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").GetComponent<Transform>();
         currentState = GameState.Setup;
@@ -443,7 +452,7 @@ public class GameManagerScript : MonoBehaviour
 
     public void LoadMainMenu()
     {
-        SceneManager.UnloadSceneAsync("level" + currentLevel.ToString(), UnloadSceneOptions.None);
+        SceneManager.UnloadSceneAsync("level" + Data.CurrentLevel.ToString(), UnloadSceneOptions.None);
         currentState = GameState.Idle;
         sM.DeleteString();
         dissolveMaterials.Clear();
@@ -456,7 +465,7 @@ public class GameManagerScript : MonoBehaviour
     public IEnumerator LevelSelect()
     {
         _asyncLoad = SceneManager.LoadSceneAsync(EventSystem.current.currentSelectedGameObject.name, LoadSceneMode.Additive);
-        currentLevel = Int16.Parse(System.Text.RegularExpressions.Regex.Match(EventSystem.current.currentSelectedGameObject.name, @"\d+").Value);
+        Data.CurrentLevel = Int16.Parse(System.Text.RegularExpressions.Regex.Match(EventSystem.current.currentSelectedGameObject.name, @"\d+").Value);
 
         while (!_asyncLoad.isDone)
         {
@@ -511,4 +520,7 @@ public class SaveData
     [ProtoMember(5)]public Dictionary<int, float> TimePerLevel { get; set; }= new Dictionary<int, float>(30);
     [ProtoMember(6)]public Dictionary<int, string> CurrentMedalPerLevel { get; set; }= new Dictionary<int, string>(30);
 
+    
+    
+    
 }
