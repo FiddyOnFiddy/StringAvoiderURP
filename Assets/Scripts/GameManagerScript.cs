@@ -3,12 +3,10 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Collections.Generic;
+using ProtoBuf;
 using UnityEngine;
-using Unity;
 using UnityEngine.SceneManagement;
-using TMPro;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 
 
 public class GameManagerScript : MonoBehaviour
@@ -59,8 +57,10 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private float levelTime = 0f;                                                          //Time to complete level which is passed to the level text and which will be saved in file representing best time per level. To be added to total time variable for time across all levels.
 
     [Space(5)]
-    [Header("Misc:")]
-    [SerializeField] private float dissolveSpeed;                                                           //Determines how fast dissolve animation will be.
+    [Header("Dissolve Animation Variables:")]
+    [SerializeField] private float dissolveSpeed;
+    [SerializeField] private float dissolveMultiplier;
+    private float defaultDissolveSpeed;                                                           //Determines how fast dissolve animation will be.
 
     [Space(8)]
     [Header("Medal Time Splits:")]
@@ -104,8 +104,9 @@ public class GameManagerScript : MonoBehaviour
 
     void Awake()
     {
-        Application.targetFrameRate = 144;
-        
+        Application.targetFrameRate = 0;
+
+        defaultDissolveSpeed = dissolveSpeed;
         #region Initialisation Stuff
         //Checks to see if any Game Managers are present in the scene and either delete or assign this script to them. Necessary for singleton pattern.
         if (_instance != null && _instance != this)
@@ -136,7 +137,9 @@ public class GameManagerScript : MonoBehaviour
 
         currentState = GameState.Idle;
         #endregion
+        
     }
+
 
     void Update()
     {
@@ -221,7 +224,7 @@ public class GameManagerScript : MonoBehaviour
 
     }
 
-    public void WaitForInput()
+    void WaitForInput()
     {
         if (Input.GetMouseButtonDown(0) && !GameManagerScript.Instance.MouseOnUIObject && UIManager.Instance.pauseMenuPanel.activeSelf == false)
         {
@@ -273,12 +276,14 @@ public class GameManagerScript : MonoBehaviour
             else
             {
                 dissolveDone = false;
+                dissolveSpeed += dissolveMultiplier * Time.deltaTime;
                 break;
             }
         }
 
         if (dissolveDone)
         {
+            dissolveSpeed = defaultDissolveSpeed;
             if (triggerNextLevelMenu)
             {
                 currentState = GameState.NextLevelMenu;

@@ -65,7 +65,8 @@ MonoBehaviour:
   deathCount: 0
   currentLevel: 1
   levelTime: 0
-  dissolveSpeed: 2.5
+  dissolveSpeed: 1
+  dissolveMultiplier: 1.5
   medalSplits:
   - {x: 2, y: 4}
   - {x: 2, y: 4}
@@ -98,7 +99,7 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 3, y: 4}
   maxLevelCount: 30
-  animationSpeed: 10
+  animationSpeed: 3
   totalTimeToComplete: 0
   bronze: Bronze
   silver: Silver
