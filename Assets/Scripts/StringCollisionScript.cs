@@ -32,14 +32,14 @@ public class StringCollisionScript : MonoBehaviour
         }
     }
 
-    void TriggerDeath(Collision2D collision)
+    private static void TriggerDeath(Collision2D collision)
     {
         GameManagerScript.Instance.StringPointIntersectedWith = Int16.Parse(collision.contacts[0].collider.name);
         GameManagerScript.Instance.MoveRigidBodies = false;
         GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.InitialiseDeath;
     }
 
-    void CalculateBestMedalPerLevel()
+    private static void CalculateBestMedalPerLevel()
     {
         GameManagerScript.Instance.Data.CurrentMedalPerLevel.TryGetValue(GameManagerScript.Instance.Data.CurrentLevel, out string value);
 
@@ -85,7 +85,7 @@ public class StringCollisionScript : MonoBehaviour
     }
 
 
-    void PopulateTimerPerLevelData()
+    private static void PopulateTimerPerLevelData()
     {
         if (GameManagerScript.Instance.Data.TimePerLevel.ContainsKey(GameManagerScript.Instance.Data.CurrentLevel))
         {

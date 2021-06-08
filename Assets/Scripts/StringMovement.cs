@@ -2,10 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Numerics;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UIElements;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public class StringMovement : MonoBehaviour
 {
@@ -30,7 +36,6 @@ public class StringMovement : MonoBehaviour
     [SerializeField] private List<GameObject> stringPointsGO;
     [SerializeField] private List<Rigidbody2D> stringPointsRB;
     [SerializeField] private List<Vector2> stringPointsData;
-    private PolygonCollider2D stringPolyCol;
 
 
 
@@ -47,20 +52,20 @@ public class StringMovement : MonoBehaviour
     void Update()
     {            
         CollectInput();
-
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && !GameManagerScript.Instance.MouseOnUIObject)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                
                 previousMousePosition = mousePosition;
                 mouseDelta = Vector2.zero;
             }
 
             if (Input.GetMouseButton(0))
             {
-                UpdateStringPointsData(mouseDelta.x, mouseDelta.y);
-                GameManagerScript.Instance.MoveRigidBodies = true;
+                        
+        
+                
+                CheckForCollisionsBetweenLastAndCurrentPositions();
                 previousMousePosition = mousePosition;
                 
 
@@ -74,7 +79,7 @@ public class StringMovement : MonoBehaviour
         
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (GameManagerScript.Instance.MoveRigidBodies)
         {
@@ -83,29 +88,60 @@ public class StringMovement : MonoBehaviour
     }
     
     
-    public void UpdateStringPointsData(float x, float y)
+    private void UpdateStringPointsData(float x, float y, bool hasCollided)
     {
-        stringPointsData[0] = new Vector2(x + stringPointsData[0].x, y + stringPointsData[0].y);
-
-        for (int i = 1; i < noOfSegments; i++)
+        if (!hasCollided)
         {
-            float nodeAngle = Mathf.Atan2(stringPointsData[i].y - stringPointsData[i - 1].y, stringPointsData[i].x - stringPointsData[i - 1].x);
+            stringPointsData[0] = new Vector2(x + stringPointsData[0].x, y + stringPointsData[0].y);
+        }
+        else
+        {
+            stringPointsData[0] = new Vector2(x, y);
+
+        }
+
+        for (var i = 1; i < noOfSegments; i++)
+        {
+            var nodeAngle = Mathf.Atan2(stringPointsData[i].y - stringPointsData[i - 1].y, stringPointsData[i].x - stringPointsData[i - 1].x);
 
             stringPointsData[i] = new Vector2(stringPointsData[i - 1].x + segmentLength * Mathf.Cos(nodeAngle), stringPointsData[i - 1].y + segmentLength * Mathf.Sin(nodeAngle));
         }
 
     }
 
-    public void UpdateRigidBodies()
+    private void CheckForCollisionsBetweenLastAndCurrentPositions()
+    {
+        Vector3 dir = mousePosition - previousMousePosition;
+
+        RaycastHit2D hit = Physics2D.Raycast(stringPointsGO[0].transform.position, dir, Vector3.Distance(mousePosition, previousMousePosition), LayerMask.GetMask("Walls"));
+
+        if (hit.collider != null)
+        {
+            //Debug.Log(hit.point);
+            UpdateStringPointsData(hit.point.x + hit.normal.x * 0.1f, hit.point.y + hit.normal.y * 0.1f, true);
+            Debug.Log(hit.point + hit.normal * 0.1f);
+            GameManagerScript.Instance.MoveRigidBodies = true;
+        }
+
+        //UpdateStringPointsData(mouseDelta.x, mouseDelta.y, false);
+        //GameManagerScript.Instance.MoveRigidBodies = true;
+
+        Debug.DrawRay(stringPointsGO[0].transform.position, dir);
+
+
+    }
+    
+
+    private void UpdateRigidBodies()
     {
 
-        for (int i = 0; i < noOfSegments; i++)
+        for (var i = 0; i < noOfSegments; i++)
         {
             stringPointsRB[i].MovePosition(stringPointsData[i]);
         }
     }
 
-    public void CollectInput()
+    private void CollectInput()
     {
         mouseDelta.x = Mathf.Clamp(mouseDelta.x, -stringSpeedLimit, stringSpeedLimit);
         mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);
@@ -122,7 +158,7 @@ public class StringMovement : MonoBehaviour
         stringPointsData = new List<Vector2>();
 
 
-        for (int i = 0; i < noOfSegments; i++)
+        for (var i = 0; i < noOfSegments; i++)
         {
             radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
 
@@ -142,7 +178,7 @@ public class StringMovement : MonoBehaviour
 
     public void ResetString()
     {
-        for (int i = 0; i < noOfSegments; i++)
+        for (var i = 0; i < noOfSegments; i++)
         {
             radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
 
@@ -155,7 +191,7 @@ public class StringMovement : MonoBehaviour
     public void DeleteString()
     {
 
-        for (int i = 0; i < NoOfSegments; i++)
+        for (var i = 0; i < NoOfSegments; i++)
         {
             Destroy(stringPointsGO[i]);
         }

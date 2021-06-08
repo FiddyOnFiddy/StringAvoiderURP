@@ -45,6 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2507cfc148b0dac44baca2f2d3554234, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Data>k__BackingField:
+    <DeathCount>k__BackingField: 0
+    <CurrentLevel>k__BackingField: 1
+    <TotalTimeToComplete>k__BackingField: 0
   currentState: 0
   sM: {fileID: 0}
   mainMenuCanvas: {fileID: 0}
@@ -60,10 +64,8 @@ MonoBehaviour:
   initString: 0
   mouseOnUIObject: 0
   stringPointIntersectedWith: 0
-  count2ndHalf: 0
-  count1stHalf: 0
-  deathCount: 0
-  currentLevel: 1
+  count2NdHalf: 0
+  count1StHalf: 0
   levelTime: 0
   dissolveSpeed: 1
   dissolveMultiplier: 1.5
@@ -100,12 +102,11 @@ MonoBehaviour:
   - {x: 3, y: 4}
   maxLevelCount: 30
   animationSpeed: 3
-  totalTimeToComplete: 0
   bronze: Bronze
   silver: Silver
   gold: Gold
   endScreenText: 
-  _hudRefreshRate: 0.5
+  hudRefreshRate: 0
 --- !u!114 &2104272803
 MonoBehaviour:
   m_ObjectHideFlags: 0

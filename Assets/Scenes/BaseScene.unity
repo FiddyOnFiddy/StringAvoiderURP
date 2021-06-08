@@ -357,22 +357,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: String
       objectReference: {fileID: 0}
-    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
-      propertyPath: radius
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
-      propertyPath: noOfSegments
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
-      propertyPath: segmentLength
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
-      propertyPath: stringSpeedLimit
-      value: 0.2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
 --- !u!1 &1738440102 stripped
@@ -409,10 +393,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1738440103, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 304533970042714434, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

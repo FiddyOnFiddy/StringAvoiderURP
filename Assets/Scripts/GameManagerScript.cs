@@ -1,10 +1,8 @@
 using System.Collections;
 using System;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Collections.Generic;
 using ProtoBuf;
-using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
@@ -12,9 +10,8 @@ using UnityEngine.EventSystems;
 
 public class GameManagerScript : MonoBehaviour
 {
+    public static GameManagerScript Instance { get; private set; }
 
-    private static GameManagerScript _instance;
-    public static GameManagerScript Instance { get { return _instance; } }
     private string _saveFile;
     [field: SerializeField] public SaveData Data { get; private set; }
 
@@ -22,9 +19,9 @@ public class GameManagerScript : MonoBehaviour
     public enum GameState
     {
         Idle,               //Sub-state we sit in on main menu to see which button the user selects
-        Setup,              //Initiliase everything that needs to be initiliased and set up game state for new level or respawn.
+        Setup,              //Initialise everything that needs to be Initialise and set up game state for new level or respawn.
         Playing,            //For when the player is alive and handle the game loop
-        InitialiseDeath,    //Initiliase the death by setting up the animation
+        InitialiseDeath,    //Initialise the death by setting up the animation
         Dead,               //Run in fixed update for consistent animation
         GameOver,           //For when the player has died and death animation has finished
         NextLevelMenu,      //For when the player reaches the end point and triggers the next level screen with medal
@@ -43,13 +40,13 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private bool moveRigidBodies;                                                          //Controls when to update physics ensuring it's after input + render update.
     [SerializeField] private bool dissolveDone;                                                             //Determines when all string points have finished animation to then transition to next state.
     [SerializeField] private bool triggerNextLevelMenu, triggerLastLevelMenu;                               //Used to determine if we collided with the end trigger instead of a wall.
-    [SerializeField] private bool initString;                                                               //Used to initalise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
+    [SerializeField] private bool initString;                                                               //Used to Initialise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
     [SerializeField] private bool mouseOnUIObject;
 
     [Space(5)]
     [Header("String Collision Info:")]
     [SerializeField] private int stringPointIntersectedWith;                                                //Lets us know which string point we have collided with to play the animation from that point looping outwards in either direction.
-    [SerializeField] private int count2ndHalf, count1stHalf;                                               //Count variables that represent "i" in our if statement for looping through in each direction. Reason for count variables is we are using if statement and not for loop.
+    [SerializeField] private int count2NdHalf, count1StHalf;                                               //Count variables that represent "i" in our if statement for looping through in each direction. Reason for count variables is we are using if statement and not for loop.
 
     [Space(5)]
     [Header("Persistant Data:")]
@@ -61,14 +58,14 @@ public class GameManagerScript : MonoBehaviour
     [Header("Dissolve Animation Variables:")]
     [SerializeField] private float dissolveSpeed;
     [SerializeField] private float dissolveMultiplier;
-    private float defaultDissolveSpeed;                                                           //Determines how fast dissolve animation will be.
+    private float _defaultDissolveSpeed;                                                           //Determines how fast dissolve animation will be.
 
     [Space(8)]
     [Header("Medal Time Splits:")]
     public List<Vector2> medalSplits = new List<Vector2>();
 
 
-    public Dictionary<int, Vector2> medalSplitsDict = new Dictionary<int, Vector2>();
+    private readonly Dictionary<int, Vector2> _medalSplitsDict = new Dictionary<int, Vector2>();
     public int maxLevelCount;
 
     public int animationSpeed;
@@ -76,7 +73,7 @@ public class GameManagerScript : MonoBehaviour
 
     public string bronze = "Bronze", silver = "Silver", gold = "Gold", endScreenText;
 
-    [SerializeField] private float _hudRefreshRate;
+    [SerializeField] private float hudRefreshRate;
  
     private float _timer;
     
@@ -87,12 +84,12 @@ public class GameManagerScript : MonoBehaviour
     public GameState CurrentState { get => currentState; set => currentState = value; }
     public StringMovement SM { get => sM; set => sM = value; }
     public bool MoveRigidBodies { get => moveRigidBodies; set => moveRigidBodies = value; }
-    public bool TriggerNextLevelMenu { get => triggerNextLevelMenu; set => triggerNextLevelMenu = value; }
-    public bool TriggerLastLevelMenu { get => triggerLastLevelMenu; set => triggerLastLevelMenu = value; }
-    public int StringPointIntersectedWith { get => stringPointIntersectedWith; set => stringPointIntersectedWith = value; }
+    public bool TriggerNextLevelMenu { set => triggerNextLevelMenu = value; }
+    public bool TriggerLastLevelMenu { set => triggerLastLevelMenu = value; }
+    public int StringPointIntersectedWith { set => stringPointIntersectedWith = value; }
     public float LevelTime { get => levelTime; set => levelTime = value; }
-    public float DissolveSpeed { get => dissolveSpeed; set => dissolveSpeed = value; }
-    public bool MouseOnUIObject { get => mouseOnUIObject; }
+    public float DissolveSpeed => dissolveSpeed;
+    public bool MouseOnUIObject => mouseOnUIObject;
 
 
     void Awake()
@@ -100,31 +97,24 @@ public class GameManagerScript : MonoBehaviour
         Application.targetFrameRate = 60;
         _saveFile = Path.Combine(Application.persistentDataPath, "save001.dat");
 
-        defaultDissolveSpeed = dissolveSpeed;
+        _defaultDissolveSpeed = dissolveSpeed;
 
-        /*
-        Data.DeathCount = 0;
-        Data.CurrentLevel = 1;
-        Data.TotalTimeToComplete = 0;
-        Data.IsLevelComplete = new Dictionary<int, bool>(maxLevelCount);
-        Data.TimePerLevel = new Dictionary<int, float>(maxLevelCount);
-        Data.CurrentMedalPerLevel = new Dictionary<int, string>(maxLevelCount);*/
         
         #region Initialisation Stuff
         //Checks to see if any Game Managers are present in the scene and either delete or assign this script to them. Necessary for singleton pattern.
-        if (_instance != null && _instance != this)
+        if (Instance != null && Instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
         else
         {
-            _instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
-        for (int i = 0; i < medalSplits.Count; i++)
+        for (var i = 0; i < medalSplits.Count; i++)
         {
-            medalSplitsDict[i + 1] = medalSplits[i];
+            _medalSplitsDict[i + 1] = medalSplits[i];
         }
 
         mainMenuCanvas.enabled = true;
@@ -144,12 +134,11 @@ public class GameManagerScript : MonoBehaviour
     }
 
 
-    void Update()
+    private void Update()
     {
-        mouseOnUIObject = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+        IsMouseOrTouchOverUI();
         ShowFPS();
         
-
         #region State switch statement
         //Switch statement which takes our current state and decides what to do based on that state.
         switch (currentState)
@@ -175,19 +164,15 @@ public class GameManagerScript : MonoBehaviour
             case GameState.LastLevelMenu:
                 LastLevelScreen();
                 break;
+            case GameState.Idle:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
         #endregion
     }
 
-    void ShowFPS()
-    {
-        if (Time.unscaledTime > _timer)
-        {
-            int fps = (int)(1f / Time.unscaledDeltaTime);
-            UIManager.Instance.fpsCounterLabel.text = fps.ToString();
-            _timer = Time.unscaledTime + _hudRefreshRate;
-        }
-    }
+   
 
     private void FixedUpdate()
     {
@@ -197,7 +182,41 @@ public class GameManagerScript : MonoBehaviour
             DeathAnimation();
         }
     }
+    
+    private void IsMouseOrTouchOverUI ()
+    {
+#if UNITY_EDITOR
+        if (EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButton(0) && EventSystem.current.currentSelectedGameObject != null)
+        {
+            mouseOnUIObject = true;
+        }
+        else if(Input.GetMouseButtonUp(0))
+        {
+            mouseOnUIObject = false;
+        }
+#else
+        if (EventSystem.current.IsPointerOverGameObject(0) && Input.GetMouseButton(0) && EventSystem.current.currentSelectedGameObject != null)
+        {
+            mouseOnUIObject = true;
+        }
+        else if(Input.GetMouseButtonUp(0))
+        {
+            mouseOnUIObject = false;
+        }
+#endif
+    }
 
+    private void ShowFPS()
+    {
+        if (Time.unscaledTime > _timer)
+        {
+            var fps = (int)(1f / Time.unscaledDeltaTime);
+            UIManager.Instance.fpsCounterLabel.text = fps.ToString();
+            _timer = Time.unscaledTime + hudRefreshRate;
+        }
+    }
+    
+    
     void SetUp()
     {
         mainMenuCanvas.enabled = false;
@@ -240,8 +259,8 @@ public class GameManagerScript : MonoBehaviour
     void InitialiseDeath()
     {
         UIManager.Instance.deathCounter.text = "Deaths: " + Data.DeathCount;
-        count1stHalf = 0;
-        count2ndHalf = stringPointIntersectedWith;
+        count1StHalf = 0;
+        count2NdHalf = stringPointIntersectedWith;
 
         currentState = GameState.Dead;
     }
@@ -251,20 +270,20 @@ public class GameManagerScript : MonoBehaviour
         for (int i = 0; i < animationSpeed; i++)
         {
             //Loop 1st Half of string if intersected
-            if (count1stHalf < stringPointIntersectedWith)
+            if (count1StHalf < stringPointIntersectedWith)
             {
-                sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1stHalf].GetComponent<Dissolve>().startDissolve = true;
-                count1stHalf++;
+                sM.StringPointsGO[(stringPointIntersectedWith - 1) - count1StHalf].GetComponent<Dissolve>().startDissolve = true;
+                count1StHalf++;
             }
         }
 
         for (int i = 0; i < animationSpeed; i++)
         {
             //Loop 2nd half of string if intersected
-            if (count2ndHalf < sM.StringPointsGO.Count)
+            if (count2NdHalf < sM.StringPointsGO.Count)
             {
-                sM.StringPointsGO[count2ndHalf].GetComponent<Dissolve>().startDissolve = true;
-                count2ndHalf++;
+                sM.StringPointsGO[count2NdHalf].GetComponent<Dissolve>().startDissolve = true;
+                count2NdHalf++;
             }
         }
 
@@ -286,7 +305,7 @@ public class GameManagerScript : MonoBehaviour
 
         if (dissolveDone)
         {
-            dissolveSpeed = defaultDissolveSpeed;
+            dissolveSpeed = _defaultDissolveSpeed;
             if (triggerNextLevelMenu)
             {
                 currentState = GameState.NextLevelMenu;
@@ -305,28 +324,27 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
-    public void ResetString()
+    private void ResetString()
     {
         sM.ResetString();
         dissolveDone = false;
         triggerNextLevelMenu = false;
 
 
-        for (int i = 0; i < sM.StringPointsGO.Count; i++)
+        foreach (var t in sM.StringPointsGO)
         {
-            sM.StringPointsGO[i].GetComponent<Dissolve>().ResetDissolve();
-
+            t.GetComponent<Dissolve>().ResetDissolve();
         }
 
-        count1stHalf = 0;
-        count2ndHalf = 0;
+        count1StHalf = 0;
+        count2NdHalf = 0;
         stringPointIntersectedWith = 0;
 
         levelTime = 0f;
         currentState = GameState.Setup;
     }
 
-    void NextLevelScreen()
+    private void NextLevelScreen()
     {
         CalculateMedal();
         endScreenCanvas.enabled = true;
@@ -336,7 +354,7 @@ public class GameManagerScript : MonoBehaviour
         
     }
 
-    void LastLevelScreen()
+    private void LastLevelScreen()
     {
         CalculateMedal();
         endScreenCanvas.enabled = true;
@@ -348,12 +366,12 @@ public class GameManagerScript : MonoBehaviour
     public string CalculateMedal()
     {
         string message = null;
-        if (levelTime < medalSplitsDict[Data.CurrentLevel].x)
+        if (levelTime < _medalSplitsDict[Data.CurrentLevel].x)
         {
             message = gold;      
 
         }
-        else if (levelTime < medalSplitsDict[Data.CurrentLevel].y)
+        else if (levelTime < _medalSplitsDict[Data.CurrentLevel].y)
         {
             message = silver;
         }
@@ -511,14 +529,14 @@ public class GameManagerScript : MonoBehaviour
 [Serializable]
 public class SaveData
 {
-    [ProtoMember((1))] public int DeathCount { get; set; }
-    [ProtoMember(2)] public int CurrentLevel { get; set; } = 1;
-    [ProtoMember(3)] public float TotalTimeToComplete { get; set; }
+    [ProtoMember((1))] [field: SerializeField] public int DeathCount { get; set; }
+    [ProtoMember(2)] [field: SerializeField] public int CurrentLevel { get; set; } = 1;
+    [ProtoMember(3)] [field: SerializeField] public float TotalTimeToComplete { get; set; }
 
 
-    [ProtoMember(4)]public Dictionary<int, bool> IsLevelComplete { get; set; } = new Dictionary<int, bool>(30);
-    [ProtoMember(5)]public Dictionary<int, float> TimePerLevel { get; set; }= new Dictionary<int, float>(30);
-    [ProtoMember(6)]public Dictionary<int, string> CurrentMedalPerLevel { get; set; }= new Dictionary<int, string>(30);
+    [ProtoMember(4)] public Dictionary<int, bool> IsLevelComplete { get; set; } = new Dictionary<int, bool>(30);
+    [ProtoMember(5)] public Dictionary<int, float> TimePerLevel { get; set; }= new Dictionary<int, float>(30);
+    [ProtoMember(6)] public Dictionary<int, string> CurrentMedalPerLevel { get; set; }= new Dictionary<int, string>(30);
 
     
     
