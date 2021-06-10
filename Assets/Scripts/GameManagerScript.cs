@@ -42,7 +42,10 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private bool triggerNextLevelMenu, triggerLastLevelMenu;                               //Used to determine if we collided with the end trigger instead of a wall.
     [SerializeField] private bool initString;                                                               //Used to Initialise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
     [SerializeField] private bool mouseOnUIObject;
+    [SerializeField] private bool rayHasCollidedWithWall;
 
+    
+    
     [Space(5)]
     [Header("String Collision Info:")]
     [SerializeField] private int stringPointIntersectedWith;                                                //Lets us know which string point we have collided with to play the animation from that point looping outwards in either direction.
@@ -90,9 +93,12 @@ public class GameManagerScript : MonoBehaviour
     public float LevelTime { get => levelTime; set => levelTime = value; }
     public float DissolveSpeed => dissolveSpeed;
     public bool MouseOnUIObject => mouseOnUIObject;
+    public bool RayHasCollidedWithWall { get => rayHasCollidedWithWall; set => rayHasCollidedWithWall = value; }
 
 
-    void Awake()
+
+
+    private void Awake()
     {
         Application.targetFrameRate = 60;
         _saveFile = Path.Combine(Application.persistentDataPath, "save001.dat");
@@ -329,6 +335,7 @@ public class GameManagerScript : MonoBehaviour
         sM.ResetString();
         dissolveDone = false;
         triggerNextLevelMenu = false;
+        rayHasCollidedWithWall = false;
 
 
         foreach (var t in sM.StringPointsGO)

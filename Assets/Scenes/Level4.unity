@@ -146,6 +146,34 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8194740521206010298, guid: 33e9b139f6e41a945be3effecc00a967, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194740521206010298, guid: 33e9b139f6e41a945be3effecc00a967, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194740521206010298, guid: 33e9b139f6e41a945be3effecc00a967, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194740521206010298, guid: 33e9b139f6e41a945be3effecc00a967, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194740521206010298, guid: 33e9b139f6e41a945be3effecc00a967, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194740521206010298, guid: 33e9b139f6e41a945be3effecc00a967, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194740521206010298, guid: 33e9b139f6e41a945be3effecc00a967, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8194740521206010299, guid: 33e9b139f6e41a945be3effecc00a967, type: 3}
       propertyPath: m_Name
       value: EndPoint
@@ -226,7 +254,7 @@ GameObject:
   - component: {fileID: 1012915177}
   - component: {fileID: 1012915176}
   - component: {fileID: 1012915175}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Walls
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -564,6 +592,10 @@ PrefabInstance:
       value: SpawnPoint
       objectReference: {fileID: 0}
     - target: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7
       objectReference: {fileID: 0}
@@ -575,6 +607,34 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 008610b436de9f54da12b91562128868, type: 3}
 --- !u!1001 &2017904050
@@ -584,10 +644,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -3881963109488261216, guid: 217f9cfff74023940b510f3b6845ba1d, type: 3}
-      propertyPath: m_SortingOrder
-      value: -1
-      objectReference: {fileID: 0}
     - target: {fileID: 2976724071617852780, guid: 217f9cfff74023940b510f3b6845ba1d, type: 3}
       propertyPath: m_Name
       value: Key

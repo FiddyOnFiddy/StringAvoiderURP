@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 156196150}
   - component: {fileID: 156196149}
   - component: {fileID: 156196148}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall (4)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 229372035}
   - component: {fileID: 229372034}
   - component: {fileID: 229372033}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall (11)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -381,7 +381,7 @@ GameObject:
   - component: {fileID: 911352355}
   - component: {fileID: 911352354}
   - component: {fileID: 911352353}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall (10)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -504,7 +504,7 @@ GameObject:
   - component: {fileID: 1058680147}
   - component: {fileID: 1058680146}
   - component: {fileID: 1058680145}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall (12)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -627,7 +627,7 @@ GameObject:
   - component: {fileID: 1185989223}
   - component: {fileID: 1185989222}
   - component: {fileID: 1185989221}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall (6)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -750,7 +750,7 @@ GameObject:
   - component: {fileID: 1497439560}
   - component: {fileID: 1497439559}
   - component: {fileID: 1497439558}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall (9)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -873,7 +873,7 @@ GameObject:
   - component: {fileID: 1719295037}
   - component: {fileID: 1719295036}
   - component: {fileID: 1719295035}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall (5)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1100,7 +1100,7 @@ GameObject:
   - component: {fileID: 3051611782260070773}
   - component: {fileID: 1141256766380297258}
   - component: {fileID: 2969925215035380137}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1116,9 +1116,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8738328847949726541}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Walls
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

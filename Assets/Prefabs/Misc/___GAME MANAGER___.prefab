@@ -63,6 +63,7 @@ MonoBehaviour:
   triggerLastLevelMenu: 0
   initString: 0
   mouseOnUIObject: 0
+  rayHasCollidedWithWall: 0
   stringPointIntersectedWith: 0
   count2NdHalf: 0
   count1StHalf: 0

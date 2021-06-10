@@ -17,6 +17,8 @@ public class StringMovement : MonoBehaviour
 {
     private float radians;
     public Vector2 mousePosition, previousMousePosition, mouseDelta;
+    [SerializeField] private Vector2 tempPreviousPosition;
+
 
 
     [Space(5)]
@@ -37,34 +39,35 @@ public class StringMovement : MonoBehaviour
     [SerializeField] private List<Rigidbody2D> stringPointsRB;
     [SerializeField] private List<Vector2> stringPointsData;
 
-
+    private bool cachePreviousMousePosition;
 
     [Space(2)]
     [SerializeField] private Transform spawnPoint;
+
+
+
 
     public List<GameObject> StringPointsGO { get => stringPointsGO; set => stringPointsGO = value; }
     public List<Rigidbody2D> StringPointsRB { get => stringPointsRB; set => stringPointsRB = value; }
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
     public int NoOfSegments { get => noOfSegments; set => noOfSegments = value; }
     public Transform SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
-    
+
 
     void Update()
-    {            
+    {
         CollectInput();
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && !GameManagerScript.Instance.MouseOnUIObject)
         {
             if (Input.GetMouseButtonDown(0))
             {
                 previousMousePosition = mousePosition;
+                tempPreviousPosition = mousePosition;
                 mouseDelta = Vector2.zero;
             }
 
             if (Input.GetMouseButton(0))
             {
-                        
-        
-                
                 CheckForCollisionsBetweenLastAndCurrentPositions();
                 previousMousePosition = mousePosition;
                 
@@ -114,17 +117,23 @@ public class StringMovement : MonoBehaviour
         Vector3 dir = mousePosition - previousMousePosition;
 
         RaycastHit2D hit = Physics2D.Raycast(stringPointsGO[0].transform.position, dir, Vector3.Distance(mousePosition, previousMousePosition), LayerMask.GetMask("Walls"));
-
+    
         if (hit.collider != null)
         {
             //Debug.Log(hit.point);
             UpdateStringPointsData(hit.point.x + hit.normal.x * 0.1f, hit.point.y + hit.normal.y * 0.1f, true);
             Debug.Log(hit.point + hit.normal * 0.1f);
             GameManagerScript.Instance.MoveRigidBodies = true;
+            GameManagerScript.Instance.RayHasCollidedWithWall = true;
         }
 
-        //UpdateStringPointsData(mouseDelta.x, mouseDelta.y, false);
-        //GameManagerScript.Instance.MoveRigidBodies = true;
+        if (!GameManagerScript.Instance.RayHasCollidedWithWall)
+        {
+            UpdateStringPointsData(mouseDelta.x, mouseDelta.y, false);
+            GameManagerScript.Instance.MoveRigidBodies = true;
+        }
+        
+        
 
         Debug.DrawRay(stringPointsGO[0].transform.position, dir);
 
@@ -147,7 +156,13 @@ public class StringMovement : MonoBehaviour
         mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseDelta = mousePosition - previousMousePosition;
-        
+
+        if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Setup)
+        {
+            tempPreviousPosition = mousePosition;
+
+        }
+
 
     }    
 

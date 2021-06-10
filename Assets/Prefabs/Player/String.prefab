@@ -46,6 +46,7 @@ MonoBehaviour:
   mousePosition: {x: 0, y: 0}
   previousMousePosition: {x: 0, y: 0}
   mouseDelta: {x: 0, y: 0}
+  tempPreviousPosition: {x: 0, y: 0}
   noOfSegments: 80
   segmentLength: 0.15
   radius: 0.1
