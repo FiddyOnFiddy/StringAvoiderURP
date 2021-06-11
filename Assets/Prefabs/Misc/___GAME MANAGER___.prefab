@@ -68,8 +68,8 @@ MonoBehaviour:
   count2NdHalf: 0
   count1StHalf: 0
   levelTime: 0
-  dissolveSpeed: 1
-  dissolveMultiplier: 1.5
+  dissolveSpeed: 0.75
+  dissolveMultiplier: 1.15
   medalSplits:
   - {x: 2, y: 4}
   - {x: 2, y: 4}
@@ -102,7 +102,7 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 3, y: 4}
   maxLevelCount: 30
-  animationSpeed: 3
+  animationSpeed: 1
   bronze: Bronze
   silver: Silver
   gold: Gold

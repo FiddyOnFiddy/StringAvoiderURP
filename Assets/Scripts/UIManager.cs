@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject endScreenPanel, lastLevelPanel;
     [SerializeField] public Color bronze, silver, gold;
 
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -70,9 +71,7 @@ public class UIManager : MonoBehaviour
     {
         GameManagerScript.Instance.levelSelectCanvas.enabled = true;
         GameManagerScript.Instance.mainMenuCanvas.enabled = false;
-
-
-
+        UpdateLevelSelect();
     }
 
     public void BackButton()
@@ -80,11 +79,15 @@ public class UIManager : MonoBehaviour
         GameManagerScript.Instance.levelSelectCanvas.enabled = false;
         GameManagerScript.Instance.optionsCanvas.enabled = false;
         GameManagerScript.Instance.mainMenuCanvas.enabled = true;
+        UpdateLevelSelect();
+
     }
 
     public void RestartButton()
     {
         GameManagerScript.Instance.ReloadLevel();
+        UpdateLevelSelect();
+
     }
 
     public void PauseMenuButton()
@@ -92,6 +95,8 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 0f;
         pauseMenuPanel.SetActive(true);
         GameManagerScript.Instance.CurrentState = GameManagerScript.GameState.Setup;
+        UpdateLevelSelect();
+
     }
 
     public void ResumeButton()
@@ -112,12 +117,16 @@ public class UIManager : MonoBehaviour
     {
         GameManagerScript.Instance.mainMenuCanvas.enabled = false;
         GameManagerScript.Instance.optionsCanvas.enabled = true;
+        UpdateLevelSelect();
+
     }
 
     public void ResetSaveButton()
     {
         GameManagerScript.Instance.ResetSaveFile();
         GameManagerScript.Instance.LoadGame();
+        UpdateLevelSelect();
+
     }
     public void QuitButton()
     {

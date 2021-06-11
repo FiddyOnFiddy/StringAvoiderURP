@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Numerics;
-using Unity.Mathematics;
-using Unity.VisualScripting;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.Universal;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.UIElements;
 using Quaternion = UnityEngine.Quaternion;
+using Slider = UnityEngine.UI.Slider;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -24,7 +16,6 @@ public class StringMovement : MonoBehaviour
     [Space(5)]
     [Header("String Initialisation Data:")]
     [SerializeField] private int noOfSegments;
-
     [SerializeField] private float segmentLength;
     [SerializeField] private float radius;
 
@@ -43,6 +34,7 @@ public class StringMovement : MonoBehaviour
 
     [Space(2)]
     [SerializeField] private Transform spawnPoint;
+    [SerializeField] private Slider _stringSensitivitySlider;
 
 
 
@@ -53,6 +45,10 @@ public class StringMovement : MonoBehaviour
     public int NoOfSegments { get => noOfSegments; set => noOfSegments = value; }
     public Transform SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
 
+    private void Awake()
+    {
+        _stringSensitivitySlider.value = stringSpeedLimit;
+    }
 
     void Update()
     {
@@ -120,9 +116,7 @@ public class StringMovement : MonoBehaviour
     
         if (hit.collider != null)
         {
-            //Debug.Log(hit.point);
             UpdateStringPointsData(hit.point.x + hit.normal.x * 0.1f, hit.point.y + hit.normal.y * 0.1f, true);
-            Debug.Log(hit.point + hit.normal * 0.1f);
             GameManagerScript.Instance.MoveRigidBodies = true;
             GameManagerScript.Instance.RayHasCollidedWithWall = true;
         }
@@ -132,18 +126,12 @@ public class StringMovement : MonoBehaviour
             UpdateStringPointsData(mouseDelta.x, mouseDelta.y, false);
             GameManagerScript.Instance.MoveRigidBodies = true;
         }
-        
-        
-
-        Debug.DrawRay(stringPointsGO[0].transform.position, dir);
-
 
     }
     
 
     private void UpdateRigidBodies()
     {
-
         for (var i = 0; i < noOfSegments; i++)
         {
             stringPointsRB[i].MovePosition(stringPointsData[i]);
@@ -152,18 +140,18 @@ public class StringMovement : MonoBehaviour
 
     private void CollectInput()
     {
-        mouseDelta.x = Mathf.Clamp(mouseDelta.x, -stringSpeedLimit, stringSpeedLimit);
-        mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);
+        
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseDelta = mousePosition - previousMousePosition;
+        mouseDelta.x = Mathf.Clamp(mouseDelta.x, -stringSpeedLimit, stringSpeedLimit);
+        mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);
+
+        stringSpeedLimit = _stringSensitivitySlider.value;
 
         if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Setup)
         {
             tempPreviousPosition = mousePosition;
-
         }
-
-
     }    
 
     public void InitialiseString()
@@ -172,17 +160,15 @@ public class StringMovement : MonoBehaviour
         stringPointsRB = new List<Rigidbody2D>();
         stringPointsData = new List<Vector2>();
 
-
         for (var i = 0; i < noOfSegments; i++)
         {
             radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
 
             stringPointsData.Add(new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians)));
 
-            stringPointsGO.Add(Instantiate(stringPointPrefab, stringPointsData[i], Quaternion.identity, this.transform));
+            stringPointsGO.Add(Instantiate(stringPointPrefab, stringPointsData[i], Quaternion.identity, transform));
             stringPointsGO[i].name = i.ToString();
             stringPointsRB.Add(stringPointsGO[i].GetComponent<Rigidbody2D>());
-
         }
 
         stringPointsGO[0].GetComponent<CircleCollider2D>().enabled = false;

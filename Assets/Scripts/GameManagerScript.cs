@@ -30,17 +30,17 @@ public class GameManagerScript : MonoBehaviour
 
     [Header("Global References:")]
     //List of references all scripts and this script require. Store all references in Game Manager so there is a centralised location for references and all scripts pass through Game Manager for access.
-    [SerializeField] private GameState currentState;                                                        //Tracks which state we are currently in which is passed to a switch statement for processing.
-    [SerializeField] private StringMovement sM;                                                             //Holds reference to the string and all it's child components.
+    [SerializeField] private GameState currentState;                                                                       //Tracks which state we are currently in which is passed to a switch statement for processing.
+    [SerializeField] private StringMovement sM;                                                                            //Holds reference to the string and all it's child components.
     [SerializeField] public Canvas mainMenuCanvas, levelSelectCanvas, gameCanvas, endScreenCanvas, optionsCanvas;          //Reference to all UI Canvas for various Game States.
-    [SerializeField] private List<Material> dissolveMaterials;                                              //Reference to materials attached to each string point allowing us to access dissolve script plus material per string point.
+    [SerializeField] private List<Material> dissolveMaterials;                                                             //Reference to materials attached to each string point allowing us to access dissolve script plus material per string point.
 
     [Space(5)]
     [Header("Boolean States:")]
-    [SerializeField] private bool moveRigidBodies;                                                          //Controls when to update physics ensuring it's after input + render update.
-    [SerializeField] private bool dissolveDone;                                                             //Determines when all string points have finished animation to then transition to next state.
-    [SerializeField] private bool triggerNextLevelMenu, triggerLastLevelMenu;                               //Used to determine if we collided with the end trigger instead of a wall.
-    [SerializeField] private bool initString;                                                               //Used to Initialise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
+    [SerializeField] private bool moveRigidBodies;                                                                          //Controls when to update physics ensuring it's after input + render update.
+    [SerializeField] private bool dissolveDone;                                                                             //Determines when all string points have finished animation to then transition to next state.
+    [SerializeField] private bool triggerNextLevelMenu, triggerLastLevelMenu;                                               //Used to determine if we collided with the end trigger instead of a wall.
+    [SerializeField] private bool initString;                                                                               //Used to Initialise string upon first level load from main menu be it: New Game; Continue or Level Select. As we only spawn string upon game load otherwise we are resetting position+variables and not creating a new set of string points.
     [SerializeField] private bool mouseOnUIObject;
     [SerializeField] private bool rayHasCollidedWithWall;
 
@@ -48,20 +48,20 @@ public class GameManagerScript : MonoBehaviour
     
     [Space(5)]
     [Header("String Collision Info:")]
-    [SerializeField] private int stringPointIntersectedWith;                                                //Lets us know which string point we have collided with to play the animation from that point looping outwards in either direction.
-    [SerializeField] private int count2NdHalf, count1StHalf;                                               //Count variables that represent "i" in our if statement for looping through in each direction. Reason for count variables is we are using if statement and not for loop.
+    [SerializeField] private int stringPointIntersectedWith;                                                                //Lets us know which string point we have collided with to play the animation from that point looping outwards in either direction.
+    [SerializeField] private int count2NdHalf, count1StHalf;                                                                //Count variables that represent "i" in our if statement for looping through in each direction. Reason for count variables is we are using if statement and not for loop.
 
     [Space(5)]
     [Header("Persistant Data:")]
 
     [Min(1)]
-    [SerializeField] private float levelTime = 0f;                                                          //Time to complete level which is passed to the level text and which will be saved in file representing best time per level. To be added to total time variable for time across all levels.
+    [SerializeField] private float levelTime;                                                                               //Time to complete level which is passed to the level text and which will be saved in file representing best time per level. To be added to total time variable for time across all levels.
 
     [Space(5)]
     [Header("Dissolve Animation Variables:")]
     [SerializeField] private float dissolveSpeed;
     [SerializeField] private float dissolveMultiplier;
-    private float _defaultDissolveSpeed;                                                           //Determines how fast dissolve animation will be.
+    private float _defaultDissolveSpeed;                                                                                    //Determines how fast dissolve animation will be.
 
     [Space(8)]
     [Header("Medal Time Splits:")]
@@ -79,6 +79,8 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private float hudRefreshRate;
  
     private float _timer;
+    
+
     
 
 
@@ -223,6 +225,7 @@ public class GameManagerScript : MonoBehaviour
     }
     
     
+    // ReSharper disable Unity.PerformanceAnalysis
     void SetUp()
     {
         mainMenuCanvas.enabled = false;
@@ -241,7 +244,7 @@ public class GameManagerScript : MonoBehaviour
             sM.InitialiseString();
 
             //Grab reference to all material components attached to each string point
-            for (int i = 0; i < sM.StringPointsGO.Count; i++)
+            for (var i = sM.StringPointsGO.Count - 1; i >= 0; i--)
             {
                 dissolveMaterials.Add(sM.StringPointsGO[i].GetComponent<SpriteRenderer>().material);
             }
@@ -252,7 +255,7 @@ public class GameManagerScript : MonoBehaviour
 
     }
 
-    void WaitForInput()
+    private void WaitForInput()
     {
         if (Input.GetMouseButtonDown(0) && !GameManagerScript.Instance.MouseOnUIObject && UIManager.Instance.pauseMenuPanel.activeSelf == false)
         {
@@ -262,7 +265,7 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
-    void InitialiseDeath()
+    private void InitialiseDeath()
     {
         UIManager.Instance.deathCounter.text = "Deaths: " + Data.DeathCount;
         count1StHalf = 0;
@@ -271,7 +274,8 @@ public class GameManagerScript : MonoBehaviour
         currentState = GameState.Dead;
     }
 
-    void DeathAnimation()
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void DeathAnimation()
     {
         for (int i = 0; i < animationSpeed; i++)
         {
@@ -283,7 +287,7 @@ public class GameManagerScript : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < animationSpeed; i++)
+        for (var i = 0; i < animationSpeed; i++)
         {
             //Loop 2nd half of string if intersected
             if (count2NdHalf < sM.StringPointsGO.Count)
@@ -297,7 +301,7 @@ public class GameManagerScript : MonoBehaviour
         dissolveDone = false;
         foreach (Material material in dissolveMaterials)
         {
-            if (material.GetFloat("_DissolveAmount") == 1)
+            if (material.GetFloat("_DissolveAmount") == 1f)
             {
                 dissolveDone = true;
             }
@@ -330,6 +334,7 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     private void ResetString()
     {
         sM.ResetString();
@@ -357,7 +362,7 @@ public class GameManagerScript : MonoBehaviour
         endScreenCanvas.enabled = true;
         UIManager.Instance.lastLevelPanel.SetActive(false);
         UIManager.Instance.endScreenPanel.SetActive(true);
-        UIManager.Instance.levelTime.text = "Level Time: " + levelTime.ToString() + "       " + endScreenText;
+        UIManager.Instance.levelTime.text = "Level Time: " + levelTime + "       " + endScreenText;
         
     }
 
@@ -367,12 +372,12 @@ public class GameManagerScript : MonoBehaviour
         endScreenCanvas.enabled = true;
         UIManager.Instance.lastLevelPanel.SetActive(true);
         UIManager.Instance.endScreenPanel.SetActive(false);
-        UIManager.Instance.lastLevelPanelText.text = "Time To Complete All Levels: " + Data.TotalTimeToComplete.ToString();
+        UIManager.Instance.lastLevelPanelText.text = "Time To Complete All Levels: " + Data.TotalTimeToComplete;
     }
 
     public string CalculateMedal()
     {
-        string message = null;
+        string message;
         if (levelTime < _medalSplitsDict[Data.CurrentLevel].x)
         {
             message = gold;      
@@ -393,7 +398,7 @@ public class GameManagerScript : MonoBehaviour
     public void CalculateTotalTimePerLevel()
     {
         Data.TotalTimeToComplete = 0f;
-        for (int i = 1; i <= maxLevelCount; i++)
+        for (var i = 1; i <= maxLevelCount; i++)
         {
             if (Data.TimePerLevel.ContainsKey(i))
             {
@@ -506,7 +511,7 @@ public class GameManagerScript : MonoBehaviour
         //Check if file exists or not, if not do nothing, if so then load save data into the Data object which holds all our persistant data
         if (!File.Exists(_saveFile))
             return;
- 
+        
         
         using var file = File.OpenRead(_saveFile);
         Data = Serializer.Deserialize<SaveData>(file);
@@ -523,6 +528,8 @@ public class GameManagerScript : MonoBehaviour
         if (File.Exists(_saveFile))
         {
             File.Delete(_saveFile);
+            Data = new SaveData();
+            SaveGame();
         }
     }
     
