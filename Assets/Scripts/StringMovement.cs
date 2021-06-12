@@ -108,6 +108,14 @@ public class StringMovement : MonoBehaviour
 
     }
 
+    private void UpdateRigidBodies()
+    {
+        for (var i = 0; i < noOfSegments; i++)
+        {
+            stringPointsRB[i].MovePosition(stringPointsData[i]);
+        }
+    }
+    
     private void CheckForCollisionsBetweenLastAndCurrentPositions()
     {
         Vector3 dir = mousePosition - previousMousePosition;
@@ -128,15 +136,7 @@ public class StringMovement : MonoBehaviour
         }
 
     }
-    
 
-    private void UpdateRigidBodies()
-    {
-        for (var i = 0; i < noOfSegments; i++)
-        {
-            stringPointsRB[i].MovePosition(stringPointsData[i]);
-        }
-    }
 
     private void CollectInput()
     {

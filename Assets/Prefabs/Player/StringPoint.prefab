@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6638139392463108520}
   - component: {fileID: 8597181733750312786}
   - component: {fileID: -5440545914306173368}
-  - component: {fileID: 7821401090157357070}
+  - component: {fileID: -7253863112444680408}
   m_Layer: 6
   m_Name: StringPoint
   m_TagString: String Point
@@ -93,7 +93,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4618586219003132506}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 6200000, guid: 81afe397b49f999499e434f98ba912df, type: 2}
   m_IsTrigger: 0
@@ -115,49 +115,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startDissolve: 0
---- !u!60 &7821401090157357070
-PolygonCollider2D:
+--- !u!50 &-7253863112444680408
+Rigidbody2D:
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4618586219003132506}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 1
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2, y: 2}
-    newSize: {x: 2, y: 2}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 1, y: -0.296875}
-      - {x: 1, y: 0.1875}
-      - {x: 0.953125, y: 0.40625}
-      - {x: 0.8125, y: 0.640625}
-      - {x: 0.53125, y: 0.890625}
-      - {x: 0.25, y: 1}
-      - {x: -0.1875, y: 1}
-      - {x: -0.3125, y: 0.96875}
-      - {x: -0.40625, y: 0.953125}
-      - {x: -0.640625, y: 0.8125}
-      - {x: -0.875, y: 0.53125}
-      - {x: -0.96875, y: 0.3125}
-      - {x: -1, y: 0.265625}
-      - {x: -1, y: -0.3125}
-      - {x: -0.828125, y: -0.65625}
-      - {x: -0.640625, y: -0.8125}
-      - {x: -0.328125, y: -1}
-      - {x: 0.265625, y: -1}
-      - {x: 0.328125, y: -0.984375}
-      - {x: 0.640625, y: -0.8125}
-      - {x: 0.84375, y: -0.65625}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 6200000, guid: 81afe397b49f999499e434f98ba912df, type: 2}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
