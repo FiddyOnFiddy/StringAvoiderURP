@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 91581043}
   - component: {fileID: 91581042}
   - component: {fileID: 91581041}
+  - component: {fileID: 91581044}
   m_Layer: 0
   m_Name: Test String LineRenderer
   m_TagString: Untagged
@@ -158,11 +159,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6355c300eedc5434e9d4cd2320c247b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawnPoint: {fileID: 0}
-  _lineRenderer: {fileID: 91581042}
-  noOfSegments: 0
-  segmentLength: 0
-  radius: 0
+  spawnPoint: {fileID: 508190127}
+  lineRenderer: {fileID: 0}
+  mousePosition: {x: 0, y: 0}
+  previousMousePosition: {x: 0, y: 0}
+  mouseDelta: {x: 0, y: 0}
+  noOfSegments: 300
+  segmentLength: 0.02
+  radius: 0.2
   stringPointsData: []
 --- !u!120 &91581042
 LineRenderer:
@@ -216,7 +220,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.19333267
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -256,7 +260,7 @@ LineRenderer:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
-    numCapVertices: 0
+    numCapVertices: 13
     alignment: 0
     textureMode: 0
     shadowBias: 0.5
@@ -277,6 +281,126 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!68 &91581044
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 91581040}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  - {x: 0.3724072, y: -5.066052}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!114 &128855874 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 84855896178905870, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
@@ -361,6 +485,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &508190127 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7637192637751501782, guid: 008610b436de9f54da12b91562128868, type: 3}
+  m_PrefabInstance: {fileID: 210516232}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &956399561 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3401188178588196888, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}

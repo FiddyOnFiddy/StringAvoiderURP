@@ -56,3 +56,4 @@ MonoBehaviour:
   stringPointsRB: []
   stringPointsData: []
   spawnPoint: {fileID: 0}
+  _stringSensitivitySlider: {fileID: 0}
