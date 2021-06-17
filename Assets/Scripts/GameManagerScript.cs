@@ -138,7 +138,7 @@ public class GameManagerScript : MonoBehaviour
 
         currentState = GameState.Idle;
         #endregion
-        
+
     }
 
 

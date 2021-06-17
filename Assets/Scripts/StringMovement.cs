@@ -10,13 +10,14 @@ public class StringMovement : MonoBehaviour
     private float radians;
     public Vector2 mousePosition, previousMousePosition, mouseDelta;
     [SerializeField] private Vector2 tempPreviousPosition;
+    private LineRenderer _lineRenderer;
 
 
 
     [Space(5)]
     [Header("String Initialisation Data:")]
-    [SerializeField] private int noOfSegments;
-    [SerializeField] private float segmentLength;
+    [SerializeField] private int noOfSegmentsForColliders, noOfPointsLineRenderer;
+    [SerializeField] private float segmentLengthForColliders, segmentLengthLineRenderer;
     [SerializeField] private float radius;
 
     [Space(5)]
@@ -29,8 +30,9 @@ public class StringMovement : MonoBehaviour
     [SerializeField] private List<GameObject> stringPointsGO;
     [SerializeField] private List<Rigidbody2D> stringPointsRB;
     [SerializeField] private List<Vector2> stringPointsData;
+    [SerializeField] private List<Vector3> lineRendererPoints;
 
-    private bool cachePreviousMousePosition;
+    private bool _cachePreviousMousePosition;
 
     [Space(2)]
     [SerializeField] private Transform spawnPoint;
@@ -42,12 +44,13 @@ public class StringMovement : MonoBehaviour
     public List<GameObject> StringPointsGO { get => stringPointsGO; set => stringPointsGO = value; }
     public List<Rigidbody2D> StringPointsRB { get => stringPointsRB; set => stringPointsRB = value; }
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
-    public int NoOfSegments { get => noOfSegments; set => noOfSegments = value; }
+    public int NoOfSegments { get => noOfSegmentsForColliders; set => noOfSegmentsForColliders = value; }
     public Transform SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
 
     private void Awake()
     {
         _stringSensitivitySlider.value = stringSpeedLimit;
+        //_lineRenderer = GetComponent<LineRenderer>();
     }
 
     void Update()
@@ -92,25 +95,37 @@ public class StringMovement : MonoBehaviour
         if (!hasCollided)
         {
             stringPointsData[0] = new Vector2(x + stringPointsData[0].x, y + stringPointsData[0].y);
+            /*lineRendererPoints[0] = new Vector2(x + lineRendererPoints[0].x, y + lineRendererPoints[0].y);
+            _lineRenderer.SetPosition(0, lineRendererPoints[0]);*/
         }
         else
         {
             stringPointsData[0] = new Vector2(x, y);
+            /*lineRendererPoints[0] = new Vector2(x, y);
+            _lineRenderer.SetPosition(0, lineRendererPoints[0]);*/
 
         }
 
-        for (var i = 1; i < noOfSegments; i++)
+        for (var i = 1; i < noOfSegmentsForColliders; i++)
         {
             var nodeAngle = Mathf.Atan2(stringPointsData[i].y - stringPointsData[i - 1].y, stringPointsData[i].x - stringPointsData[i - 1].x);
 
-            stringPointsData[i] = new Vector2(stringPointsData[i - 1].x + segmentLength * Mathf.Cos(nodeAngle), stringPointsData[i - 1].y + segmentLength * Mathf.Sin(nodeAngle));
+            stringPointsData[i] = new Vector2(stringPointsData[i - 1].x + segmentLengthForColliders * Mathf.Cos(nodeAngle), stringPointsData[i - 1].y + segmentLengthForColliders * Mathf.Sin(nodeAngle));
         }
+        
+        /*for (var i = 1; i < noOfPointsLineRenderer; i++)
+        {
+            var nodeAngle = Mathf.Atan2(lineRendererPoints[i].y - lineRendererPoints[i - 1].y, lineRendererPoints[i].x - lineRendererPoints[i - 1].x);
 
+            lineRendererPoints[i] = new Vector2(lineRendererPoints[i - 1].x + segmentLengthLineRenderer * Mathf.Cos(nodeAngle), lineRendererPoints[i - 1].y + segmentLengthLineRenderer * Mathf.Sin(nodeAngle));
+            _lineRenderer.SetPosition(i, lineRendererPoints[i]);
+        }*/
     }
+
 
     private void UpdateRigidBodies()
     {
-        for (var i = 0; i < noOfSegments; i++)
+        for (var i = 0; i < noOfSegmentsForColliders; i++)
         {
             stringPointsRB[i].MovePosition(stringPointsData[i]);
         }
@@ -159,10 +174,11 @@ public class StringMovement : MonoBehaviour
         stringPointsGO = new List<GameObject>();
         stringPointsRB = new List<Rigidbody2D>();
         stringPointsData = new List<Vector2>();
+        lineRendererPoints = new List<Vector3>();
 
-        for (var i = 0; i < noOfSegments; i++)
+        for (var i = 0; i < noOfSegmentsForColliders; i++)
         {
-            radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
+            radians = 12 * Mathf.PI * i / noOfSegmentsForColliders + Mathf.PI / 4;
 
             stringPointsData.Add(new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians)));
 
@@ -171,17 +187,26 @@ public class StringMovement : MonoBehaviour
             stringPointsRB.Add(stringPointsGO[i].GetComponent<Rigidbody2D>());
         }
 
-        stringPointsGO[0].GetComponent<CircleCollider2D>().enabled = false;
+        /*for (var i = 0; i < noOfPointsLineRenderer; i++)
+        {
+            radians = 12 * Mathf.PI * i / noOfSegmentsForColliders + Mathf.PI / 4;
+
+            lineRendererPoints.Add(new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians)));
+        }
+
+        stringPointsGO[0].GetComponent<CircleCollider2D>().enabled = false;*/
         BoxCollider2D boxCollider = stringPointsGO[0].AddComponent<BoxCollider2D>();
         boxCollider.size = new Vector2(1.3f, 1.3f);
         boxCollider.edgeRadius = 0.015f;
+        /*_lineRenderer.positionCount = noOfPointsLineRenderer;
+        _lineRenderer.SetPositions(lineRendererPoints.ToArray());*/
     }
 
     public void ResetString()
     {
-        for (var i = 0; i < noOfSegments; i++)
+        for (var i = 0; i < noOfSegmentsForColliders; i++)
         {
-            radians = 12 * Mathf.PI * i / noOfSegments + Mathf.PI / 4;
+            radians = 12 * Mathf.PI * i / noOfSegmentsForColliders + Mathf.PI / 4;
 
             stringPointsData[i] = new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians));
 

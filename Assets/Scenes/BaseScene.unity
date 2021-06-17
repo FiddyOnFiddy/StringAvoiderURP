@@ -133,7 +133,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 84855896178905870, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
   m_PrefabInstance: {fileID: 3973941378824681484}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1295532955}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2507cfc148b0dac44baca2f2d3554234, type: 3}
@@ -197,6 +197,107 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 422082980560612140, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
   m_PrefabInstance: {fileID: 826186512444725351}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1295532955 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3973941378643036654, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
+  m_PrefabInstance: {fileID: 3973941378824681484}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &1295532956
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1295532955}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 8363c1c7fc9f400419526d5ad167e9fd, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.7
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &1407973293
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -273,9 +374,25 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: noOfPointsLineRenderer
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: _stringSensitivitySlider
       value: 
       objectReference: {fileID: 987878461}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: noOfSegmentsForColliders
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: segmentLengthForColliders
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: segmentLengthLineRenderer
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
 --- !u!1 &1575467648 stripped
@@ -304,7 +421,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2089994637434665713, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
   m_PrefabInstance: {fileID: 3973941378824681484}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1295532955}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51edbe23ac4cf194aadb8401ced1c514, type: 3}
