@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Quaternion = UnityEngine.Quaternion;
 using Slider = UnityEngine.UI.Slider;
 using Vector2 = UnityEngine.Vector2;
@@ -16,8 +18,8 @@ public class StringMovement : MonoBehaviour
 
     [Space(5)]
     [Header("String Initialisation Data:")]
-    [SerializeField] private int noOfSegmentsForColliders, noOfPointsLineRenderer;
-    [SerializeField] private float segmentLengthForColliders, segmentLengthLineRenderer;
+    [SerializeField] private int noOfSegmentsForColliders;
+    [SerializeField] private float segmentLengthForColliders;
     [SerializeField] private float radius;
 
     [Space(5)]
@@ -37,8 +39,8 @@ public class StringMovement : MonoBehaviour
     [Space(2)]
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Slider _stringSensitivitySlider;
-
-
+    public float speed;
+    public Vector2 V;
 
 
     public List<GameObject> StringPointsGO { get => stringPointsGO; set => stringPointsGO = value; }
@@ -50,7 +52,8 @@ public class StringMovement : MonoBehaviour
     private void Awake()
     {
         _stringSensitivitySlider.value = stringSpeedLimit;
-        //_lineRenderer = GetComponent<LineRenderer>();
+
+
     }
 
     void Update()
@@ -61,7 +64,6 @@ public class StringMovement : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 previousMousePosition = mousePosition;
-                tempPreviousPosition = mousePosition;
                 mouseDelta = Vector2.zero;
             }
 
@@ -69,6 +71,7 @@ public class StringMovement : MonoBehaviour
             {
                 CheckForCollisionsBetweenLastAndCurrentPositions();
                 previousMousePosition = mousePosition;
+
                 
 
             }
@@ -76,6 +79,10 @@ public class StringMovement : MonoBehaviour
             if (Input.GetMouseButtonUp(0))
             {
                 GameManagerScript.Instance.MoveRigidBodies = false;
+                foreach (var rb in stringPointsRB)
+                {
+                    rb.velocity = Vector2.zero;
+                }
             }
         }
         
@@ -85,7 +92,8 @@ public class StringMovement : MonoBehaviour
     {
         if (GameManagerScript.Instance.MoveRigidBodies)
         {
-            UpdateRigidBodies();
+            //UpdateRigidBodies(Input.GetAxis("Mouse X"), Input.GetAxis(("Mouse Y")));
+            UpdateRigidBodies(mouseDelta.x, mouseDelta.y);
         }
     }
     
@@ -95,40 +103,30 @@ public class StringMovement : MonoBehaviour
         if (!hasCollided)
         {
             stringPointsData[0] = new Vector2(x + stringPointsData[0].x, y + stringPointsData[0].y);
-            /*lineRendererPoints[0] = new Vector2(x + lineRendererPoints[0].x, y + lineRendererPoints[0].y);
-            _lineRenderer.SetPosition(0, lineRendererPoints[0]);*/
+            V = new Vector2(x, y) / Time.deltaTime;
+
         }
         else
         {
             stringPointsData[0] = new Vector2(x, y);
-            /*lineRendererPoints[0] = new Vector2(x, y);
-            _lineRenderer.SetPosition(0, lineRendererPoints[0]);*/
-
         }
-
-        for (var i = 1; i < noOfSegmentsForColliders; i++)
+        /*for (var i = 1; i < noOfSegmentsForColliders; i++)
         {
             var nodeAngle = Mathf.Atan2(stringPointsData[i].y - stringPointsData[i - 1].y, stringPointsData[i].x - stringPointsData[i - 1].x);
 
             stringPointsData[i] = new Vector2(stringPointsData[i - 1].x + segmentLengthForColliders * Mathf.Cos(nodeAngle), stringPointsData[i - 1].y + segmentLengthForColliders * Mathf.Sin(nodeAngle));
-        }
-        
-        /*for (var i = 1; i < noOfPointsLineRenderer; i++)
-        {
-            var nodeAngle = Mathf.Atan2(lineRendererPoints[i].y - lineRendererPoints[i - 1].y, lineRendererPoints[i].x - lineRendererPoints[i - 1].x);
-
-            lineRendererPoints[i] = new Vector2(lineRendererPoints[i - 1].x + segmentLengthLineRenderer * Mathf.Cos(nodeAngle), lineRendererPoints[i - 1].y + segmentLengthLineRenderer * Mathf.Sin(nodeAngle));
-            _lineRenderer.SetPosition(i, lineRendererPoints[i]);
         }*/
     }
 
 
-    private void UpdateRigidBodies()
+    private void UpdateRigidBodies(float x, float y)
     {
-        for (var i = 0; i < noOfSegmentsForColliders; i++)
+        /*for (var i = 0; i < noOfSegmentsForColliders; i++)
         {
             stringPointsRB[i].MovePosition(stringPointsData[i]);
-        }
+        }*/
+
+        stringPointsRB[0].velocity = V;
     }
     
     private void CheckForCollisionsBetweenLastAndCurrentPositions()
@@ -140,6 +138,7 @@ public class StringMovement : MonoBehaviour
         if (hit.collider != null)
         {
             UpdateStringPointsData(hit.point.x + hit.normal.x * 0.1f, hit.point.y + hit.normal.y * 0.1f, true);
+
             GameManagerScript.Instance.MoveRigidBodies = true;
             GameManagerScript.Instance.RayHasCollidedWithWall = true;
         }
@@ -147,6 +146,7 @@ public class StringMovement : MonoBehaviour
         if (!GameManagerScript.Instance.RayHasCollidedWithWall)
         {
             UpdateStringPointsData(mouseDelta.x, mouseDelta.y, false);
+
             GameManagerScript.Instance.MoveRigidBodies = true;
         }
 
@@ -157,16 +157,15 @@ public class StringMovement : MonoBehaviour
     {
         
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mouseDelta = mousePosition - previousMousePosition;
-        mouseDelta.x = Mathf.Clamp(mouseDelta.x, -stringSpeedLimit, stringSpeedLimit);
-        mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);
+
+        mouseDelta = mousePosition - previousMousePosition; 
+        /*mouseDelta.x = Mathf.Clamp(mouseDelta.x, -stringSpeedLimit, stringSpeedLimit);
+        mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);*/
+        
+        
+
 
         stringSpeedLimit = _stringSensitivitySlider.value;
-
-        if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Setup)
-        {
-            tempPreviousPosition = mousePosition;
-        }
     }    
 
     public void InitialiseString()
@@ -186,20 +185,12 @@ public class StringMovement : MonoBehaviour
             stringPointsGO[i].name = i.ToString();
             stringPointsRB.Add(stringPointsGO[i].GetComponent<Rigidbody2D>());
         }
+        
 
-        /*for (var i = 0; i < noOfPointsLineRenderer; i++)
-        {
-            radians = 12 * Mathf.PI * i / noOfSegmentsForColliders + Mathf.PI / 4;
-
-            lineRendererPoints.Add(new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians)));
-        }
-
-        stringPointsGO[0].GetComponent<CircleCollider2D>().enabled = false;*/
+        stringPointsGO[0].GetComponent<CircleCollider2D>().enabled = false;
         BoxCollider2D boxCollider = stringPointsGO[0].AddComponent<BoxCollider2D>();
         boxCollider.size = new Vector2(1.3f, 1.3f);
         boxCollider.edgeRadius = 0.015f;
-        /*_lineRenderer.positionCount = noOfPointsLineRenderer;
-        _lineRenderer.SetPositions(lineRendererPoints.ToArray());*/
     }
 
     public void ResetString()
