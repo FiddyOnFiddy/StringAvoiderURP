@@ -13,9 +13,9 @@ public class StringCollisionScript : MonoBehaviour
             GameManagerScript.Instance.Data.DeathCount++;
             GameManagerScript.Instance.SaveGame();   
             
-            for (int i = 0; i < GameManagerScript.Instance.SM.StringPointsRB.Count; i++)
+            for (int i = 0; i < GameManagerScript.Instance.Sm.StringPointsRb.Count; i++)
             {
-                GameManagerScript.Instance.SM.StringPointsRB[i].transform.position = GameManagerScript.Instance.SM.StringPointsData[i];
+                GameManagerScript.Instance.Sm.StringPointsRb[i].transform.position = GameManagerScript.Instance.Sm.StringPointsData[i];
 
             }
             

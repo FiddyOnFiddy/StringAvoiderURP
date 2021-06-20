@@ -9,12 +9,6 @@ public class DeveloperTools : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.Space))
-        {
-            GameManagerScript.Instance.ResetTest();
-        }
-
-
 
         if (Input.GetKeyUp(KeyCode.RightArrow))
         {

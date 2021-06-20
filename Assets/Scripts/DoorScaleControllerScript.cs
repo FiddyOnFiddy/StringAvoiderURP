@@ -9,7 +9,7 @@ public class DoorScaleControllerScript : MonoBehaviour
     [SerializeField] Vector3 currentScale;
     [SerializeField] float speed;
 
-    Vector3 zeroScale = new Vector3(0, 1, 1);
+    Vector3 _zeroScale = new Vector3(0, 1, 1);
 
     void Start()
     {
@@ -38,7 +38,7 @@ public class DoorScaleControllerScript : MonoBehaviour
     void DoorOpen()
     {
 
-        transform.localScale = Vector3.MoveTowards(currentScale, zeroScale, speed / 100);
+        transform.localScale = Vector3.MoveTowards(currentScale, _zeroScale, speed / 100);
     }
 
     void DoorClose()

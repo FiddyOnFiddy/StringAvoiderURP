@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class Dissolve : MonoBehaviour
 {
-    private Material material;
+    private Material _material;
 
-    private float dissolveAmount;
+    private float _dissolveAmount;
 
     public bool startDissolve;
 
-    public float DissolveAmount { set => dissolveAmount = value; }
+    public float DissolveAmount { set => _dissolveAmount = value; }
 
     // Start is called before the first frame update
     void Start()
     {
-        material = GetComponent<SpriteRenderer>().material;
-        dissolveAmount = 0;
+        _material = GetComponent<SpriteRenderer>().material;
+        _dissolveAmount = 0;
 
 
         Quaternion randomRotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
@@ -37,14 +37,14 @@ public class Dissolve : MonoBehaviour
 
     void DissolveStringPoint()
     {
-        dissolveAmount = Mathf.Clamp01(dissolveAmount + GameManagerScript.Instance.DissolveSpeed * Time.deltaTime);
-        material.SetFloat("_DissolveAmount", dissolveAmount);
+        _dissolveAmount = Mathf.Clamp01(_dissolveAmount + GameManagerScript.Instance.DissolveSpeed * Time.deltaTime);
+        _material.SetFloat("_DissolveAmount", _dissolveAmount);
     }
 
     public void ResetDissolve()
     {
-        dissolveAmount = 0;
-        material.SetFloat("_DissolveAmount", dissolveAmount);
+        _dissolveAmount = 0;
+        _material.SetFloat("_DissolveAmount", _dissolveAmount);
         startDissolve = false;
     }
 
