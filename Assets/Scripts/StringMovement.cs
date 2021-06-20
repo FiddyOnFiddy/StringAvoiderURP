@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Slider = UnityEngine.UI.Slider;
@@ -9,15 +12,13 @@ public class StringMovement : MonoBehaviour
 {
     private float radians;
     public Vector2 mousePosition, previousMousePosition, mouseDelta;
-    [SerializeField] private Vector2 tempPreviousPosition;
     private LineRenderer _lineRenderer;
-
-
-
+    
     [Space(5)]
     [Header("String Initialisation Data:")]
-    [SerializeField] private int noOfSegmentsForColliders, noOfPointsLineRenderer;
-    [SerializeField] private float segmentLengthForColliders, segmentLengthLineRenderer;
+    [SerializeField] private int noOfStringPoints;
+    [SerializeField] private float distanceBetweenPoints;
+    [SerializeField] private int noOfSringPointCollidersToSkip;
     [SerializeField] private float radius;
 
     [Space(5)]
@@ -27,25 +28,23 @@ public class StringMovement : MonoBehaviour
     [Space(5)]
     [Header("Containers For All Data:")]
     [SerializeField] private GameObject stringPointPrefab;
+    [SerializeField] private PhysicsMaterial2D defaultPhysicsMaterial2D;
     [SerializeField] private List<GameObject> stringPointsGO;
     [SerializeField] private List<Rigidbody2D> stringPointsRB;
     [SerializeField] private List<Vector2> stringPointsData;
-    [SerializeField] private List<Vector3> lineRendererPoints;
 
     private bool _cachePreviousMousePosition;
 
     [Space(2)]
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Slider _stringSensitivitySlider;
-    [SerializeField] private bool passRBPositionToData;
 
 
 
-    public List<GameObject> StringPointsGO { get => stringPointsGO; set => stringPointsGO = value; }
+    public List<GameObject> StringPointsGO => stringPointsGO;
     public List<Rigidbody2D> StringPointsRB { get => stringPointsRB; set => stringPointsRB = value; }
     public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
-    public int NoOfSegments { get => noOfSegmentsForColliders; set => noOfSegmentsForColliders = value; }
-    public Transform SpawnPoint { get => spawnPoint; set => spawnPoint = value; }
+    public Transform SpawnPoint { set => spawnPoint = value; }
 
     private void Awake()
     {
@@ -55,22 +54,21 @@ public class StringMovement : MonoBehaviour
     void Update()
     {
         CollectInput();
-        if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing &&
-            !GameManagerScript.Instance.MouseOnUIObject)
+
+        if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && !GameManagerScript.Instance.MouseOnUIObject)
         {
+            UpdateDataFromRB();
+
             if (Input.GetMouseButtonDown(0))
             {
                 previousMousePosition = mousePosition;
-                tempPreviousPosition = mousePosition;
                 mouseDelta = Vector2.zero;
             }
 
             if (Input.GetMouseButton(0))
             {
-                UpdateDataFromRB();
                 CheckForCollisionsBetweenLastAndCurrentPositions();
                 previousMousePosition = mousePosition;
-
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -79,6 +77,15 @@ public class StringMovement : MonoBehaviour
             }
         }
 
+        if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Dead)
+        {
+            for (int i = 0; i < noOfStringPoints; i++)
+            {
+                stringPointsRB[i].transform.position = stringPointsData[i];
+
+            }
+
+        }
     }
 
     private void FixedUpdate()
@@ -86,11 +93,10 @@ public class StringMovement : MonoBehaviour
         if (GameManagerScript.Instance.MoveRigidBodies)
         {
             UpdateRigidBodies();
-
         }
     }
-    
-    
+
+
     private void UpdateStringPointsData(float x, float y, bool hasCollided)
     {
         if (!hasCollided)
@@ -102,38 +108,37 @@ public class StringMovement : MonoBehaviour
             stringPointsData[0] = new Vector2(x, y);
         }
 
-        for (var i = 1; i < noOfSegmentsForColliders; i++)
+        for (var i = 1; i < noOfStringPoints; i++)
         {
             var nodeAngle = Mathf.Atan2(stringPointsData[i].y - stringPointsData[i - 1].y, stringPointsData[i].x - stringPointsData[i - 1].x);
 
-            stringPointsData[i] = new Vector2(stringPointsData[i - 1].x + segmentLengthForColliders * Mathf.Cos(nodeAngle), stringPointsData[i - 1].y + segmentLengthForColliders * Mathf.Sin(nodeAngle));
+            stringPointsData[i] = new Vector2(stringPointsData[i - 1].x + distanceBetweenPoints * Mathf.Cos(nodeAngle), stringPointsData[i - 1].y + distanceBetweenPoints * Mathf.Sin(nodeAngle));
         }
     }
 
 
     private void UpdateRigidBodies()
     {
-        for (var i = 0; i < noOfSegmentsForColliders; i++)
+        for (var i = 0; i < noOfStringPoints; i++)
         {
             stringPointsRB[i].MovePosition(stringPointsData[i]);
         }
-
     }
 
     private void UpdateDataFromRB()
     {
-        for (var i = 0; i < noOfSegmentsForColliders; i++)
+        for (var i = 0; i < noOfStringPoints; i++)
         {
             stringPointsData[i] = stringPointsRB[i].transform.position;
         }
     }
-    
+
     private void CheckForCollisionsBetweenLastAndCurrentPositions()
     {
         Vector3 dir = mousePosition - previousMousePosition;
 
         RaycastHit2D hit = Physics2D.Raycast(stringPointsGO[0].transform.position, dir, Vector3.Distance(mousePosition, previousMousePosition), LayerMask.GetMask("Walls"));
-    
+
         if (hit.collider != null)
         {
             UpdateStringPointsData(hit.point.x + hit.normal.x * 0.1f, hit.point.y + hit.normal.y * 0.1f, true);
@@ -145,38 +150,29 @@ public class StringMovement : MonoBehaviour
         {
             UpdateStringPointsData(mouseDelta.x, mouseDelta.y, false);
             GameManagerScript.Instance.MoveRigidBodies = true;
-
         }
-
     }
 
 
     private void CollectInput()
     {
-        
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseDelta = mousePosition - previousMousePosition;
         //mouseDelta.x = Mathf.Clamp(mouseDelta.x, -stringSpeedLimit, stringSpeedLimit);
         //mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);
 
         stringSpeedLimit = _stringSensitivitySlider.value;
-
-        if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Setup)
-        {
-            tempPreviousPosition = mousePosition;
-        }
-    }    
+    }
 
     public void InitialiseString()
     {
         stringPointsGO = new List<GameObject>();
         stringPointsRB = new List<Rigidbody2D>();
         stringPointsData = new List<Vector2>();
-        lineRendererPoints = new List<Vector3>();
 
-        for (var i = 0; i < noOfSegmentsForColliders; i++)
+        for (var i = 0; i < noOfStringPoints; i++)
         {
-            radians = 12 * Mathf.PI * i / noOfSegmentsForColliders + Mathf.PI / 4;
+            radians = 12 * Mathf.PI * i / noOfStringPoints + Mathf.PI / 4;
 
             stringPointsData.Add(new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians)));
 
@@ -185,7 +181,14 @@ public class StringMovement : MonoBehaviour
             stringPointsRB.Add(stringPointsGO[i].GetComponent<Rigidbody2D>());
         }
 
-        stringPointsGO[0].GetComponent<CircleCollider2D>().enabled = false;
+        for (int i = 0; i < noOfStringPoints; i += noOfSringPointCollidersToSkip)
+        {
+            CircleCollider2D circleCollider2D = stringPointsGO[i].AddComponent<CircleCollider2D>();
+            circleCollider2D.radius = 0.9f;
+            //\circleCollider2D.sharedMaterial = defaultPhysicsMaterial2D;
+        }
+
+        Destroy(stringPointsGO[0].GetComponent<CircleCollider2D>());
         BoxCollider2D boxCollider = stringPointsGO[0].AddComponent<BoxCollider2D>();
         boxCollider.size = new Vector2(1.3f, 1.3f);
         boxCollider.edgeRadius = 0.015f;
@@ -193,9 +196,9 @@ public class StringMovement : MonoBehaviour
 
     public void ResetString()
     {
-        for (var i = 0; i < noOfSegmentsForColliders; i++)
+        for (var i = 0; i < noOfStringPoints; i++)
         {
-            radians = 12 * Mathf.PI * i / noOfSegmentsForColliders + Mathf.PI / 4;
+            radians = 12 * Mathf.PI * i / noOfStringPoints + Mathf.PI / 4;
 
             stringPointsData[i] = new Vector2((spawnPoint.position.x + radius * Mathf.Cos(radians)), spawnPoint.position.y + radius * Mathf.Sin(radians));
 
@@ -205,14 +208,13 @@ public class StringMovement : MonoBehaviour
 
     public void DeleteString()
     {
-
-        for (var i = 0; i < NoOfSegments; i++)
+        for (var i = 0; i < noOfStringPoints; i++)
         {
             Destroy(stringPointsGO[i]);
         }
 
         stringPointsGO.Clear();
         stringPointsRB.Clear();
-        StringPointsData.Clear();
+        stringPointsData.Clear();
     }
 }

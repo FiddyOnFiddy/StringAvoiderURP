@@ -2,17 +2,21 @@ using System.Collections;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ProtoBuf;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 
 public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript Instance { get; private set; }
 
-    private string _saveFile;
+    public string _saveFile;
     [field: SerializeField] public SaveData Data { get; private set; }
 
     //Declaring new enum of type GameState to handle what state we're currently in
@@ -79,10 +83,10 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] private float hudRefreshRate;
  
     private float _timer;
-    
 
-    
-
+    private string[] saveFileNames = new[] {"save001.dat", "save002.dat", "save003.dat"};
+    [SerializeField] private string selectedSaveFile;
+    public bool test;
 
 
     //All the expression body properties for getting and setting any relevant data and access outside of Game Manager.
@@ -103,7 +107,19 @@ public class GameManagerScript : MonoBehaviour
     private void Awake()
     {
         Application.targetFrameRate = 60;
-        _saveFile = Path.Combine(Application.persistentDataPath, "save001.dat");
+
+
+        if (PlayerPrefs.HasKey("CurrentSave"))
+        {
+            selectedSaveFile = PlayerPrefs.GetString("CurrentSave");
+        }
+        else
+        {
+            selectedSaveFile = saveFileNames[0];
+            Debug.Log(selectedSaveFile);
+        }
+        _saveFile = Path.Combine(Application.persistentDataPath, selectedSaveFile);
+        //SaveGame();
 
         _defaultDissolveSpeed = dissolveSpeed;
 
@@ -138,7 +154,8 @@ public class GameManagerScript : MonoBehaviour
 
         currentState = GameState.Idle;
         #endregion
-
+        
+        
     }
 
 
@@ -146,6 +163,12 @@ public class GameManagerScript : MonoBehaviour
     {
         IsMouseOrTouchOverUI();
         ShowFPS();
+        
+        if (test)
+        {
+            SaveGame();
+        }
+        
         
         #region State switch statement
         //Switch statement which takes our current state and decides what to do based on that state.
@@ -522,17 +545,104 @@ public class GameManagerScript : MonoBehaviour
         using var file = File.OpenWrite(_saveFile);
         Serializer.Serialize(file, Data);
     }
-    
-    public void ResetSaveFile()
+    private void SaveGame(string newPath)
+    {
+        using var file = File.OpenWrite(newPath);
+        Serializer.Serialize(file, Data);
+    }
+
+    public void ResetTest()
     {
         if (File.Exists(_saveFile))
         {
             File.Delete(_saveFile);
             Data = new SaveData();
+            SaveGame(_saveFile);
+        }
+    }
+
+    public void ResetSaveFile()
+    {
+        string selectedResetButton = EventSystem.current.currentSelectedGameObject.name;
+        string saveFile;
+
+        if (selectedResetButton == "Save1Reset")
+        {
+            saveFile = Path.Combine(Application.persistentDataPath, saveFileNames[0]);
+            if (File.Exists(saveFile))
+            {
+                File.Delete(saveFile);
+                Data = new SaveData();
+                SaveGame(saveFile);
+                Debug.Log("hit");
+            }
+        }
+        else if (selectedResetButton == "Save2Reset")
+        {
+            saveFile = Path.Combine(Application.persistentDataPath, saveFileNames[1]);
+            if (File.Exists(saveFile))
+            {
+                File.Delete(saveFile);
+                Data = new SaveData();
+                SaveGame(saveFile);
+                Debug.Log("hit");
+
+                
+            }
+        }
+        else if (selectedResetButton == "Save3Reset")
+        {
+            saveFile = Path.Combine(Application.persistentDataPath, saveFileNames[2]);
+            if (File.Exists(saveFile))
+            {
+                File.Delete(saveFile);
+                Data = new SaveData();
+                SaveGame(saveFile);
+                Debug.Log("hit");
+
+            }
+        }
+    }
+
+    public void SelectSaveFile()
+    {
+        if (EventSystem.current.currentSelectedGameObject.name == "Save1")
+        {
+            selectedSaveFile = saveFileNames[0];
+        }
+        else if (EventSystem.current.currentSelectedGameObject.name == "Save2")
+        {
+            selectedSaveFile = saveFileNames[1];
+
+        }
+        else if (EventSystem.current.currentSelectedGameObject.name == "Save3")
+        {
+            selectedSaveFile = saveFileNames[2];
+        }
+        
+        PlayerPrefs.SetString("CurrentSave", selectedSaveFile);
+        OverwriteSaveFile(selectedSaveFile);
+        UIManager.Instance.UpdateLevelSelect();
+    }
+
+
+    void OverwriteSaveFile(string save)
+    {
+        _saveFile = Path.Combine(Application.persistentDataPath, save);
+
+        if (!File.Exists(_saveFile))
+        {
+            Data = new SaveData();
             SaveGame();
+        }
+        else
+        {  
+            LoadGame();
         }
     }
     
+
+
 }
 
 

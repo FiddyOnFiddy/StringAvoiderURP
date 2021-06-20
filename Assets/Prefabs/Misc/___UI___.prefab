@@ -4387,7 +4387,7 @@ GameObject:
   - component: {fileID: 3981016338912704156}
   - component: {fileID: 6177545606164714224}
   m_Layer: 0
-  m_Name: ResetSave
+  m_Name: Save2Reset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6568,7 +6568,7 @@ GameObject:
   - component: {fileID: 1320463533894812815}
   - component: {fileID: 3386262879199666805}
   m_Layer: 0
-  m_Name: 'ResetSave '
+  m_Name: Save3Reset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7235,7 +7235,7 @@ GameObject:
   - component: {fileID: 4759390754461579644}
   - component: {fileID: 7000559666359581624}
   m_Layer: 0
-  m_Name: ResetSave
+  m_Name: Save1Reset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8991,7 +8991,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7220392818325619327, guid: 72868f66ee6c34d41b4a507864ccb0ce, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 461121.7
+      value: 465719.94
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72868f66ee6c34d41b4a507864ccb0ce, type: 3}

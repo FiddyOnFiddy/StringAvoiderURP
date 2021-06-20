@@ -175,7 +175,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    void UpdateLevelSelect()
+    public void UpdateLevelSelect()
     {
         for (int i = 0; i < clones.Length; i++)
         {
