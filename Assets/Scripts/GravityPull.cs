@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GravityPull : MonoBehaviour
 {
-    [SerializeField] Rigidbody2D keyRB;
+    [FormerlySerializedAs("keyRB")] [SerializeField] Rigidbody2D keyRb;
     [SerializeField] public bool hasKey;
     [SerializeField] float distance;
     [SerializeField] Vector2 direction;
@@ -20,7 +21,7 @@ public class GravityPull : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        minDrag = keyRB.drag;
+        minDrag = keyRb.drag;
         sprite = GetComponent<SpriteRenderer>();
         defaultColor = sprite.color;
     }
@@ -28,7 +29,7 @@ public class GravityPull : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        direction = transform.position - keyRB.transform.position;
+        direction = transform.position - keyRb.transform.position;
         distance = direction.magnitude;
         if (distance < activationDistance)
         {
@@ -55,8 +56,8 @@ public class GravityPull : MonoBehaviour
             drag = Mathf.Lerp(maxDrag, minDrag, distancePercentage);
 
 
-            keyRB.AddForce(force * direction);
-            keyRB.drag = drag;
+            keyRb.AddForce(force * direction);
+            keyRb.drag = drag;
         }
     }
 

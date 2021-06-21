@@ -8,12 +8,20 @@ public class StringCollisionScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("Wall"))
+        if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && gameObject.CompareTag("Wall"))
         {
             GameManagerScript.Instance.Data.DeathCount++;
-            GameManagerScript.Instance.SaveGame();            TriggerDeath(collision);
+            GameManagerScript.Instance.SaveGame();   
+            
+            for (int i = 0; i < GameManagerScript.Instance.Sm.StringPointsRb.Count; i++)
+            {
+                GameManagerScript.Instance.Sm.StringPointsRb[i].transform.position = GameManagerScript.Instance.Sm.StringPointsData[i];
+
+            }
+            
+            TriggerDeath(collision);
         }
-        else if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && this.gameObject.CompareTag("EndPoint"))
+        else if (collision.collider.CompareTag("String Point") && GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Playing && gameObject.CompareTag("EndPoint"))
         {
             GameManagerScript.Instance.CalculateTotalTimePerLevel();
             GameManagerScript.Instance.Data.IsLevelComplete[GameManagerScript.Instance.Data.CurrentLevel + 1] = true;

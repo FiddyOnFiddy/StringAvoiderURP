@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject content;
     [SerializeField] Sprite lockSymbol;
     [SerializeField] public GameObject pauseMenuPanel;
-    private GameObject[] clones;
+    private GameObject[] _clones;
     [SerializeField] public TMP_Text lastLevelPanelText;
     [SerializeField] public GameObject endScreenPanel, lastLevelPanel;
     [SerializeField] public Color bronze, silver, gold;
@@ -37,7 +37,7 @@ public class UIManager : MonoBehaviour
             DontDestroyOnLoad(this.gameObject);
         }
 
-        clones = new GameObject[30];
+        _clones = new GameObject[30];
         SetupLevelSelectScreen();
         deathCounter.text = "Deaths: " + GameManagerScript.Instance.Data.DeathCount;
         lastLevelPanel.SetActive(false);
@@ -120,14 +120,7 @@ public class UIManager : MonoBehaviour
         UpdateLevelSelect();
 
     }
-
-    public void ResetSaveButton()
-    {
-        GameManagerScript.Instance.ResetSaveFile();
-        GameManagerScript.Instance.LoadGame();
-        UpdateLevelSelect();
-
-    }
+    
     public void QuitButton()
     {
         GameManagerScript.Instance.SaveGame();
@@ -143,45 +136,45 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 1; i <= GameManagerScript.Instance.maxLevelCount; i++)
         {
-            clones[i - 1] = Instantiate(button, content.transform.position, Quaternion.identity, content.transform);
-            clones[i - 1].name = "Level" + i.ToString();
-            clones[i - 1].GetComponentInChildren<TMP_Text>().text = i.ToString();
+            _clones[i - 1] = Instantiate(button, content.transform.position, Quaternion.identity, content.transform);
+            _clones[i - 1].name = "Level" + i.ToString();
+            _clones[i - 1].GetComponentInChildren<TMP_Text>().text = i.ToString();
 
             GameManagerScript.Instance.Data.CurrentMedalPerLevel.TryGetValue(i, out string value);
 
             if (GameManagerScript.Instance.Data.IsLevelComplete.ContainsKey(i) == false && i > 1)
             {
-                Button button = clones[i - 1].GetComponent<Button>();
+                Button button = _clones[i - 1].GetComponent<Button>();
                 button.interactable = false;
-                clones[i - 1].GetComponent<Image>().sprite = lockSymbol;
+                _clones[i - 1].GetComponent<Image>().sprite = lockSymbol;
             }
             else
             {
-                clones[i - 1].GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GameManagerScript.Instance.LevelSelect()); });
+                _clones[i - 1].GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GameManagerScript.Instance.LevelSelect()); });
 
                 if (value == GameManagerScript.Instance.gold)
                 {
-                    clones[i - 1].GetComponent<Image>().color = Color.yellow;
+                    _clones[i - 1].GetComponent<Image>().color = Color.yellow;
                 }
                 else if (value == GameManagerScript.Instance.silver)
                 {
-                    clones[i - 1].GetComponent<Image>().color = Color.cyan;
+                    _clones[i - 1].GetComponent<Image>().color = Color.cyan;
                 }
                 else if(value == GameManagerScript.Instance.bronze)
                 {
-                    clones[i - 1].GetComponent<Image>().color =Color.red;
+                    _clones[i - 1].GetComponent<Image>().color =Color.red;
                 }
             }
         }
     }
 
-    void UpdateLevelSelect()
+    public void UpdateLevelSelect()
     {
-        for (int i = 0; i < clones.Length; i++)
+        for (int i = 0; i < _clones.Length; i++)
         {
-            Destroy(clones[i]);
+            Destroy(_clones[i]);
         }
-        Array.Clear(clones, 0, clones.Length);
+        Array.Clear(_clones, 0, _clones.Length);
 
         if (GameManagerScript.Instance.Data.CurrentLevel > 1)
         {
