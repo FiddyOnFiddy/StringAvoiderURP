@@ -533,8 +533,7 @@ public class GameManagerScript : MonoBehaviour
         //Check if file exists or not, if not do nothing, if so then load save data into the Data object which holds all our persistant data
         if (!File.Exists(saveFile))
             return;
-        
-        
+
         using var file = File.OpenRead(saveFile);
         Data = Serializer.Deserialize<SaveData>(file);
     }
@@ -589,7 +588,6 @@ public class GameManagerScript : MonoBehaviour
         if (EventSystem.current.currentSelectedGameObject.name == "Save1")
         {
             selectedSaveFile = _saveFileNames[0];
-            test = true;
         }
         else if (EventSystem.current.currentSelectedGameObject.name == "Save2")
         {
@@ -621,8 +619,6 @@ public class GameManagerScript : MonoBehaviour
             LoadGame();
         }
     }
-    
-
 
 }
 

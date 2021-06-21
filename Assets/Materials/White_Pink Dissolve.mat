@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: White_Pink Dissolve
+  m_Shader: {fileID: -6465566751694194690, guid: 10145ea2f0343334a8bba0084816c2d5, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: d6bd9368b0521cc4287f45b2c88274b4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_6de0962cde4c4f78ad175ac2ae54c999_Texture_1:
+        m_Texture: {fileID: 2800000, guid: e23b713d668f03940a2fd2ae96d66e4c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_b37fdc970de748b5b523775a6bae2a2d_Out_0:
+        m_Texture: {fileID: 2800000, guid: e23b713d668f03940a2fd2ae96d66e4c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - AngleOffset: 30
+    - AngleSpeed: 10
+    - CellDensity: 50
+    - DissolveScale: 20
+    - DistortionSpeed: 1.05
+    - Distortion_Intensity: 1.5
+    - Distortion_Scale: 1
+    - Speed: 0.2
+    - Strength: 0.005
+    - WindStrength: 1
+    - _DissolveAmount: 0
+    - _DoDisortion: 0
+    m_Colors:
+    - DistortionPosition: {r: 1, g: 1, b: 0, a: 0}
+    - DistortionTiling: {r: 0.61, g: 0.36, b: 0, a: 0}
+    - _DissolveColour: {r: 29.364706, g: 6.7764707, b: 0, a: 0}
+    - _RandomSeed: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []
