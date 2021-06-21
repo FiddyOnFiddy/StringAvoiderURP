@@ -58,7 +58,7 @@ Material:
     - CellDensity: 50
     - DissolveScale: 20
     - DistortionSpeed: 1.05
-    - Distortion_Intensity: 2
+    - Distortion_Intensity: 1.5
     - Distortion_Scale: 1
     - Speed: 0.2
     - Strength: 0.005
@@ -68,6 +68,6 @@ Material:
     m_Colors:
     - DistortionPosition: {r: 1, g: 1, b: 0, a: 0}
     - DistortionTiling: {r: 0.61, g: 0.36, b: 0, a: 0}
-    - _DissolveColour: {r: 0, g: 103.61853, b: 256, a: 0}
+    - _DissolveColour: {r: 29.364706, g: 6.7764707, b: 0, a: 0}
     - _RandomSeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

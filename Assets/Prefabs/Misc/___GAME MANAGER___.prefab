@@ -45,57 +45,69 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2507cfc148b0dac44baca2f2d3554234, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Data>k__BackingField:
+    <DeathCount>k__BackingField: 0
+    <CurrentLevel>k__BackingField: 1
+    <TotalTimeToComplete>k__BackingField: 0
   currentState: 0
   sM: {fileID: 0}
   mainMenuCanvas: {fileID: 0}
   levelSelectCanvas: {fileID: 0}
   gameCanvas: {fileID: 0}
   endScreenCanvas: {fileID: 0}
+  optionsCanvas: {fileID: 0}
   dissolveMaterials: []
   moveRigidBodies: 0
   dissolveDone: 0
   triggerNextLevelMenu: 0
+  triggerLastLevelMenu: 0
   initString: 0
+  mouseOnUIObject: 0
+  rayHasCollidedWithWall: 0
   stringPointIntersectedWith: 0
-  count2ndHalf: 0
-  count1stHalf: 0
-  deathCount: 0
-  currentLevel: 1
+  count2NdHalf: 0
+  count1StHalf: 0
   levelTime: 0
-  dissolveSpeed: 2.5
+  dissolveSpeed: 0.75
+  dissolveMultiplier: 1.15
   medalSplits:
-  - {x: 92701.625, y: 6.95e-43}
-  - {x: 8.229819e-10, y: 0.00000021176453}
-  - {x: -2.377126e+29, y: 6.95e-43}
-  - {x: 4.6e-44, y: 0.00000016688938}
-  - {x: 92701.625, y: 6.95e-43}
-  - {x: 92701.875, y: 6.95e-43}
-  - {x: -2.377132e+29, y: 6.95e-43}
-  - {x: 6.9e-44, y: 0.0000006489172}
-  - {x: 92701.625, y: 6.95e-43}
-  - {x: 92701.875, y: 6.95e-43}
-  - {x: 92702.125, y: 6.95e-43}
-  - {x: 9.583458e+26, y: 11229.858}
-  - {x: -2.377138e+29, y: 6.95e-43}
-  - {x: 9.1e-44, y: 1.094709e+27}
-  - {x: 92701.625, y: 6.95e-43}
-  - {x: 92701.875, y: 6.95e-43}
-  - {x: 92702.125, y: 6.95e-43}
-  - {x: 92702.375, y: 6.95e-43}
-  - {x: -2.3771471e+29, y: 6.95e-43}
-  - {x: 1.36e-43, y: 1.0561242e-38}
-  - {x: 92701.625, y: 6.95e-43}
-  - {x: 92701.875, y: 6.95e-43}
-  - {x: 92702.125, y: 6.95e-43}
-  - {x: 92702.375, y: 6.95e-43}
-  - {x: 92702.625, y: 6.95e-43}
-  - {x: 92702.875, y: 6.95e-43}
-  - {x: -2.3771562e+29, y: 6.95e-43}
-  - {x: 2.03e-43, y: 1.0653034e-38}
-  - {x: 178710.25, y: 6.95e-43}
-  - {x: 178711.75, y: 6.95e-43}
-  maxLevelCount: 0
-  animationSpeed: 2
+  - {x: 2, y: 4}
+  - {x: 2, y: 4}
+  - {x: 1, y: 4}
+  - {x: 2, y: 4}
+  - {x: 3, y: 6}
+  - {x: 4, y: 5}
+  - {x: 3, y: 6}
+  - {x: 0, y: 1.04615744e+9}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 3, y: 4}
+  maxLevelCount: 30
+  animationSpeed: 1
+  bronze: Bronze
+  silver: Silver
+  gold: Gold
+  endScreenText: 
+  hudRefreshRate: 0
 --- !u!114 &2104272803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,8 +134,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playButtonText: {fileID: 0}
   levelTime: {fileID: 0}
+  fpsCounterLabel: {fileID: 0}
   deathCounter: {fileID: 0}
   timerText: {fileID: 0}
-  button: {fileID: 0}
+  button: {fileID: 9003241158646012704, guid: 2ab1b6fc165ca9a44bcc2ec57c9c2965, type: 3}
   content: {fileID: 0}
-  lockSymbol: {fileID: 0}
+  lockSymbol: {fileID: 21300000, guid: dca4cc456a0f14646a515e92ee894e2c, type: 3}
+  pauseMenuPanel: {fileID: 0}
+  lastLevelPanelText: {fileID: 0}
+  endScreenPanel: {fileID: 0}
+  lastLevelPanel: {fileID: 0}
+  bronze: {r: 0.8018868, g: 0.29245284, b: 0, a: 1}
+  silver: {r: 0.7921569, g: 0.7921569, b: 0.7921569, a: 1}
+  gold: {r: 1, g: 0.6879783, b: 0, a: 1}
