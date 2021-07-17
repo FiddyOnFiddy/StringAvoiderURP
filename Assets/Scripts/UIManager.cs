@@ -24,9 +24,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject endScreenPanel, lastLevelPanel;
     [SerializeField] public Color bronze, silver, gold;
 
+    [SerializeField] private GameObject colourSelectPanel;
+    [SerializeField] private List<GameObject> stringPresets;
+    private GameObject _clone;
 
     private void Awake()
     {
+        
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
@@ -36,6 +40,7 @@ public class UIManager : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
+        
 
         _clones = new GameObject[30];
         SetupLevelSelectScreen();
@@ -43,6 +48,13 @@ public class UIManager : MonoBehaviour
         lastLevelPanel.SetActive(false);
         endScreenPanel.SetActive(true);
         pauseMenuPanel.SetActive(false);
+
+         _clone = Instantiate(stringPresets[0], colourSelectPanel.transform.position, Quaternion.identity, colourSelectPanel.transform);
+
+    }
+
+    private void Update()
+    {
 
     }
 
