@@ -182,11 +182,6 @@ Canvas:
   m_CorrespondingSourceObject: {fileID: 826186511375399732, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
   m_PrefabInstance: {fileID: 826186512444725351}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1115775264 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5682568065756179471, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-  m_PrefabInstance: {fileID: 826186512444725351}
-  m_PrefabAsset: {fileID: 0}
 --- !u!223 &1126771706 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 2110606295862684478, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
@@ -399,6 +394,10 @@ PrefabInstance:
       value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: stringSensitivitySlider
+      value: 
+      objectReference: {fileID: 987878461}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: _stringSensitivitySlider
       value: 
       objectReference: {fileID: 987878461}
@@ -409,6 +408,10 @@ PrefabInstance:
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: noOfSegmentsForColliders
       value: 125
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: initialisationData.radius
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: segmentLengthForColliders
@@ -423,21 +426,51 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6302543919140451401, guid: f9e54b62dc68c324bbd38b0401b83719, type: 3}
     - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: _initialisationData.radius
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: references.sensitivitySlider
+      value: 
+      objectReference: {fileID: 987878461}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: references.stringPointPrefab
+      value: 
+      objectReference: {fileID: 4618586219003132506, guid: 20621c284c70b99439895b7e723289bf, type: 3}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
       propertyPath: noOfSringPointCollidersToSkip
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: references.defaultPhysicsMaterial
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: initialisationData.noOfStringPoints
+      value: 125
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: _initialisationData.noOfStringPoints
+      value: 125
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: initialisationData.distanceBetweenPoints
+      value: 0.075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: _initialisationData.distanceBetweenPoints
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: initialisationData.noOfStringPointCollidersToSkip
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5531167063374208233, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
+      propertyPath: _initialisationData.noOfStringPointCollidersToSkip
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 661d4e402632e1745b91afa7e13885c9, type: 3}
---- !u!1 &1575467648 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1269178263431680401, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-  m_PrefabInstance: {fileID: 826186512444725351}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1738440102 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1738440102, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
-  m_PrefabInstance: {fileID: 826186512444725351}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1890999524 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 826186510570800259, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
@@ -521,7 +554,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1738440103, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 382704.22
+      value: 426601.66
       objectReference: {fileID: 0}
     - target: {fileID: 1799484955731007, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_Layer
@@ -671,6 +704,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2104272804}
+    - target: {fileID: 384682621091794939, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2104272804}
+    - target: {fileID: 384682621091794939, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LevelSelect
+      objectReference: {fileID: 0}
     - target: {fileID: 424021812190597440, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -887,6 +928,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2104272804}
+    - target: {fileID: 1077175380418159506, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitButton
+      objectReference: {fileID: 0}
     - target: {fileID: 1138865760612934962, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1143,6 +1188,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2182413252191717567, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2104272804}
+    - target: {fileID: 2182413252191717567, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitButton
+      objectReference: {fileID: 0}
     - target: {fileID: 2210507621718143162, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1190,6 +1243,14 @@ PrefabInstance:
     - target: {fileID: 2236943363854611852, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2269157928632058748, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2104272804}
+    - target: {fileID: 2269157928632058748, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OptionsButton
       objectReference: {fileID: 0}
     - target: {fileID: 2275720291386551348, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1534,7 +1595,7 @@ PrefabInstance:
     - target: {fileID: 3380112621750184397, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1575467648}
+      objectReference: {fileID: 0}
     - target: {fileID: 3380112621750184397, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -2475,6 +2536,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2104272804}
+    - target: {fileID: 5825395122610151541, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OptionsButton
+      objectReference: {fileID: 0}
     - target: {fileID: 5883448537871386883, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_Layer
       value: 5
@@ -2959,6 +3024,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2104272804}
+    - target: {fileID: 7649297642632340094, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LevelSelect
+      objectReference: {fileID: 0}
     - target: {fileID: 7656185965506691813, guid: 97a6db30b35a4fb40b242111a8d48e70, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -3379,7 +3448,7 @@ PrefabInstance:
     - target: {fileID: 2089994637434665713, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
       propertyPath: content
       value: 
-      objectReference: {fileID: 1738440102}
+      objectReference: {fileID: 0}
     - target: {fileID: 2089994637434665713, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
       propertyPath: levelTime
       value: 
@@ -3415,7 +3484,7 @@ PrefabInstance:
     - target: {fileID: 2089994637434665713, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
       propertyPath: colourSelectPanel
       value: 
-      objectReference: {fileID: 1115775264}
+      objectReference: {fileID: 0}
     - target: {fileID: 2089994637434665713, guid: fdd28e2130f976a4190d6e4703b213ff, type: 3}
       propertyPath: lastLevelPanelText
       value: 

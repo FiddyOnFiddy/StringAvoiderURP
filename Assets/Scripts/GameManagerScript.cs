@@ -118,7 +118,6 @@ public class GameManagerScript : MonoBehaviour
             Debug.Log(selectedSaveFile);
         }
         saveFile = Path.Combine(Application.persistentDataPath, selectedSaveFile);
-        //SaveGame();
 
         _defaultDissolveSpeed = dissolveSpeed;
 

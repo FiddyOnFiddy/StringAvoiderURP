@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Dissolve : MonoBehaviour
@@ -9,11 +7,9 @@ public class Dissolve : MonoBehaviour
     private float _dissolveAmount;
 
     public bool startDissolve;
-
-    public float DissolveAmount { set => _dissolveAmount = value; }
-
+    
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _material = GetComponent<SpriteRenderer>().material;
         _dissolveAmount = 0;
@@ -21,13 +17,10 @@ public class Dissolve : MonoBehaviour
 
         Quaternion randomRotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
         transform.rotation = randomRotation;
-
-
-
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if(GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Dead && startDissolve)
         {
@@ -35,7 +28,7 @@ public class Dissolve : MonoBehaviour
         }  
     }
 
-    void DissolveStringPoint()
+    private void DissolveStringPoint()
     {
         _dissolveAmount = Mathf.Clamp01(_dissolveAmount + GameManagerScript.Instance.DissolveSpeed * Time.deltaTime);
         _material.SetFloat("_DissolveAmount", _dissolveAmount);

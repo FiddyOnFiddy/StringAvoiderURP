@@ -1,48 +1,44 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DoorScaleControllerScript : MonoBehaviour
 {
     [SerializeField] List<GameObject> lockList;
 
-    [SerializeField] Vector3 defaultScale;
-    [SerializeField] Vector3 currentScale;
-    [SerializeField] float speed;
+    [SerializeField] private Vector3 _defaultScale;
+    [SerializeField] private Vector3 _currentScale;
+    [SerializeField] private float _speed;
 
-    Vector3 _zeroScale = new Vector3(0, 1, 1);
+    readonly Vector3 _zeroScale = new Vector3(0, 1, 1);
 
-    void Start()
+    private void Start()
     {
-        defaultScale = transform.localScale;
+        _defaultScale = transform.localScale;
         
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    private void FixedUpdate()
     {
 
-        currentScale = transform.localScale;
-        foreach (GameObject go in lockList)
+        _currentScale = transform.localScale;
+        if (lockList.Select(go => go.GetComponent<GravityPull>()).Any(gravityPull => !gravityPull.hasKey))
         {
-            GravityPull gravityPull = go.GetComponent<GravityPull>();
-
-            if (!gravityPull.hasKey)
-            {
-                DoorClose();
-                return;
-            }
+            DoorClose();
+            return;
         }
         DoorOpen();
     }
 
-    void DoorOpen()
+    private void DoorOpen()
     {
 
-        transform.localScale = Vector3.MoveTowards(currentScale, _zeroScale, speed / 100);
+        transform.localScale = Vector3.MoveTowards(_currentScale, _zeroScale, _speed / 100);
     }
 
-    void DoorClose()
+    private void DoorClose()
     {
-        transform.localScale = Vector3.MoveTowards(currentScale, defaultScale, speed / 100);
+        transform.localScale = Vector3.MoveTowards(_currentScale, _defaultScale, _speed / 100);
     }
 }

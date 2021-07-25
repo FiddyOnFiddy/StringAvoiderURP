@@ -1,55 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Quaternion = UnityEngine.Quaternion;
 using Slider = UnityEngine.UI.Slider;
-using Vector2 = UnityEngine.Vector2;
-using Vector3 = UnityEngine.Vector3;
+
 
 public class StringMovement : MonoBehaviour
 {
+    //Private Variables
     private float _radians;
-    public Vector2 mousePosition, previousMousePosition, mouseDelta;
-    private LineRenderer _lineRenderer;
+    private bool _cachePreviousMousePosition; 
+    [HideInInspector] public Vector2 mousePosition, mouseDelta, previousMousePosition;
+
+
+    //Class to hold all initialisation data for the string
+    [Serializable]
+    public class InitialisationData
+    {
+        public int noOfStringPoints;
+        public float distanceBetweenPoints;
+        public int noOfStringPointCollidersToSkip;
+        public float radius;
+    }
+    
+    //Class to hold all the references the string script has
+    [Serializable]
+    public class References
+    {
+        public GameObject stringPointPrefab;
+        public Transform spawnPoint;
+        public Slider sensitivitySlider;
+    }
+
+    //Class to hold all the data pertaining to the string
+    [Serializable]
+    public class StringData
+    {
+        public List<Vector2> stringPointsData;
+        public List<GameObject> stringPointsGO;
+        public List<Rigidbody2D> stringPointsRb;
+    }
+    
+    
+    //Each of these is the initialisation of each class
+    [Space(5)]
+    [SerializeField] private InitialisationData initialisationData;
     
     [Space(5)]
-    [Header("String Initialisation Data:")]
-    [SerializeField] private int noOfStringPoints;
-    [SerializeField] private float distanceBetweenPoints;
-    [SerializeField] private int noOfSringPointCollidersToSkip;
-    [SerializeField] private float radius;
-
+    [SerializeField] private References references;
+    
     [Space(5)]
-    [Header("Speed Limit:")]
+    [SerializeField] private StringData stringData;
+    
+    [Space(10)]
     [SerializeField] private float stringSpeedLimit;
+    
 
-    [Space(5)]
-    [Header("Containers For All Data:")]
-    [SerializeField] private GameObject stringPointPrefab;
-    [SerializeField] private PhysicsMaterial2D defaultPhysicsMaterial2D;
-    [SerializeField] private List<GameObject> stringPointsGO;
-    [FormerlySerializedAs("stringPointsRB")] [SerializeField] private List<Rigidbody2D> stringPointsRb;
-    [SerializeField] private List<Vector2> stringPointsData;
-
-    private bool _cachePreviousMousePosition;
-
-    [Space(2)]
-    [SerializeField] private Transform spawnPoint;
-    [FormerlySerializedAs("_stringSensitivitySlider")] [SerializeField] private Slider stringSensitivitySlider;
-
-
-
-    public List<GameObject> StringPointsGO => stringPointsGO;
-    public List<Rigidbody2D> StringPointsRb { get => stringPointsRb; set => stringPointsRb = value; }
-    public List<Vector2> StringPointsData { get => stringPointsData; set => stringPointsData = value; }
-    public Transform SpawnPoint { set => spawnPoint = value; }
+    //Public getter and/or setter for use in another script
+    public List<GameObject> StringPointsGO => stringData.stringPointsGO;
+    public List<Rigidbody2D> StringPointsRb { get => stringData.stringPointsRb; set => stringData.stringPointsRb = value; }
+    public List<Vector2> StringPointsData { get => stringData.stringPointsData; set => stringData.stringPointsData = value; }
+    public Transform SpawnPoint { set => references.spawnPoint = value; }
 
     private void Awake()
     {
-        stringSensitivitySlider.value = stringSpeedLimit;
+        references.sensitivitySlider.value = stringSpeedLimit;
     }
 
     void Update()
@@ -68,21 +82,27 @@ public class StringMovement : MonoBehaviour
 
             if (Input.GetMouseButton(0))
             {
-                CheckForCollisionsBetweenLastAndCurrentPositions();
+                //Update string points data then tell rigidbodies to update afterwards
+                UpdateStringPointsData(mouseDelta.x, mouseDelta.y);
+                GameManagerScript.Instance.MoveRigidBodies = true;
                 previousMousePosition = mousePosition;
+                
+                //Toggle Kinematic back to false while player is interacting so we have dynamic physics bodies
+                ToggleKinematic(false);
             }
 
             if (Input.GetMouseButtonUp(0))
             {
                 GameManagerScript.Instance.MoveRigidBodies = false;
+                ToggleKinematic(true);
             }
         }
 
         if (GameManagerScript.Instance.CurrentState == GameManagerScript.GameState.Dead)
         {
-            for (int i = 0; i < noOfStringPoints; i++)
+            for (int i = 0; i < initialisationData.noOfStringPoints; i++)
             {
-                stringPointsRb[i].transform.position = stringPointsData[i];
+                stringData.stringPointsRb[i].transform.position = stringData.stringPointsData[i];
 
             }
 
@@ -98,124 +118,102 @@ public class StringMovement : MonoBehaviour
     }
 
 
-    private void UpdateStringPointsData(float x, float y, bool hasCollided)
+    private void UpdateStringPointsData(float x, float y)
     {
-        if (!hasCollided)
+        stringData.stringPointsData[0] = new Vector2( x + stringData.stringPointsData[0].x, y + stringData.stringPointsData[0].y);
+        
+        for (var i = 1; i < initialisationData.noOfStringPoints; i++)
         {
-            stringPointsData[0] = new Vector2(x + stringPointsData[0].x, y + stringPointsData[0].y);
-        }
-        else
-        {
-            stringPointsData[0] = new Vector2(x, y);
-        }
+            var nodeAngle = Mathf.Atan2(stringData.stringPointsData[i].y - stringData.stringPointsData[i - 1].y, stringData.stringPointsData[i].x - stringData.stringPointsData[i - 1].x);
 
-        for (var i = 1; i < noOfStringPoints; i++)
-        {
-            var nodeAngle = Mathf.Atan2(stringPointsData[i].y - stringPointsData[i - 1].y, stringPointsData[i].x - stringPointsData[i - 1].x);
-
-            stringPointsData[i] = new Vector2(stringPointsData[i - 1].x + distanceBetweenPoints * Mathf.Cos(nodeAngle), stringPointsData[i - 1].y + distanceBetweenPoints * Mathf.Sin(nodeAngle));
+            stringData.stringPointsData[i] = new Vector2(stringData.stringPointsData[i - 1].x + initialisationData.distanceBetweenPoints * Mathf.Cos(nodeAngle), stringData.stringPointsData[i - 1].y + initialisationData.distanceBetweenPoints * Mathf.Sin(nodeAngle));
         }
     }
 
 
     private void UpdateRigidBodies()
     {
-        for (var i = 0; i < noOfStringPoints; i++)
+        for (var i = 0; i < initialisationData.noOfStringPoints; i++)
         {
-            stringPointsRb[i].MovePosition(stringPointsData[i]);
+            stringData.stringPointsRb[i].MovePosition(stringData.stringPointsData[i]);
         }
     }
+    
 
     private void UpdateDataFromRb()
     {
-        for (var i = 0; i < noOfStringPoints; i++)
+        for (var i = 0; i < initialisationData.noOfStringPoints; i++)
         {
-            stringPointsData[i] = stringPointsRb[i].transform.position;
+            stringData.stringPointsData[i] = stringData.stringPointsRb[i].transform.position;
         }
     }
 
-    private void CheckForCollisionsBetweenLastAndCurrentPositions()
+    private void ToggleKinematic(bool toggleKinematic)
     {
-        Vector3 dir = mousePosition - previousMousePosition;
 
-        RaycastHit2D hit = Physics2D.Raycast(stringPointsGO[0].transform.position, dir, Vector3.Distance(mousePosition, previousMousePosition), LayerMask.GetMask("Walls"));
-
-        if (hit.collider != null)
+        for (var i = 0; i < initialisationData.noOfStringPoints; i++)
         {
-            UpdateStringPointsData(hit.point.x + hit.normal.x * 0.1f, hit.point.y + hit.normal.y * 0.1f, true);
-            GameManagerScript.Instance.MoveRigidBodies = true;
-            GameManagerScript.Instance.RayHasCollidedWithWall = true;
-        }
-
-        if (!GameManagerScript.Instance.RayHasCollidedWithWall)
-        {
-            UpdateStringPointsData(mouseDelta.x, mouseDelta.y, false);
-            GameManagerScript.Instance.MoveRigidBodies = true;
+            stringData.stringPointsRb[i].bodyType = toggleKinematic ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
         }
     }
-
-
+    
     private void CollectInput()
     {
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (Camera.main is { }) mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        
         mouseDelta = mousePosition - previousMousePosition;
-        //mouseDelta.x = Mathf.Clamp(mouseDelta.x, -stringSpeedLimit, stringSpeedLimit);
-        //mouseDelta.y = Mathf.Clamp(mouseDelta.y, -stringSpeedLimit, stringSpeedLimit);
-
-        stringSpeedLimit = stringSensitivitySlider.value;
     }
 
     public void InitialiseString()
     {
-        stringPointsGO = new List<GameObject>();
-        stringPointsRb = new List<Rigidbody2D>();
-        stringPointsData = new List<Vector2>();
+        stringData.stringPointsGO = new List<GameObject>();
+        stringData.stringPointsRb = new List<Rigidbody2D>();
+        stringData.stringPointsData = new List<Vector2>();
 
-        for (var i = 0; i < noOfStringPoints; i++)
+        for (var i = 0; i < initialisationData.noOfStringPoints; i++)
         {
-            _radians = 12 * Mathf.PI * i / noOfStringPoints + Mathf.PI / 4;
+            _radians = 12 * Mathf.PI * i / initialisationData.noOfStringPoints + Mathf.PI / 4;
 
-            stringPointsData.Add(new Vector2((spawnPoint.position.x + radius * Mathf.Cos(_radians)), spawnPoint.position.y + radius * Mathf.Sin(_radians)));
+            stringData.stringPointsData.Add(new Vector2((references.spawnPoint.position.x + initialisationData.radius * Mathf.Cos(_radians)), references.spawnPoint.position.y + initialisationData.radius * Mathf.Sin(_radians)));
 
-            stringPointsGO.Add(Instantiate(stringPointPrefab, stringPointsData[i], Quaternion.identity, transform));
-            stringPointsGO[i].name = i.ToString();
-            stringPointsRb.Add(stringPointsGO[i].GetComponent<Rigidbody2D>());
+            stringData.stringPointsGO.Add(Instantiate(references.stringPointPrefab, stringData.stringPointsData[i], Quaternion.identity, transform));
+            stringData.stringPointsGO[i].name = i.ToString();
+            stringData.stringPointsRb.Add(stringData.stringPointsGO[i].GetComponent<Rigidbody2D>());
         }
 
-        for (int i = 0; i < noOfStringPoints; i += noOfSringPointCollidersToSkip)
+        for (int i = 0; i < initialisationData.noOfStringPoints; i += initialisationData.noOfStringPointCollidersToSkip)
         {
-            CircleCollider2D circleCollider2D = stringPointsGO[i].AddComponent<CircleCollider2D>();
+            CircleCollider2D circleCollider2D = stringData.stringPointsGO[i].AddComponent<CircleCollider2D>();
             circleCollider2D.radius = 0.9f;
-            //\circleCollider2D.sharedMaterial = defaultPhysicsMaterial2D;
         }
 
-        Destroy(stringPointsGO[0].GetComponent<CircleCollider2D>());
-        BoxCollider2D boxCollider = stringPointsGO[0].AddComponent<BoxCollider2D>();
+        Destroy(stringData.stringPointsGO[0].GetComponent<CircleCollider2D>());
+        BoxCollider2D boxCollider = stringData.stringPointsGO[0].AddComponent<BoxCollider2D>();
         boxCollider.size = new Vector2(1.3f, 1.3f);
         boxCollider.edgeRadius = 0.015f;
     }
 
     public void ResetString()
     {
-        for (var i = 0; i < noOfStringPoints; i++)
+        for (var i = 0; i < initialisationData.noOfStringPoints; i++)
         {
-            _radians = 12 * Mathf.PI * i / noOfStringPoints + Mathf.PI / 4;
+            _radians = 12 * Mathf.PI * i / initialisationData.noOfStringPoints + Mathf.PI / 4;
 
-            stringPointsData[i] = new Vector2((spawnPoint.position.x + radius * Mathf.Cos(_radians)), spawnPoint.position.y + radius * Mathf.Sin(_radians));
+            stringData.stringPointsData[i] = new Vector2((references.spawnPoint.position.x + initialisationData.radius * Mathf.Cos(_radians)), references.spawnPoint.position.y + initialisationData.radius * Mathf.Sin(_radians));
 
-            stringPointsGO[i].transform.position = stringPointsData[i];
+            stringData.stringPointsGO[i].transform.position = stringData.stringPointsData[i];
         }
     }
 
     public void DeleteString()
     {
-        for (var i = 0; i < noOfStringPoints; i++)
+        for (var i = 0; i < initialisationData.noOfStringPoints; i++)
         {
-            Destroy(stringPointsGO[i]);
+            Destroy(stringData.stringPointsGO[i]);
         }
 
-        stringPointsGO.Clear();
-        stringPointsRb.Clear();
-        stringPointsData.Clear();
+        stringData.stringPointsGO.Clear();
+        stringData.stringPointsRb.Clear();
+        stringData.stringPointsData.Clear();
     }
 }

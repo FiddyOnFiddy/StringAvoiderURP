@@ -24,9 +24,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] public GameObject endScreenPanel, lastLevelPanel;
     [SerializeField] public Color bronze, silver, gold;
 
-    [SerializeField] private GameObject colourSelectPanel;
-    [SerializeField] private List<GameObject> stringPresets;
-    private GameObject _clone;
 
     private void Awake()
     {
@@ -49,7 +46,6 @@ public class UIManager : MonoBehaviour
         endScreenPanel.SetActive(true);
         pauseMenuPanel.SetActive(false);
 
-         _clone = Instantiate(stringPresets[0], colourSelectPanel.transform.position, Quaternion.identity, colourSelectPanel.transform);
 
     }
 

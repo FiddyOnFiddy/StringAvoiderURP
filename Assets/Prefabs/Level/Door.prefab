@@ -193,6 +193,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lockList:
   - {fileID: 0}
-  defaultScale: {x: 0, y: 0, z: 0}
-  currentScale: {x: 0, y: 0, z: 0}
-  speed: 1
+  _defaultScale: {x: 0, y: 0, z: 0}
+  _currentScale: {x: 0, y: 0, z: 0}
+  _speed: 1
