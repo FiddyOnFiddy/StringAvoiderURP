@@ -505,6 +505,7 @@ public class GameManagerScript : MonoBehaviour
     {
         SceneManager.UnloadSceneAsync("level" + Data.CurrentLevel.ToString(), UnloadSceneOptions.None);
         currentState = GameState.Idle;
+        moveRigidBodies = false;
         sM.DeleteString();
         dissolveMaterials.Clear();
         gameCanvas.enabled = false;
